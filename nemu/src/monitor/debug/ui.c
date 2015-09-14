@@ -36,6 +36,68 @@ static int cmd_q(char *args) {
 	return -1;
 }
 
+static int cmd_si(char *args) {
+	uint32_t ins = 1;
+	if (args) {
+		if (0 == sscanf(args, "%u", &ins)) {
+			printf("Invalid argument: %s\n", args);
+			return 0;
+		}
+	}
+	cpu_exec(ins);
+	return 0;
+}
+
+static int cmd_info_r();
+static int cmd_info_w();
+static int cmd_info(char *args) {
+	if (!args) {
+		printf("info r\t\tPrint registers\ninfo w\t\tPrint watchpoints\n");
+	} else {
+		switch (args[0]) {
+			case 'r': return cmd_info_r();
+			case 'w': return cmd_info_w();
+		}
+		printf("Invalid argmuent: %s\n", args);
+	}
+	return 0;
+}
+
+static int cmd_info_r() {
+	int i;
+	for (i = 0; i < 8; i++) {
+		printf("%s\t%#10x\t%10d\t", regsl[i], reg_l(i), reg_l(i));
+		printf("%s\t%#6x\t%5d", regsw[i], reg_w(i), reg_w(i));
+		if (i < 4) {
+			printf("\t%s\t%#4x\t%3d\t", regsb[i|4], reg_b(i|4), reg_b(i|4));
+			printf("%s\t%#4x\t%3d\n", regsb[i], reg_b(i), reg_b(i));
+		} else printf("\n");
+	}
+	printf("eip\t%#10x\n", cpu.eip);
+	return 0;
+}
+
+static int cmd_info_w() {
+	// TODO
+	printf("not implemented\n");
+	return 0;
+}
+
+static int cmd_x(char *args) {
+	// TODO
+	size_t ins = 1;
+	swaddr_t addr;
+	if (2 != sscanf(args, "%zu%x", &ins, &addr)) {
+		printf("Invalid argmuent: %s\n", args);
+		return 0;
+	}
+	while (ins--) {
+		printf("%#x:\t0x%08x\n", addr, swaddr_read(addr, 4));
+		addr += 4;
+	}
+	return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -46,6 +108,9 @@ static struct {
 	{ "help", "Display informations about all supported commands", cmd_help },
 	{ "c", "Continue the execution of the program", cmd_c },
 	{ "q", "Exit NEMU", cmd_q },
+	{ "si", "Step assembly", cmd_si },
+	{ "info", "Print program info", cmd_info },
+	{ "x", "Examine memory", cmd_x },
 
 	/* TODO: Add more commands */
 
