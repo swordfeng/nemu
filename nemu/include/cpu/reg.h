@@ -12,7 +12,7 @@ typedef struct {
 		uint32_t _32;
 		uint16_t _16;
 		uint8_t _8[2];
-	} gpr[0];
+	} gpr[0]; /* Actual length is 8 */
 
 	/* Do NOT change the order of the GPRs' definitions. */
 
