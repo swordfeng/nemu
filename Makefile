@@ -5,6 +5,7 @@
 CC := gcc
 LD := ld
 CFLAGS := -MMD -Wall -Werror -c
+GHC := ghc
 
 LIB_COMMON_DIR := lib-common
 NEWLIBC_DIR := $(LIB_COMMON_DIR)/newlib
