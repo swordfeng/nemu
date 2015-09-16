@@ -3,6 +3,8 @@
 !*/
 !Makefile*
 !*.[cSh]
+!*.hs
+!*.hc
 !test.sh
 !.gitignore
 !README.md
