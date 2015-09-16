@@ -5,7 +5,7 @@ nemu_LDFLAGS := -lreadline
 
 $(nemu_BIN): $(nemu_OBJS) $(nemu_HSFILES) $(nemu_HCFILES)
 	$(call make_command, $(GHC) --make -no-hs-main -optc-O -debug -hidir /tmp -stubdir /tmp, $(nemu_LDFLAGS), ld $@, $^)
-#	$(call git_commit, "compile NEMU")
+	$(call git_commit, "compile NEMU")
 
 
 ##### rules for generating some preprocessing results #####
