@@ -129,11 +129,8 @@ pathernessP = -- Patherness = (Expr)
 registerP = do -- Register = $ <RegName>
     char '$'
     spaces
-    name <- many1 letter
-    if not $ name `elem` validRegNames then
-        fail "invalid register"
-    else
-        return . Number . Reg $ name
+    name <- (try . choice . map string) validRegNames <|> fail "invalid register"
+    return . Number . Reg $ name
 
 unitP =  -- Unit = Patherness | Num
     numP <|> registerP <|> pathernessP <|> fail "require operand"
