@@ -136,7 +136,7 @@ registerP = do -- Register = $ <RegName>
         return . Number . Reg $ name
 
 unitP =  -- Unit = Patherness | Num
-    numP <|> registerP <|> pathernessP <|> fail "need operand"
+    numP <|> registerP <|> pathernessP <|> fail "require operand"
 
 exprP :: Int -> CharParser () Expr
 exprP precedance -- Expr[p] = Unary[p] | Binary[p]
@@ -144,14 +144,14 @@ exprP precedance -- Expr[p] = Unary[p] | Binary[p]
     | otherwise = try (unaryP precedance) <|> try (binaryP precedance)
 unaryP precedance = do -- Unary[p] = <UnaryOp> Expr[p+1] Expr'[p] WARNING: Associativity is ignored now
     spaces
-    op <- foldl (flip (<|>)) (fail "need unary operator") $ map (try . operatorP) $ filter ((==Unary) . getAry) $ opDefs !! precedance
+    op <- foldl (flip (<|>)) (fail "require unary operator") $ map (try . operatorP) $ filter ((==Unary) . getAry) $ opDefs !! precedance
     spaces
     exprP (precedance + 1) >>= exprP' precedance . UnOp op
 binaryP precedance = spaces >> exprP (precedance + 1) >>= liftM2 (<|>) (exprP' precedance) return  -- Binary[p] = Expr[p+1] Expr'[p]
 exprP' :: Int -> Expr -> CharParser () Expr
 exprP' precedance exp1 = flip (<|>) (return exp1) $ try $ do -- Expr'[p] = <BiOp> Expr[p+1] Exor'[p] | e
     spaces
-    op <- foldl (flip (<|>)) (fail "need binary operator") $ map (try . operatorP) $ filter ((==Binary) . getAry) $ opDefs !! precedance
+    op <- foldl (flip (<|>)) (fail "require binary operator") $ map (try . operatorP) $ filter ((==Binary) . getAry) $ opDefs !! precedance
     spaces
     exp2 <- exprP $ precedance + 1
     case getAssoc op of
