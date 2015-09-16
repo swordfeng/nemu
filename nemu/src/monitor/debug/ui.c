@@ -84,7 +84,7 @@ static int cmd_info_w() {
 }
 
 static int cmd_x(char *args) {
-	// TODO
+	// TODO: expr
 	size_t ins = 1;
 	swaddr_t addr;
 	if (2 != sscanf(args, "%zu%x", &ins, &addr)) {
@@ -95,6 +95,23 @@ static int cmd_x(char *args) {
 		printf("%#x:\t0x%08x\n", addr, swaddr_read(addr, 4));
 		addr += 4;
 	}
+	return 0;
+}
+
+static int cmd_p(char *args) {
+	while (*args == ' ') args++;
+	char *args_end = args + strlen(args) - 1;
+	while (args_end > args && *args_end == ' ') args_end--;
+	int len = args_end - args + 1;
+	if (len <= 0) {
+		printf("Need expression!\n");
+		return 0;
+	}
+	char *expstr = malloc(len + 1);
+	strncpy(expstr, args, len + 1);
+	bool success = false;
+	uint32_t result = expr(expstr, &success);
+	if (success) printf("%u\n", result);
 	return 0;
 }
 
@@ -111,6 +128,7 @@ static struct {
 	{ "si", "Step assembly", cmd_si },
 	{ "info", "Print program info", cmd_info },
 	{ "x", "Examine memory", cmd_x },
+	{ "p", "Calculate and print expression", cmd_p },
 
 	/* TODO: Add more commands */
 
