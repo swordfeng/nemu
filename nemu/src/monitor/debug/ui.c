@@ -97,7 +97,7 @@ static int cmd_x(char *args) {
 		return 0;
 	}
 	bool success = false;
-	addr = expr(args, success);
+	addr = expr(args, &success);
 	if (!success) return 0;
 	while (ins--) {
 		printf("%#x:\t0x%08x\n", addr, swaddr_read(addr, 4));
