@@ -4,6 +4,7 @@
 #include "nemu.h"
 
 #include <stdlib.h>
+#include <ctype.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 
@@ -84,13 +85,20 @@ static int cmd_info_w() {
 }
 
 static int cmd_x(char *args) {
-	// TODO: expr
-	size_t ins = 1;
+	size_t ins = 0;
 	swaddr_t addr;
-	if (2 != sscanf(args, "%zu%x", &ins, &addr)) {
-		printf("Invalid argmuent: %s\n", args);
+	while (*args && *args == ' ') args++;
+	for (; isdigit(*args); args++) {
+		ins = ins * 10 + *args - '0';
+	}
+	while (*args && *args == ' ') args++;
+	if (!*args) {
+		printf("require expression\n");
 		return 0;
 	}
+	bool success = false;
+	addr = expr(args, success);
+	if (!success) return 0;
 	while (ins--) {
 		printf("%#x:\t0x%08x\n", addr, swaddr_read(addr, 4));
 		addr += 4;
