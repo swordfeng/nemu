@@ -137,6 +137,21 @@ static int cmd_w(char *args) {
 	return 0;
 }
 
+static int cmd_d(char *args) {
+	int wp_no;
+	if (1 != sscanf(args, "%d", &wp_no)) {
+		printf("Invalid argument");
+		return 0;
+	}
+	WP *wp;
+	if (!(wp = wp_find(wp_no))) {
+		printf("Invalid watchpoint number");
+		return 0;
+	}
+	wp_free(wp);
+	return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -152,6 +167,7 @@ static struct {
 	{ "x", "Examine memory", cmd_x },
 	{ "p", "Calculate and print expression", cmd_p },
 	{ "w", "Set new watchpoint", cmd_w },
+	{ "d", "Delete new watchpoint", cmd_d },
 
 	/* TODO: Add more commands */
 

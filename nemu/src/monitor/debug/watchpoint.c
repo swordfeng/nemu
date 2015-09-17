@@ -13,6 +13,7 @@ struct watchpoint {
 
 static WP wp_list[NR_WP];
 static WP *head, *free_;
+static int wp_no_count;
 
 void init_wp_list() {
 	int i;
@@ -24,6 +25,7 @@ void init_wp_list() {
 
 	head = NULL;
 	free_ = wp_list;
+	wp_no_count = 0;
 }
 
 /* TODO: Implement the functionality of watchpoint */
@@ -35,6 +37,7 @@ WP* wp_new() {
 	wp->next = head;
 	wp->exp = NULL;
 	head = wp;
+	wp->NO = wp_no_count++;
 	return wp;
 }
 
@@ -59,6 +62,15 @@ void wp_free(WP *wp) {
 		free_ = wp;
 		return;
 	}
+}
+
+WP *wp_find(int no) {
+	WP *wp = head;
+	while (wp) {
+		if (wp->NO == no) return wp;
+		wp = wp->next;
+	}
+	return NULL;
 }
 
 void wp_set_expr(WP *wp, const char *exp) {
