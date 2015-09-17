@@ -31,7 +31,7 @@ void init_wp_list() {
 /* TODO: Implement the functionality of watchpoint */
 
 WP* wp_new() {
-	Assert(free_, "watchpoints reaches the limit");
+	Assert(free_, "Watchpoint pool excceed");
 	WP *wp = free_;
 	free_ = wp->next;
 	wp->next = head;
