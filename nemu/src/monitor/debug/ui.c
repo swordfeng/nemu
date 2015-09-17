@@ -123,6 +123,20 @@ static int cmd_p(char *args) {
 	return 0;
 }
 
+static int cmd_w(char *args) {
+	while (*args == ' ') args++;
+	bool valid = false;
+	expr(args, &valid);
+	if (!valid) {
+		printf("failed to set watchpoint\n");
+		return 0;
+	}
+	WP *wp = wp_new();
+	wp_set_expr(wp, args);
+	printf("New watchpoint: %s\n", args);
+	return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -137,6 +151,7 @@ static struct {
 	{ "info", "Print program info", cmd_info },
 	{ "x", "Examine memory", cmd_x },
 	{ "p", "Calculate and print expression", cmd_p },
+	{ "w", "Set new watchpoint", cmd_w },
 
 	/* TODO: Add more commands */
 
