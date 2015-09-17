@@ -86,3 +86,20 @@ uint32_t wp_get_result(WP *wp) {
 int wp_get_no(WP *wp) {
 	return wp->NO;
 }
+
+bool wp_watch(WP **pwp, uint32_t *old_result, uint32_t *new_result) {
+	WP *exam = head;
+	while (exam) {
+		uint32_t o_res = wp_get_result(exam);
+		wp_eval(exam);
+		uint32_t n_res = wp_get_result(exam);
+		if (o_res != n_res) {
+			if (pwp) *pwp = exam;
+			if (old_result) *old_result = o_res;
+			if (new_result) *new_result = n_res;
+			return true;
+		}
+		exam = exam->next;
+	}
+	return false;
+}

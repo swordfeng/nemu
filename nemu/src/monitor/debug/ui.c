@@ -133,7 +133,7 @@ static int cmd_w(char *args) {
 	}
 	WP *wp = wp_new();
 	wp_set_expr(wp, args);
-	printf("New watchpoint: %s\n", args);
+	printf("New watchpoint %d: %s\n", wp_get_no(wp), args);
 	return 0;
 }
 

@@ -1,4 +1,5 @@
 #include "monitor/monitor.h"
+#include "monitor/watchpoint.h"
 #include "cpu/helper.h"
 #include <setjmp.h>
 
@@ -31,6 +32,12 @@ void print_bin_instr(swaddr_t eip, int len) {
 /* This function will be called when an `int3' instruction is being executed. */
 void do_int3() {
 	printf("\nHit breakpoint at eip = 0x%08x\n", cpu.eip);
+	nemu_state = STOP;
+}
+
+void do_watchpoint(WP *wp, uint32_t old_result, uint32_t new_result) {
+	printf("\nHit watchpoint %d at eip = 0x%08x\n", wp_get_no(wp), cpu.eip);
+	printf("Old value = %#x (%d), New value = %#x (%d)\n", old_result, old_result, new_result, new_result);
 	nemu_state = STOP;
 }
 
@@ -73,7 +80,11 @@ void cpu_exec(volatile uint32_t n) {
 #endif
 
 		/* TODO: check watchpoints here. */
-
+		WP *wp = NULL;
+		uint32_t old_result, new_result;
+		if (wp_watch(&wp, &old_result, &new_result)) {
+			do_watchpoint(wp, old_result, new_result);
+		}
 
 		if(nemu_state != RUNNING) { return; }
 	}
