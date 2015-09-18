@@ -16,11 +16,14 @@ import Foreign.C.Types
 import Foreign.C.String
 import Foreign.Ptr
 
+---- C Bool type
+type CBool = Word8
 -- imports from C
 foreign import ccall "expr_register_read" register_read_c :: CString -> IO Word32
 foreign import ccall "expr_swaddr_read" swaddr_read_c :: Word32 -> IO Word32
 -- exports to C
 foreign export ccall "expr" expr_hs :: CString -> Ptr CBool -> IO Word32
+foreign export ccall "expr_prettify" expr_prettify_hs :: CString -> Ptr CString -> Ptr Int -> IO CBool
 
 -- expression structure definition
 ---- Memory unit type
@@ -93,10 +96,10 @@ data Expr = ExprNone
     | UnOp Op Expr
     | BiOp Op Expr Expr
 
-printExpr (Number x) = show x
-printExpr (Patherness x) = "(" ++ printExpr x ++ ")"
-printExpr (UnOp op x) = show op ++ printExpr x
-printExpr (BiOp op x y) = printExpr x ++ " " ++ show op ++ " " ++ printExpr y
+showExpr (Number x) = show x
+showExpr (Patherness x) = "(" ++ showExpr x ++ ")"
+showExpr (UnOp op x) = show op ++ showExpr x
+showExpr (BiOp op x y) = showExpr x ++ " " ++ show op ++ " " ++ showExpr y
 
 evalExpr (Number x) = getInt x
 evalExpr (Patherness x) = evalExpr x
@@ -106,7 +109,7 @@ evalExpr (BiOp op x y) = evalExpr x >>= \x' -> evalExpr y >>= getFunc op x'
 parseExpr str = parse (exprP 0 >>= \exp -> spaces >> eof >> return exp) "" str
 
 instance Show Expr where
-    show exp = printExpr exp
+    show exp = showExpr exp
 
 -- Parser Combinators
 ---- Number
@@ -159,9 +162,14 @@ operatorP op = do
     (string . getOp) op
     return op
 
+printErrInfo err str = do
+    putStr "In expression:\n\t"
+    putStrLn str
+    let pos = sourceColumn $ errorPos err
+    putStrLn $ "\t" ++ (replicate (pos - 1) ' ') ++ "^"
+    print err
+
 -- Exporting implements here
----- Bool type
-type CBool = Word8
 ---- uint32_t expr(char *, bool *)
 expr_hs cstr pbool = do
     str <- peekCString cstr
@@ -172,9 +180,20 @@ expr_hs cstr pbool = do
             evalExpr res
         Left err -> do
             poke pbool 0
-            putStr "In expression:\n\t"
-            putStrLn str
-            let pos = sourceColumn $ errorPos err
-            putStrLn $ "\t" ++ (replicate (pos - 1) ' ') ++ "^"
-            print err
+            printErrInfo err str
+            return 0
+---- bool expr_prettify(char *, char **, int *)
+expr_prettify_hs cstr pstring plen = do
+    str <- peekCString cstr
+    let exp = parseExpr str
+    case exp of
+        Right res -> do
+            (rcstr, len) <- newCStringLen $ show res
+            poke plen len
+            rpcstr <- new rcstr
+            rccstr <- peek rpcstr
+            poke pstring rccstr
+            return 1
+        Left err -> do
+            printErrInfo err str
             return 0

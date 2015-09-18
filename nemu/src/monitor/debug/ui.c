@@ -124,15 +124,16 @@ static int cmd_p(char *args) {
 
 static int cmd_w(char *args) {
 	while (*args == ' ') args++;
-	bool valid = false;
-	expr(args, &valid);
+	char *newexp;
+	int len;
+	bool valid = expr_prettify(args, &newexp, &len);
 	if (!valid) {
 		printf("failed to set watchpoint\n");
 		return 0;
 	}
 	WP *wp = wp_new();
-	wp_set_expr(wp, args);
-	printf("New watchpoint %d: %s\n", wp_get_no(wp), args);
+	wp_set_expr(wp, newexp);
+	printf("New watchpoint %d: %s\n", wp_get_no(wp), newexp);
 	return 0;
 }
 
