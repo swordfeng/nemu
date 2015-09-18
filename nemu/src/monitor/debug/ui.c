@@ -140,12 +140,12 @@ static int cmd_w(char *args) {
 static int cmd_d(char *args) {
 	int wp_no;
 	if (1 != sscanf(args, "%d", &wp_no)) {
-		printf("Invalid argument");
+		printf("Invalid argument\n");
 		return 0;
 	}
 	WP *wp;
 	if (!(wp = wp_find(wp_no))) {
-		printf("Invalid watchpoint number");
+		printf("Invalid watchpoint number\n");
 		return 0;
 	}
 	wp_free(wp);
