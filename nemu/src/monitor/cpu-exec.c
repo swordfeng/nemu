@@ -36,8 +36,9 @@ void do_int3() {
 }
 
 void do_watchpoint(WP *wp, uint32_t old_result, uint32_t new_result) {
-	printf("\nHit watchpoint %d at eip = 0x%08x\n", wp_get_no(wp), cpu.eip);
-	printf("Old value = %#x (%d), New value = %#x (%d)\n", old_result, old_result, new_result, new_result);
+	printf("\nHit watchpoint at eip = 0x%08x\n", cpu.eip);
+	printf("Watchpoint %d: %s\n", wp_get_no(wp), wp_get_expr(wp));
+	printf("Old value = %#x (%d)\nNew value = %#x (%d)\n", old_result, old_result, new_result, new_result);
 	nemu_state = STOP;
 }
 
@@ -79,7 +80,6 @@ void cpu_exec(volatile uint32_t n) {
 		}
 #endif
 
-		/* TODO: check watchpoints here. */
 		WP *wp = NULL;
 		uint32_t old_result, new_result;
 		if (wp_watch(&wp, &old_result, &new_result)) {

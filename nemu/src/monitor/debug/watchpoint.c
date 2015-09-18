@@ -93,6 +93,11 @@ uint32_t wp_get_result(WP *wp) {
 	return wp->result;
 }
 
+const char *wp_get_expr(WP *wp) {
+	Assert(wp->exp, "NULL EXPRESSION IN WATCHPOINT");
+	return wp->exp;
+}
+
 int wp_get_no(WP *wp) {
 	return wp->NO;
 }
