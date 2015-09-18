@@ -79,8 +79,7 @@ static int cmd_info_r() {
 }
 
 static int cmd_info_w() {
-	// TODO
-	printf("not implemented\n");
+	wp_print_info();
 	return 0;
 }
 

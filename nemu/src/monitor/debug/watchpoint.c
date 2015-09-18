@@ -28,8 +28,6 @@ void init_wp_list() {
 	wp_no_count = 0;
 }
 
-/* TODO: Implement the functionality of watchpoint */
-
 WP* wp_new() {
 	Assert(free_, "Watchpoint pool excceed");
 	WP *wp = free_;
@@ -114,4 +112,16 @@ bool wp_watch(WP **pwp, uint32_t *old_result, uint32_t *new_result) {
 		exam = exam->next;
 	}
 	return false;
+}
+
+void wp_print_info() {
+	WP *wp = head;
+	if (!wp) {
+		printf("No active watchpoints.\n");
+		return;
+	}
+	printf("Watchpoint      Last result     Expression\n");
+	for (; wp != NULL; wp = wp->next) {
+		printf("%-16d%-16d%s\n", wp->NO, wp->result, wp->exp);
+	}
 }
