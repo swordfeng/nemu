@@ -106,12 +106,14 @@ evalExpr (Patherness x) = evalExpr x
 evalExpr (UnOp op x) = evalExpr x >>= getFunc op 0
 evalExpr (BiOp op x y) = evalExpr x >>= \x' -> evalExpr y >>= getFunc op x'
 
-parseExpr str = parse (exprP 0 >>= \exp -> spaces >> eof >> return exp) "" str
+parseExpr str = parse (exprP 0 >>= \exp -> empty >> eof >> return exp) "" str
 
 instance Show Expr where
     show exp = showExpr exp
 
 -- Parser Combinators
+---- Empty
+empty = spaces <?> ""
 ---- Number
 decP =  -- [0-9]+
     many1 digit >>= return . Number . Dec . read
@@ -123,14 +125,12 @@ hexP = do -- 0(x|X)[0-9a-fA-F]+
     return $ Number $ Hex num
 numP =  -- Num = Dec | Hex
     try hexP <|> decP <?> "digit" 
-
----- Expression in patherness
-pathernessP = -- Patherness = (Expr)
-    Patherness `fmap` between (char '(' >> spaces) (spaces *> char ')' <|> fail "patherness does not match") (exprP 0)
-
 ---- Register
 registerP = do -- Register = $ <RegName>
-    char '$' *> spaces *> (Number . Reg) `fmap` choice (map (try . string) validRegNames) <|> fail "invalid register"
+    char '$' *> empty *> (Number . Reg) `fmap` (choice (map (try . string) validRegNames) <|> fail "invalid register name")
+---- Expression in patherness
+pathernessP = -- Patherness = (Expr)
+    Patherness `fmap` between (char '(' >> empty) (empty *> char ')' <|> fail "patherness does not match") (exprP 0)
 
 ---- Operators
 operatorP :: Op -> CharParser () Op
@@ -143,26 +143,22 @@ unitP = -- Unit = Patherness | Num
     numP <|> registerP <|> pathernessP <|> fail "require operand"
 
 exprP :: Int -> CharParser () Expr
-exprP precedance -- Expr[p] = Unary[p] | Binary[p]
-    | precedance >= length opDefs = unitP
-    | otherwise = try (unaryP precedance) <|> try (binaryP precedance)
-unaryP precedance = -- Unary[p] = Unary'[p] Expr'[p] WARNING: Associativity is ignored now
-    unaryP' precedance >>= exprP' precedance
-unaryP' precedance = do -- Unary'[p] = <UnaryOp> (Unary'[p] | Expr[p+1])
-    spaces
+exprP precedance -- Expr[p] = ExprL[p] ExprR[p]
+    | precedance >= length opDefs = empty >> unitP
+    | otherwise = empty >> exprLP precedance >>= exprRP precedance
+exprLP precedance = flip (<|>) (exprP $ precedance + 1) $ try $ do -- ExprL[p] = <UnaryOp> ExprL[p] | Expr[p+1]
+    empty
     op <- opClassP precedance Unary <|> fail "require unary operator"
-    spaces
-    UnOp op `fmap` (unaryP' precedance <|> exprP (precedance + 1))
-binaryP precedance = -- Binary[p] = Expr[p+1] Expr'[p]
-    spaces >> exprP (precedance + 1) >>= liftM2 (<|>) (exprP' precedance) return
-exprP' precedance exp1 = flip (<|>) (return exp1) $ try $ do -- Expr'[p] = <BiOp> Expr[p+1] Exor'[p] | e
-    spaces
+    empty
+    UnOp op `fmap` exprLP precedance
+exprRP precedance exp1 = flip (<|>) (return exp1) $ try $ do -- ExprR[p] = <BiOp> ExprL[p] ExprR[p] | e
+    empty
     op <- opClassP precedance Binary <|> fail "require binary operator"
-    spaces
-    exp2 <- exprP $ precedance + 1
+    empty
+    exp2 <- exprLP precedance
     case getAssoc op of
-        AssocL -> exprP' precedance $ BiOp op exp1 exp2
-        AssocR -> BiOp op exp1 <$> exprP' precedance exp2 
+        AssocL -> exprRP precedance $ BiOp op exp1 exp2
+        AssocR -> BiOp op exp1 <$> exprRP precedance exp2 
 
 printErrInfo err str = do
     putStr "In expression:\n\t"
