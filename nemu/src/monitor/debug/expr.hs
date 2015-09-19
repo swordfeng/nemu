@@ -122,45 +122,47 @@ hexP = do -- 0(x|X)[0-9a-fA-F]+
     let [(num, _)] = readHex s
     return $ Number $ Hex num
 numP =  -- Num = Dec | Hex
-    (lookAhead digit >> (try hexP <|> decP))
+    try hexP <|> decP <?> "digit" 
 
 ---- Expression in patherness
 pathernessP = -- Patherness = (Expr)
-    between    (char '(' >> spaces) ((spaces >> char ')') <|> fail "patherness does not match") (exprP 0) >>= return . Patherness
+    Patherness `fmap` between (char '(' >> spaces) (spaces *> char ')' <|> fail "patherness does not match") (exprP 0)
 
 ---- Register
 registerP = do -- Register = $ <RegName>
-    char '$'
-    spaces
-    name <- choice (map (try . string) validRegNames) <|> fail "invalid register"
-    return . Number . Reg $ name
+    char '$' *> spaces *> (Number . Reg) `fmap` choice (map (try . string) validRegNames) <|> fail "invalid register"
 
-unitP =  -- Unit = Patherness | Num
+---- Operators
+operatorP :: Op -> CharParser () Op
+operatorP op = 
+    (string . getOp) op >> return op
+opClassP precedance aryType = 
+    choice $ map (try . operatorP) $ filter ((==aryType) . getAry) $ opDefs !! precedance
+
+unitP = -- Unit = Patherness | Num
     numP <|> registerP <|> pathernessP <|> fail "require operand"
 
 exprP :: Int -> CharParser () Expr
 exprP precedance -- Expr[p] = Unary[p] | Binary[p]
     | precedance >= length opDefs = unitP
     | otherwise = try (unaryP precedance) <|> try (binaryP precedance)
-unaryP precedance = do -- Unary[p] = <UnaryOp> Expr[p+1] Expr'[p] WARNING: Associativity is ignored now
+unaryP precedance = -- Unary[p] = Unary'[p] Expr'[p] WARNING: Associativity is ignored now
+    unaryP' precedance >>= exprP' precedance
+unaryP' precedance = do -- Unary'[p] = <UnaryOp> (Unary'[p] | Expr[p+1])
     spaces
-    op <- foldl (flip (<|>)) (fail "require unary operator") $ map (try . operatorP) $ filter ((==Unary) . getAry) $ opDefs !! precedance
+    op <- opClassP precedance Unary <|> fail "require unary operator"
     spaces
-    exprP (precedance + 1) >>= exprP' precedance . UnOp op
-binaryP precedance = spaces >> exprP (precedance + 1) >>= liftM2 (<|>) (exprP' precedance) return  -- Binary[p] = Expr[p+1] Expr'[p]
-exprP' :: Int -> Expr -> CharParser () Expr
+    UnOp op `fmap` (unaryP' precedance <|> exprP (precedance + 1))
+binaryP precedance = -- Binary[p] = Expr[p+1] Expr'[p]
+    spaces >> exprP (precedance + 1) >>= liftM2 (<|>) (exprP' precedance) return
 exprP' precedance exp1 = flip (<|>) (return exp1) $ try $ do -- Expr'[p] = <BiOp> Expr[p+1] Exor'[p] | e
     spaces
-    op <- foldl (flip (<|>)) (fail "require binary operator") $ map (try . operatorP) $ filter ((==Binary) . getAry) $ opDefs !! precedance
+    op <- opClassP precedance Binary <|> fail "require binary operator"
     spaces
     exp2 <- exprP $ precedance + 1
     case getAssoc op of
         AssocL -> exprP' precedance $ BiOp op exp1 exp2
-        AssocR -> exprP' precedance exp2 >>= return . BiOp op exp1 
-operatorP :: Op -> CharParser () Op
-operatorP op = do
-    (string . getOp) op
-    return op
+        AssocR -> BiOp op exp1 <$> exprP' precedance exp2 
 
 printErrInfo err str = do
     putStr "In expression:\n\t"
@@ -169,7 +171,7 @@ printErrInfo err str = do
     putStrLn $ "\t" ++ (replicate (pos - 1) ' ') ++ "^"
     print err
 
--- Exporting implements here
+-- Exports are implemented here
 ---- uint32_t expr(char *, bool *)
 expr_hs cstr pbool = do
     str <- peekCString cstr
@@ -183,15 +185,16 @@ expr_hs cstr pbool = do
             printErrInfo err str
             return 0
 ---- bool expr_prettify(char *, char **, int *)
+---- The second argument (pointer to result string) must be manually freed!
 expr_prettify_hs cstr pstring plen = do
     str <- peekCString cstr
     let exp = parseExpr str
     case exp of
         Right res -> do
-            (rcstr, len) <- newCStringLen $ show res
-            poke plen len
+            rcstr <- newCString $ show res
             rpcstr <- new rcstr
             rccstr <- peek rpcstr
+            poke plen $ sizeOf rccstr
             poke pstring rccstr
             return 1
         Left err -> do
