@@ -115,19 +115,15 @@ instance Show Expr where
 ---- Empty
 empty = spaces <?> ""
 ---- Number
-decP =  -- [0-9]+
-    many1 digit >>= return . Number . Dec . read
-hexP = do -- 0(x|X)[0-9a-fA-F]+
-    char '0'
-    char 'x' <|> char 'X'
-    s <- many1 hexDigit
-    let [(num, _)] = readHex s
-    return $ Number $ Hex num
+decP = -- [0-9]+
+    Number . Dec . read <$> many1 digit
+hexP = -- 0(x|X)[0-9a-fA-F]+
+        Number . Hex . fst . head . readHex <$> (char '0' *> (char 'x' <|> char 'X') *> many1 hexDigit)
 numP =  -- Num = Dec | Hex
     try hexP <|> decP <?> "digit" 
 ---- Register
-registerP = do -- Register = $ <RegName>
-    char '$' *> empty *> (Number . Reg) `fmap` (choice (map (try . string) validRegNames) <|> fail "invalid register name")
+registerP = -- Register = $ <RegName>
+    fmap (Number . Reg) $ char '$' *> empty *> choice (map (try . string) validRegNames ++ [fail "invalid register name"])
 ---- Expression in patherness
 pathernessP = -- Patherness = (Expr)
     Patherness `fmap` between (char '(' >> empty) (empty *> char ')' <|> fail "patherness does not match") (exprP 0)
@@ -137,29 +133,25 @@ operatorP :: Op -> CharParser () Op
 operatorP op = 
     (string . getOp) op >> return op
 opClassP precedance aryType = 
-    choice $ map (try . operatorP) $ filter ((==aryType) . getAry) $ opDefs !! precedance
+    choice $ map (try . operatorP) $ filter ((== aryType) . getAry) $ opDefs !! precedance
 
-unitP = -- Unit = Patherness | Num
+operandP = -- Operand = Patherness | Num
     numP <|> registerP <|> pathernessP <|> fail "require operand"
 
 exprP :: Int -> CharParser () Expr
-exprP precedance -- Expr[p] = ExprL[p] ExprR[p]
-    | precedance >= length opDefs = empty >> unitP
+exprP precedance -- Expr[p] = ExprL[p] ExprR[p] | Operand
+    | precedance >= length opDefs = empty >> operandP
     | otherwise = empty >> exprLP precedance >>= exprRP precedance
-exprLP precedance = flip (<|>) (exprP $ precedance + 1) $ try $ do -- ExprL[p] = <UnaryOp> ExprL[p] | Expr[p+1]
-    empty
-    op <- opClassP precedance Unary <|> fail "require unary operator"
-    empty
-    UnOp op `fmap` exprLP precedance
+exprLP precedance = flip (<|>) (exprP $ precedance + 1) $ try $ -- ExprL[p] = <UnaryOp> ExprL[p] | Expr[p+1]
+    UnOp <$> (empty *> opClassP precedance Unary) <*> (empty *> exprLP precedance) <|> fail "require unary operator"
 exprRP precedance exp1 = flip (<|>) (return exp1) $ try $ do -- ExprR[p] = <BiOp> ExprL[p] ExprR[p] | e
-    empty
-    op <- opClassP precedance Binary <|> fail "require binary operator"
-    empty
-    exp2 <- exprLP precedance
+    op <- empty *> opClassP precedance Binary <|> fail "require binary operator"
+    exp2 <- empty *> exprLP precedance
     case getAssoc op of
         AssocL -> exprRP precedance $ BiOp op exp1 exp2
         AssocR -> BiOp op exp1 <$> exprRP precedance exp2 
 
+printErrInfo :: ParseError -> String -> IO ()
 printErrInfo err str = do
     putStr "In expression:\n\t"
     putStrLn str
@@ -187,9 +179,7 @@ expr_prettify_hs cstr pstring plen = do
     let exp = parseExpr str
     case exp of
         Right res -> do
-            rcstr <- newCString $ show res
-            rpcstr <- new rcstr
-            rccstr <- peek rpcstr
+            rccstr <- newCString (show res) 
             poke plen $ sizeOf rccstr
             poke pstring rccstr
             return 1
