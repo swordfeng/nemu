@@ -20,18 +20,26 @@ $(1)_COBJS := $$(patsubst $$($(1)_SRC_DIR)%.c,$$($(1)_OBJ_DIR)%.o,$$($(1)_CFILES
 $(1)_SOBJS := $$(patsubst $$($(1)_SRC_DIR)%.S,$$($(1)_OBJ_DIR)%.o,$$($(1)_SFILES))
 $(1)_HSOBJS := $$(patsubst $$($(1)_SRC_DIR)%.hs,$$($(1)_OBJ_DIR)%.o,$$($(1)_HSFILES))
 $(1)_HCOBJS := $$(patsubst $$($(1)_SRC_DIR)%.hc,$$($(1)_OBJ_DIR)%.o,$$($(1)_HCFILES))
-$(1)_OBJS := $$($(1)_SOBJS) $$($(1)_COBJS)
+$(1)_OBJS := $$($(1)_SOBJS) $$($(1)_COBJS) $$($(1)_HCOBJS) $$($(1)_HSOBJS)
 
 $(1)_BIN := $$($(1)_OBJ_DIR)/$(1)
 
 $(1)_CFLAGS = $(CFLAGS) -I$$($(1)_INC_DIR) $(2)
 $(1)_ASFLAGS = -m32 -MMD -c -I$$($(1)_INC_DIR) -I$(LIB_COMMON_DIR)
+$(1)_HSFLAGS = -c -no-hs-main -optc-O -debug -hidir /tmp -stubdir /tmp
+$(1)_HCFLAGS = -c -I$$($(1)_INC_DIR) -I$(LIB_COMMON_DIR) -no-hs-main -optc-O -debug -hidir /tmp -stubdir /tmp
 
 $$($(1)_OBJ_DIR)%.o: $$($(1)_SRC_DIR)%.c
 	$$(call make_command, $(CC), $$($(1)_CFLAGS), cc $$<, $$<)
 
 $$($(1)_OBJ_DIR)%.o: $$($(1)_SRC_DIR)%.S
 	$$(call make_command, $(CC), $$($(1)_ASFLAGS), as $$<, $$<)
+
+$$($(1)_OBJ_DIR)%.o: $$($(1)_SRC_DIR)%.hs
+	$$(call make_command, $(GHC), $$($(1)_HSFLAGS), ghc $$<, $$<)
+
+$$($(1)_OBJ_DIR)%.o: $$($(1)_SRC_DIR)%.hc
+	$$(call make_command, $(GHC), $$($(1)_HCFLAGS), ghc $$<, $$<)
 
 -include $$($(1)_OBJS:.o=.d)
 endef

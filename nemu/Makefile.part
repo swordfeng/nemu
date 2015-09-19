@@ -1,11 +1,10 @@
 nemu_CFLAGS_EXTRA := -ggdb3 -O3
 $(eval $(call make_common_rules,nemu,$(nemu_CFLAGS_EXTRA)))
 
-nemu_LDFLAGS := -lreadline
-nemu_GHCFLAGS = --make -no-hs-main -optc-O -debug -hidir /tmp -stubdir /tmp -odir /tmp -I$(nemu_INC_DIR) -I$(LIB_COMMON_DIR)
+nemu_LDFLAGS := -lreadline -package parsec
 
-$(nemu_BIN): $(nemu_OBJS) $(nemu_HSFILES) $(nemu_HCFILES)
-	$(call make_command, $(GHC), $(nemu_GHCFLAGS) $(nemu_LDFLAGS), ld $@, $^)
+$(nemu_BIN): $(nemu_OBJS)
+	$(call make_command, $(GHC), -no-hs-main $(nemu_LDFLAGS), ld $@, $^)
 	$(call git_commit, "compile NEMU")
 
 
