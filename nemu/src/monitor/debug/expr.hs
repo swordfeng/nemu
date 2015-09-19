@@ -23,7 +23,7 @@ foreign import ccall "expr_register_read" register_read_c :: CString -> IO Word3
 foreign import ccall "expr_swaddr_read" swaddr_read_c :: Word32 -> IO Word32
 -- exports to C
 foreign export ccall "expr" expr_hs :: CString -> Ptr CBool -> IO Word32
-foreign export ccall "expr_prettify" expr_prettify_hs :: CString -> Ptr CString -> Ptr Int -> IO CBool
+foreign export ccall "expr_prettify" expr_prettify_hs :: CString -> Ptr CString -> IO CBool
 
 -- expression structure definition
 ---- Memory unit type
@@ -172,16 +172,14 @@ expr_hs cstr pbool = do
             poke pbool 0
             printErrInfo err str
             return 0
----- bool expr_prettify(char *, char **, int *)
+---- bool expr_prettify(char *, char **)
 ---- The second argument (pointer to result string) must be manually freed!
-expr_prettify_hs cstr pstring plen = do
+expr_prettify_hs cstr pstring = do
     str <- peekCString cstr
     let exp = parseExpr str
     case exp of
         Right res -> do
-            rccstr <- newCString (show res) 
-            poke plen $ sizeOf rccstr
-            poke pstring rccstr
+            newCString (show res) >>= poke pstring 
             return 1
         Left err -> do
             printErrInfo err str

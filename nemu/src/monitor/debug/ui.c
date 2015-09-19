@@ -125,8 +125,7 @@ static int cmd_p(char *args) {
 static int cmd_w(char *args) {
 	while (*args == ' ') args++;
 	char *newexp;
-	int len;
-	bool valid = expr_prettify(args, &newexp, &len);
+	bool valid = expr_prettify(args, &newexp);
 	if (!valid) {
 		printf("failed to set watchpoint\n");
 		return 0;
