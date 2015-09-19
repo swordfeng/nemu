@@ -86,13 +86,13 @@ static int cmd_info_w() {
 static int cmd_x(char *args) {
 	size_t ins = 0;
 	swaddr_t addr;
-	while (*args && *args == ' ') args++;
-	for (; isdigit(*args); args++) {
+	while (args && *args && *args == ' ') args++;
+	for (; args && *args && isdigit(*args); args++) {
 		ins = ins * 10 + *args - '0';
 	}
-	while (*args && *args == ' ') args++;
-	if (!*args) {
-		printf("require expression\n");
+	while (args && *args && *args == ' ') args++;
+	if (!args || !*args) {
+		printf("invalid arguments\n");
 		return 0;
 	}
 	bool success = false;
