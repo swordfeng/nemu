@@ -20,8 +20,8 @@ import Foreign.Ptr
 ---- C Bool type
 type CBool = Word8
 -- imports from C
-foreign import ccall "expr_register_read" register_read_c :: CString -> IO Word32
-foreign import ccall "expr_swaddr_read" swaddr_read_c :: Word32 -> IO Word32
+foreign import ccall unsafe "expr_register_read" register_read_c :: CString -> IO Word32
+foreign import ccall unsafe "expr_swaddr_read" swaddr_read_c :: Word32 -> IO Word32
 -- exports to C
 foreign export ccall "expr" expr_hs :: CString -> Ptr CBool -> IO Word32
 foreign export ccall "expr_prettify" expr_prettify_hs :: CString -> Ptr CString -> IO CBool
