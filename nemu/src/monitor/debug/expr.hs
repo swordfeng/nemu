@@ -10,6 +10,7 @@ import Data.Function (on)
 import Data.List (sortBy)
 import Data.Either (rights)
 import Data.Word
+import Data.Functor (($>))
 -- exporting libraries
 import Foreign
 import Foreign.C.Types
@@ -50,7 +51,7 @@ data OpAry = Unary | Binary deriving (Eq, Show)
 data Op = Op {
     getAssoc :: OpAssoc, 
     getAry :: OpAry, 
-    getFunc :: ValueType -> ValueType -> IO ValueType,
+    getFunc :: IO ValueType -> IO ValueType -> IO ValueType,
     getOp :: String
 }
 instance Show Op where
@@ -60,16 +61,14 @@ makeOp s = case lookup s $ map (\op -> (getOp op, op)) $ concat opDefs of
     Just op -> op
     Nothing -> error "Invalid operator"
 
-liftOp f = \x y -> return $ f x y
-
 opDefs' = [ -- operators with precedance
-    [ Op AssocL Binary (liftOp opOr) "||" ],
-    [ Op AssocL Binary (liftOp opAnd) "&&" ],
-    [ Op AssocL Binary (liftOp opEq) "==", Op AssocL Binary (liftOp opNeq) "!=" ],
-    [ Op AssocL Binary (liftOp (+)) "+", Op AssocL Binary (liftOp (-)) "-" ],
-    [ Op AssocL Binary (liftOp (*)) "*", Op AssocL Binary (liftOp div) "/" ],
-    [ Op AssocR Unary (liftOp opNot) "!"],
-    [ Op AssocR Unary (liftOp (-)) "-", Op AssocR Unary (liftOp (+)) "+"],
+    [ Op AssocL Binary (liftM2 opOr) "||" ],
+    [ Op AssocL Binary (liftM2 opAnd) "&&" ],
+    [ Op AssocL Binary (liftM2 opEq) "==", Op AssocL Binary (liftM2 opNeq) "!=" ],
+    [ Op AssocL Binary (liftM2 (+)) "+", Op AssocL Binary (liftM2 (-)) "-" ],
+    [ Op AssocL Binary (liftM2 (*)) "*", Op AssocL Binary (liftM2 div) "/" ],
+    [ Op AssocR Unary (liftM2 opNot) "!"],
+    [ Op AssocR Unary (liftM2 (-)) "-", Op AssocR Unary (liftM2 (+)) "+"],
     [ Op AssocR Unary opDeref "*"]
     ] where
         opEq i1 i2
@@ -86,7 +85,7 @@ opDefs' = [ -- operators with precedance
             | i == 0 = 1
             | otherwise = 0
         opDeref _ addr = do
-            swaddr_read_c addr
+            addr >>= swaddr_read_c
 opDefs = sortBy (compare `on` (negate . length . getOp)) `map` opDefs'
 
 ---- Expression
@@ -101,12 +100,13 @@ showExpr (Patherness x) = "(" ++ showExpr x ++ ")"
 showExpr (UnOp op x) = show op ++ showExpr x
 showExpr (BiOp op x y) = showExpr x ++ " " ++ show op ++ " " ++ showExpr y
 
+evalExpr :: Expr -> IO ValueType
 evalExpr (Number x) = getInt x
 evalExpr (Patherness x) = evalExpr x
-evalExpr (UnOp op x) = evalExpr x >>= getFunc op 0
-evalExpr (BiOp op x y) = evalExpr x >>= \x' -> evalExpr y >>= getFunc op x'
+evalExpr (UnOp op x) = getFunc op (pure 0) (evalExpr x)
+evalExpr (BiOp op x y) = getFunc op (evalExpr x) (evalExpr y)
 
-parseExpr str = parse (exprP 0 >>= \exp -> empty >> eof >> return exp) "" str
+parseExpr str = parse (exprP 0 >>= \exp -> empty >> eof $> exp) "" str
 
 instance Show Expr where
     show exp = showExpr exp
@@ -131,7 +131,7 @@ pathernessP = -- Patherness = (Expr)
 ---- Operators
 operatorP :: Op -> CharParser () Op
 operatorP op = 
-    (string . getOp) op >> return op
+    (string . getOp) op $> op
 opClassP precedance aryType = 
     choice $ map (try . operatorP) $ filter ((== aryType) . getAry) $ opDefs !! precedance
 
