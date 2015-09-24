@@ -66,7 +66,7 @@ opDefs' = [ -- operators with precedance
     [ Op AssocL Binary (liftM2 opAnd) "&&" ],
     [ Op AssocL Binary (liftM2 opEq) "==", Op AssocL Binary (liftM2 opNeq) "!=" ],
     [ Op AssocL Binary (liftM2 (+)) "+", Op AssocL Binary (liftM2 (-)) "-" ],
-    [ Op AssocL Binary (liftM2 (*)) "*", Op AssocL Binary (liftM2 div) "/" ],
+    [ Op AssocL Binary (liftM2 (*)) "*", Op AssocL Binary (liftM2 div) "/", Op AssocL Binary (liftM2 mod) "%" ],
     [ Op AssocR Unary (liftM2 opNot) "!"],
     [ Op AssocR Unary (liftM2 (-)) "-", Op AssocR Unary (liftM2 (+)) "+"],
     [ Op AssocR Unary opDeref "*"]
