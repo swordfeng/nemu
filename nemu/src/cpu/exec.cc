@@ -1,18 +1,10 @@
-extern "C" {
-#include "cpu/decode/modrm.h"
-}
-
-#include <functional>
-
-#include "cpu/helper.h"
+#include "cpu/exec.hh"
 #include "all-instr.h"
 
-typedef std::function<int (swaddr_t)> helper_fun;
-
 /* opcode with reg/op */
-helper_fun op_group(initializer_list<helper_fun> fun_list);
+helper_fun op_group(std::initializer_list<helper_fun> fun_list);
 /* 2-byte opcode */
-int op_escape(swaddr_t eip);
+HELPER(op_escape);
 
 /* TODO: Add more instructions!!! */
 
@@ -49,35 +41,35 @@ helper_fun opcode_table[256] = {
 /* 0x74 */	inv, inv, inv, inv,
 /* 0x78 */	inv, inv, inv, inv,
 /* 0x7c */	inv, inv, inv, inv,
-/* 0x80 */	group(inv, inv, inv, inv, inv, inv, inv, inv),
-/* 0x81 */  group(inv, inv, inv, inv, inv, inv, inv, inv),
+/* 0x80 */	op_group({inv, inv, inv, inv, inv, inv, inv, inv}),
+/* 0x81 */  op_group({inv, inv, inv, inv, inv, inv, inv, inv}),
 /* 0x82 */  inv,
-/* 0x83 */  group(inv, inv, inv, inv, inv, inv, inv, inv),
+/* 0x83 */  op_group({inv, inv, inv, inv, inv, inv, inv, inv}),
 /* 0x84 */	inv, inv, inv, inv,
-/* 0x88 */	mov_r2rm_b, mov_r2rm_v, mov_rm2r_b, mov_rm2r_v,
+/* 0x88 */	&mov<op_rm_b, op_reg_b>, &mov<op_rm_v, op_reg_v>, &mov<op_reg_b, op_rm_b>, &mov<op_reg_v, op_rm_v>, //mov_r2rm_b, mov_r2rm_v, mov_rm2r_b, mov_rm2r_v,
 /* 0x8c */	inv, inv, inv, inv,
 /* 0x90 */	inv, inv, inv, inv,
 /* 0x94 */	inv, inv, inv, inv,
 /* 0x98 */	inv, inv, inv, inv,
 /* 0x9c */	inv, inv, inv, inv,
-/* 0xa0 */	mov_moffs2a_b, mov_moffs2a_v, mov_a2moffs_b, mov_a2moffs_v,
+/* 0xa0 */	&mov<op_a_b, op_moffs_b>, &mov<op_a_v, op_moffs_v>, &mov<op_moffs_b, op_a_b>, &mov<op_moffs_v, op_a_v>, //mov_moffs2a_b, mov_moffs2a_v, mov_a2moffs_b, mov_a2moffs_v,
 /* 0xa4 */	inv, inv, inv, inv,
 /* 0xa8 */	inv, inv, inv, inv,
 /* 0xac */	inv, inv, inv, inv,
-/* 0xb0 */	mov_i2r_b, mov_i2r_b, mov_i2r_b, mov_i2r_b,
-/* 0xb4 */	mov_i2r_b, mov_i2r_b, mov_i2r_b, mov_i2r_b,
-/* 0xb8 */	mov_i2r_v, mov_i2r_v, mov_i2r_v, mov_i2r_v,
-/* 0xbc */	mov_i2r_v, mov_i2r_v, mov_i2r_v, mov_i2r_v,
-/* 0xc0 */	group(inv, inv, inv, inv, inv, inv, inv, inv),
-/* 0xc1 */  group(inv, inv, inv, inv, inv, inv, inv, inv),
+/* 0xb0 */	inv, inv, inv, inv, //mov_i2r_b, mov_i2r_b, mov_i2r_b, mov_i2r_b,
+/* 0xb4 */	inv, inv, inv, inv, //mov_i2r_b, mov_i2r_b, mov_i2r_b, mov_i2r_b,
+/* 0xb8 */	inv, inv, inv, inv, //mov_i2r_v, mov_i2r_v, mov_i2r_v, mov_i2r_v,
+/* 0xbc */	inv, inv, inv, inv, //mov_i2r_v, mov_i2r_v, mov_i2r_v, mov_i2r_v,
+/* 0xc0 */	op_group({inv, inv, inv, inv, inv, inv, inv, inv}),
+/* 0xc1 */  op_group({inv, inv, inv, inv, inv, inv, inv, inv}),
 /* 0xc2 */  inv, inv,
-/* 0xc4 */	inv, inv, mov_i2rm_b, mov_i2rm_v,
+/* 0xc4 */	inv, inv, &mov<op_rm_b, op_imm_b>, &mov<op_rm_v, op_imm_v>, //mov_i2rm_b, mov_i2rm_v,
 /* 0xc8 */	inv, inv, inv, inv,
-/* 0xcc */	int3, inv, inv, inv,
-/* 0xd0 */	group(inv, inv, inv, inv, inv, inv, inv, inv),
-/* 0xd1 */  group(inv, inv, inv, inv, inv, inv, inv, inv),
-/* 0xd2 */  group(inv, inv, inv, inv, inv, inv, inv, inv),
-/* 0xd3 */  group(inv, inv, inv, inv, inv, inv, inv, inv),
+/* 0xcc */	inv, inv, inv, inv,
+/* 0xd0 */	op_group({inv, inv, inv, inv, inv, inv, inv, inv}),
+/* 0xd1 */  op_group({inv, inv, inv, inv, inv, inv, inv, inv}),
+/* 0xd2 */  op_group({inv, inv, inv, inv, inv, inv, inv, inv}),
+/* 0xd3 */  op_group({inv, inv, inv, inv, inv, inv, inv, inv}),
 /* 0xd4 */	inv, inv, nemu_trap, inv,
 /* 0xd8 */	inv, inv, inv, inv,
 /* 0xdc */	inv, inv, inv, inv,
@@ -87,17 +79,17 @@ helper_fun opcode_table[256] = {
 /* 0xec */	inv, inv, inv, inv,
 /* 0xf0 */	inv, inv, inv, inv,
 /* 0xf4 */	inv, inv,
-/* 0xf6 */  group(inv, inv, inv, inv, inv, inv, inv, inv),
-/* 0xf7 */  group(inv, inv, inv, inv, inv, inv, inv, inv),
+/* 0xf6 */  op_group({inv, inv, inv, inv, inv, inv, inv, inv}),
+/* 0xf7 */  op_group({inv, inv, inv, inv, inv, inv, inv, inv}),
 /* 0xf8 */	inv, inv, inv, inv,
 /* 0xfc */	inv, inv,
-/* 0xfe */  group(inv, inv, inv, inv, inv, inv, inv, inv),
-/* 0xff */  group(inv, inv, inv, inv, inv, inv, inv, inv)
+/* 0xfe */  op_group({inv, inv, inv, inv, inv, inv, inv, inv}),
+/* 0xff */  op_group({inv, inv, inv, inv, inv, inv, inv, inv})
 };
 
 helper_fun _2byte_opcode_table[256] = {
-/* 0x00 */	group(inv, inv, inv, inv, inv, inv, inv, inv),
-/* 0x01 */  group(inv, inv, inv, inv, inv, inv, inv, inv),
+/* 0x00 */	op_group({inv, inv, inv, inv, inv, inv, inv, inv}),
+/* 0x01 */  op_group({inv, inv, inv, inv, inv, inv, inv, inv}),
 /* 0x02 */  inv, inv,
 /* 0x04 */	inv, inv, inv, inv,
 /* 0x08 */	inv, inv, inv, inv,
@@ -164,22 +156,28 @@ helper_fun _2byte_opcode_table[256] = {
 /* 0xfc */	inv, inv, inv, inv
 };
 
-extern "C"
-int exec(swaddr_t eip) {
+extern "C" HELPER(exec) {
+	/*
 	ops_decoded.opcode = instr_fetch(eip, 1);
 	return opcode_table[ ops_decoded.opcode ](eip);
+	*/
+	return 1;
 }
 
-helper_fun op_group(initializer_list<helper_fun> fun_list) {
-	return [fun_list(std::move(fun_list))] (swaddr_t eip) {
+helper_fun op_group(std::initializer_list<helper_fun> fun_list) {
+	return [fun_list(std::move(fun_list))] HELPER_PARAM_LIST {
 		// decode ModR_M
 		// return fun_list.begin()[ModR_M.regop] (eip);
-	}
+		return 1;
+	};
 }
 
-int op_escape(swaddr_t eip) {
+HELPER(op_escape) {
+	/*
 	eip++;
 	uint32_t opcode = instr_fetch(eip, 1);
 	ops_decoded.opcode = opcode | 0x100;
 	return _2byte_opcode_table[opcode](eip) + 1;
+	*/
+	return 2;
 }

@@ -1,10 +1,7 @@
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "prefix/prefix.h"
 
-#include "prefix.h"
-/*
 #include "data-mov/mov.h"
+/*
 #include "data-mov/xchg.h"
 
 #include "arith/dec.h"
@@ -35,8 +32,4 @@ extern "C" {
 
 #include "misc/misc.h"
 */
-#include "special.h"
-
-#ifdef __cplusplus
-}
-#endif
+#include "special/special.h"
