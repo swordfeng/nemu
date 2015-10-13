@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "prefix/prefix.h"
 
 #include "data-mov/mov.h"
@@ -25,3 +29,7 @@
 #include "misc/misc.h"
 
 #include "special/special.h"
+
+#ifdef __cplusplus
+}
+#endif
