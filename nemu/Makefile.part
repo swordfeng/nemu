@@ -1,7 +1,7 @@
 nemu_CFLAGS_EXTRA := -ggdb3 -O3
 $(eval $(call make_common_rules,nemu,$(nemu_CFLAGS_EXTRA)))
 
-nemu_LDFLAGS := -lreadline -package parsec -lubsan
+nemu_LDFLAGS := -lreadline -package parsec -lubsan -lstdc++
 
 $(nemu_BIN): $(nemu_OBJS)
 	$(call make_command, $(GHC), -no-hs-main $(nemu_LDFLAGS), ld $@, $^)
