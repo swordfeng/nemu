@@ -16,7 +16,9 @@
 #include <assert.h>
 #include <string.h>
 
+#ifndef __cplusplus
 typedef uint8_t bool;
+#endif
 typedef uint32_t hwaddr_t;
 typedef uint32_t lnaddr_t;
 typedef uint32_t swaddr_t;
