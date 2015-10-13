@@ -7,10 +7,14 @@ extern "C" {
 #include "cpu/helper.h"
 #include "all-instr.h"
 
-#define make_helper(name) int name(swaddr_t)
-
 typedef std::function<int (swaddr_t)> helper_fun;
-static make_helper(_2byte_esc);
+
+helper_fun op_group(initializer_list<helper_fun> fun_list) {
+	return [fun_list(std::move(fun_list))] (swaddr_t eip) {
+		// decode ModR_M
+		// return fun_list.begin()[ModR_M.regop] (eip);
+	}
+}
 
 /* TODO: Add more instructions!!! */
 
