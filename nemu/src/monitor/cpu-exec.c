@@ -1,6 +1,6 @@
 #include "monitor/monitor.h"
 #include "monitor/watchpoint.h"
-#include "cpu/helper.h"
+#include "cpu/insrt-fetch.h"
 #include <setjmp.h>
 
 /* The assembly code of instructions executed is only output to the screen
