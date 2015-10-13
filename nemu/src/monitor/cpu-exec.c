@@ -35,6 +35,7 @@ void do_int3() {
 	nemu_state = STOP;
 }
 
+/* Called when hit watchpoint */
 void do_watchpoint(WP *wp, uint32_t old_result, uint32_t new_result) {
 	printf("\nHit watchpoint at eip = 0x%08x\n", cpu.eip);
 	printf("Watchpoint %d: %s\n", wp_get_no(wp), wp_get_expr(wp));
