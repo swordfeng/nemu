@@ -5,6 +5,7 @@
 !*.[cSh]
 !*.hs
 !*.hc
+!*.cc
 !test.sh
 !.gitignore
 !README.md
