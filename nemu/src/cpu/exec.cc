@@ -1,8 +1,10 @@
 #include "cpu/exec.hh"
 #include "all-instr.h"
 
+#include <vector>
+
 /* opcode with reg/op */
-helper_fun op_group(std::initializer_list<helper_fun> fun_list);
+helper_fun op_group(std::vector<helper_fun> fun_list);
 /* 2-byte opcode */
 HELPER(op_escape);
 /* instruction prefix */
@@ -164,12 +166,14 @@ extern "C" int exec(swaddr_t eip) {
 	return opcode_table[opcode](ctx, eip);
 }
 
-helper_fun op_group(std::initializer_list<helper_fun> fun_list) {
+helper_fun op_group(std::vector<helper_fun> fun_list) {
 	return [fun_list(std::move(fun_list))] HELPER_PARAM_LIST {
 		ModR_M modrm;
 		modrm.value = instr_fetch(eip + 1, 1);
 		ctx.require_modrm = true;
-		int ret = fun_list.begin()[modrm.regop] (ctx, eip);
+		printf("group, eip = %x\n", eip);
+		int ret = (fun_list.begin()[modrm.regop]) (ctx, eip);
+		printf("group ret\n");
 		ctx.require_modrm = false;
 		return ret;
 	};
