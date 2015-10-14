@@ -24,7 +24,6 @@ struct Operand {
     string str_name;
     Operand();
     uint32_t getValue();
-    uint32_t getSize();
     void setValue(uint32_t v);
 };
 
