@@ -39,6 +39,22 @@ inline string reg_name(int reg_index, size_t size) {
     }
 }
 
+inline void print_instr(InstructionContext &ctx, string name) {
+    size_t operands_size = 0;
+    string showstr = name + "\t";
+    while (operands_size < 4 && ctx.operands[operands_size].type != opt_undefined) {
+        operands_size++;
+    }
+    // TODO: prefix
+    bool add_comma = false;
+    for (int i = static_cast<int>(operands_size) - 1; i >= 0; i--) {
+        if (add_comma) showstr += ",";
+        showstr += ctx.operands[i].str_name;
+        add_comma = true;
+    }
+    print_asm("%s", showstr.c_str());
+}
+
 inline InstructionContext::InstructionContext():
 opcode(0), require_modrm(false) {
     memset(prefix, 0, 4 * sizeof(prefix[0]));
@@ -81,8 +97,30 @@ inline void Operand::setValue(uint32_t v) {
     }
 }
 
-inline uint32_t signed_extend(uint8_t val) {
-    return static_cast<uint32_t>(static_cast<int8_t>(val));
+inline string Operand::suffix() {
+    switch (size) {
+    case 1:
+        return "b";
+    case 2:
+        return "w";
+    case 4:
+        return "l";
+    }
+    panic("wrong size");
+    return "";
+}
+
+inline uint32_t signed_extend(uint32_t val, size_t size) {
+    switch (size) {
+    case 1:
+        return static_cast<uint32_t>(static_cast<int8_t>(val));
+    case 2:
+        return static_cast<uint32_t>(static_cast<int16_t>(val));
+    case 4:
+        return val;
+    default:
+        panic("invalid data size");
+    }
 }
 
 inline string conv16(uint32_t val) {
@@ -207,7 +245,7 @@ DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
             if (modrm.mod == 1) {
                 // +disp8
                 //ctx.disp_size = 1;
-                uint32_t disp = signed_extend(instr_fetch(eip + ret, 1));
+                uint32_t disp = signed_extend(instr_fetch(eip + ret, 1), 1);
                 ctx.operands[index].address += disp;
 #ifdef OPERAND_SET_NAME
                 ctx.operands[index].str_name = conv16(disp) + ctx.operands[index].str_name;

@@ -25,6 +25,7 @@ struct Operand {
     Operand();
     uint32_t getValue();
     void setValue(uint32_t v);
+    string suffix();
 };
 
 struct InstructionContext {
@@ -83,22 +84,7 @@ template <> struct standard_type<4> {
     typedef uint32_t type;
 };
 
-inline void print_instr(InstructionContext &ctx, string name) {
-    size_t operands_size = 0;
-    string showstr = name + "\t";
-    while (operands_size < 4 && ctx.operands[operands_size].type != opt_undefined) {
-        operands_size++;
-    }
-    // TODO: prefix
-    bool add_comma = false;
-    for (int i = static_cast<int>(operands_size) - 1; i >= 0; i--) {
-        if (add_comma) showstr += ",";
-        showstr += ctx.operands[i].str_name;
-        add_comma = true;
-    }
-    print_asm("%s", showstr.c_str());
-}
-
+void print_instr(InstructionContext &ctx, string name);
 
 #define OPERAND_SET_NAME
 #include "decode.template.hh"
