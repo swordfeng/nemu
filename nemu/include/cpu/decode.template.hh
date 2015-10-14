@@ -100,12 +100,20 @@ inline string conv16(uint32_t val) {
     template <size_t index> struct name<index> { \
         public: static HELPER(call) { return 0; } \
     }; \
-    template <size_t index, OperandName opname, OperandName ...operand_names> \
-    class name<index, opname, operand_names...> { \
+    template <size_t index, OperandName opname, OperandName opname2, OperandName ...operand_names> \
+    class name<index, opname, opname2, operand_names...> { \
+        public: static HELPER(call) { \
+            int ret1 = name<index, opname>::call(ctx, eip); \
+            int ret2 = name<index + 1, opname2, operand_names...>::call(ctx, eip); \
+            return ret2 > ret1 ? ret2 : ret1; \
+        } \
+    }; \
+    template <size_t index, OperandName opname> \
+    class name<index, opname> { \
         public: static HELPER(call); \
     }; \
-    template <size_t index, OperandName opname, OperandName ...operand_names> \
-    int name<index, opname, operand_names...>::call HELPER_PARAM_LIST
+    template <size_t index, OperandName opname> \
+    int name<index, opname>::call HELPER_PARAM_LIST
 
 /* decode modrm, sib, disp */
 DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
@@ -120,8 +128,7 @@ DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
         ctx.operands[index].str_name = string("%") +
             reg_name(ctx.operands[index].reg_index, ctx.operands[index].size);
 #endif
-        int ret = decode_modrm_disp<index + 1, operand_names...>::call(ctx, eip);
-        return ret > 1 ? ret : 1;
+        return 1;
     } else if (op_name_is(opname, rm)) {
         Assert(ctx.prefix[3] == 0, "Address size prefix not implemented");
         ctx.require_modrm = true;
@@ -217,12 +224,10 @@ DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
                 ret += 4;
             }
         }
-        int ret2 = decode_modrm_disp<index + 1, operand_names...>::call(ctx, eip);
-        return ret2 > ret ?  ret2 : ret;
+        return ret;
     } else {
-        int ret = decode_modrm_disp<index + 1, operand_names...>::call(ctx, eip);
-        if (ret == 0 && ctx.require_modrm) return 1;
-        else return ret;
+        if (ctx.require_modrm) return 1;
+        else return 0;
     }
 }
 
@@ -234,9 +239,8 @@ DECODE_TEMPLATE_HELPER(decode_imm) {
 #ifdef OPERAND_SET_NAME
         ctx.operands[index].str_name = string("$") + conv16(ctx.operands[index].immediate);
 #endif
-        return op_get_size(ctx, opname); // up to one imm field
-    }
-    return decode_imm<index + 1, operand_names...>::call(ctx, eip);
+        return op_get_size(ctx, opname);
+    } else return 0;
 }
 
 DECODE_TEMPLATE_HELPER(decode_moffs) {
@@ -247,9 +251,8 @@ DECODE_TEMPLATE_HELPER(decode_moffs) {
 #ifdef OPERAND_SET_NAME
         ctx.operands[index].str_name = string("$") + conv16(ctx.operands[index].immediate);
 #endif
-        return 4; // up to one moffs field
-    }
-    return decode_moffs<index + 1, operand_names...>::call(ctx, eip);
+        return 4;
+    } else return 0;
 }
 
 DECODE_TEMPLATE_HELPER(decode_a) {
@@ -261,7 +264,7 @@ DECODE_TEMPLATE_HELPER(decode_a) {
         ctx.operands[index].str_name = string("%") + reg_name(R_EAX, op_get_size(ctx, opname));
 #endif
     }
-    return decode_a<index + 1, operand_names...>::call(ctx, eip);
+    return 0;
 }
 
 DECODE_TEMPLATE_HELPER(decode_r) {
@@ -273,7 +276,7 @@ DECODE_TEMPLATE_HELPER(decode_r) {
         ctx.operands[index].str_name = string("%") + reg_name(ctx.operands[index].reg_index, op_get_size(ctx, opname));
 #endif
     }
-    return decode_r<index + 1, operand_names...>::call(ctx, eip);
+    return 0;
 }
 
 TEMPLATE_HELPER(decode_operands) {
