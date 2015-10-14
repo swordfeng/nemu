@@ -1,4 +1,4 @@
-#include "cpu/exec.hh"
+#include "cpu/decode.hh"
 #include "monitor/monitor.h"
 
 HELPER(inv) {

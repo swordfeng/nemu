@@ -5,6 +5,8 @@
 helper_fun op_group(std::initializer_list<helper_fun> fun_list);
 /* 2-byte opcode */
 HELPER(op_escape);
+/* instruction prefix */
+template <size_t prefix_group> HELPER(op_prefix);
 
 /* TODO: Add more instructions!!! */
 
@@ -34,7 +36,7 @@ helper_fun opcode_table[256] = {
 /* 0x58 */	inv, inv, inv, inv,
 /* 0x5c */	inv, inv, inv, inv,
 /* 0x60 */	inv, inv, inv, inv,
-/* 0x64 */	inv, inv, data_size, address_size,
+/* 0x64 */	inv, inv, &op_prefix<2>, &op_prefix<3>,
 /* 0x68 */	inv, inv, inv, inv,
 /* 0x6c */	inv, inv, inv, inv,
 /* 0x70 */	inv, inv, inv, inv,
@@ -56,10 +58,10 @@ helper_fun opcode_table[256] = {
 /* 0xa4 */	inv, inv, inv, inv,
 /* 0xa8 */	inv, inv, inv, inv,
 /* 0xac */	inv, inv, inv, inv,
-/* 0xb0 */	inv, inv, inv, inv, //mov_i2r_b, mov_i2r_b, mov_i2r_b, mov_i2r_b,
-/* 0xb4 */	inv, inv, inv, inv, //mov_i2r_b, mov_i2r_b, mov_i2r_b, mov_i2r_b,
-/* 0xb8 */	inv, inv, inv, inv, //mov_i2r_v, mov_i2r_v, mov_i2r_v, mov_i2r_v,
-/* 0xbc */	inv, inv, inv, inv, //mov_i2r_v, mov_i2r_v, mov_i2r_v, mov_i2r_v,
+/* 0xb0 */	&mov<op_r_b, op_imm_b>, &mov<op_r_b, op_imm_b>, &mov<op_r_b, op_imm_b>, &mov<op_r_b, op_imm_b>, //mov_i2r_b, mov_i2r_b, mov_i2r_b, mov_i2r_b,
+/* 0xb4 */	&mov<op_r_b, op_imm_b>, &mov<op_r_b, op_imm_b>, &mov<op_r_b, op_imm_b>, &mov<op_r_b, op_imm_b>, //mov_i2r_b, mov_i2r_b, mov_i2r_b, mov_i2r_b,
+/* 0xb8 */	&mov<op_r_v, op_imm_v>, &mov<op_r_v, op_imm_v>, &mov<op_r_v, op_imm_v>, &mov<op_r_v, op_imm_v>, //mov_i2r_v, mov_i2r_v, mov_i2r_v, mov_i2r_v,
+/* 0xbc */	&mov<op_r_v, op_imm_v>, &mov<op_r_v, op_imm_v>, &mov<op_r_v, op_imm_v>, &mov<op_r_v, op_imm_v>, //mov_i2r_v, mov_i2r_v, mov_i2r_v, mov_i2r_v,
 /* 0xc0 */	op_group({inv, inv, inv, inv, inv, inv, inv, inv}),
 /* 0xc1 */  op_group({inv, inv, inv, inv, inv, inv, inv, inv}),
 /* 0xc2 */  inv, inv,
@@ -156,28 +158,32 @@ helper_fun _2byte_opcode_table[256] = {
 /* 0xfc */	inv, inv, inv, inv
 };
 
-extern "C" HELPER(exec) {
-	/*
-	ops_decoded.opcode = instr_fetch(eip, 1);
-	return opcode_table[ ops_decoded.opcode ](eip);
-	*/
-	return 1;
+extern "C" int exec(swaddr_t eip) {
+	InstructionContext ctx;
+	uint8_t opcode = instr_fetch(eip, 1);
+	return opcode_table[opcode](ctx, eip);
 }
 
 helper_fun op_group(std::initializer_list<helper_fun> fun_list) {
 	return [fun_list(std::move(fun_list))] HELPER_PARAM_LIST {
-		// decode ModR_M
-		// return fun_list.begin()[ModR_M.regop] (eip);
-		return 1;
+		ModR_M modrm;
+		modrm.value = instr_fetch(eip + 1, 1);
+		ctx.require_modrm = true;
+		int ret = fun_list.begin()[modrm.regop] (ctx, eip);
+		ctx.require_modrm = false;
+		return ret;
 	};
 }
 
+template <size_t prefix_group>
+HELPER(op_prefix) {
+	ctx.prefix[prefix_group] = instr_fetch(eip, 1);
+	int len = opcode_table[instr_fetch(eip + 1, 1)] (ctx, eip + 1);
+	ctx.prefix[prefix_group] = 0;
+	return len + 1;
+}
+
 HELPER(op_escape) {
-	/*
-	eip++;
-	uint32_t opcode = instr_fetch(eip, 1);
-	ops_decoded.opcode = opcode | 0x100;
-	return _2byte_opcode_table[opcode](eip) + 1;
-	*/
-	return 2;
+	uint8_t _2nd_opcode = instr_fetch(eip + 1, 1);
+	return _2byte_opcode_table[_2nd_opcode](ctx, eip) + 1;
 }
