@@ -171,9 +171,7 @@ helper_fun op_group(std::vector<helper_fun> fun_list) {
 		ModR_M modrm;
 		modrm.value = instr_fetch(eip + 1, 1);
 		ctx.require_modrm = true;
-		printf("group, eip = %x\n", eip);
 		int ret = (fun_list.begin()[modrm.regop]) (ctx, eip);
-		printf("group ret\n");
 		ctx.require_modrm = false;
 		return ret;
 	};
