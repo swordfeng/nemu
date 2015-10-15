@@ -75,6 +75,7 @@ string reg_name(int reg_index, size_t size);
 uint32_t signed_extend(uint32_t val, size_t size);
 uint32_t int_trunc(uint32_t val, size_t size);
 string conv16(uint32_t val); /* Signed!!! */
+uint8_t calc_pf(uint8_t val);
 
 TEMPLATE_HELPER(decode_operands);
 

@@ -155,6 +155,13 @@ inline string conv16(uint32_t val) {
     return ss.str();
 }
 
+inline uint8_t calc_pf(uint8_t val) {
+    val ^= val >> 1;
+    val ^= val >> 2;
+    val ^= val >> 4;
+    return val & 1;
+}
+
 #define DECODE_TEMPLATE_HELPER(name) \
     template <size_t index, OperandName ...operand_names> struct name; \
     template <size_t index> struct name<index> { \
