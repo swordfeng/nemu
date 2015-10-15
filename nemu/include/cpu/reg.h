@@ -21,6 +21,7 @@ typedef struct {
 		};
 	};
 	// EFLAGS
+	// We only care CF, PF, ZF, SF, IF, DF, OF
 	struct {
 		union {
 			uint32_t eflags;
