@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include "nemu.h"
 void init_regex() {
-    hs_init(0, 0);
 }
 
 uint32_t expr_register_read(const char *name) {
