@@ -7,7 +7,7 @@ TEMPLATE_INSTRUCTION_HELPER(push) {
   reg_l(R_ESP) -= ctx.operands[0].size;
   swaddr_write(reg_l(R_ESP), ctx.operands[0].size, val);
   string instr_name = "push";
-  if (ctx.operands[0].size == 4) instr_name += "w";
+  if (ctx.operands[0].type != opt_register) instr_name += ctx.operands[0].suffix();
   print_instr(ctx, instr_name);
   return len;
 }

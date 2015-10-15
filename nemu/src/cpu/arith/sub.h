@@ -13,8 +13,7 @@ TEMPLATE_INSTRUCTION_HELPER(sub) {
     cpu.pf = calc_pf(result);
     // AF ignored
     string instr_name = "sub";
-    if (ctx.operands[0].type == opt_address &&
-        (ctx.operands[1].type == opt_address || ctx.operands[1].type == opt_immediate)) {
+    if (ctx.operands[0].type == opt_address && ctx.operands[1].type != opt_register) {
         instr_name += ctx.operands[0].suffix();
     }
     print_instr(ctx, instr_name);

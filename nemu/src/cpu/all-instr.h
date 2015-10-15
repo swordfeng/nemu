@@ -9,6 +9,8 @@
 
 #include "arith/sub.h"
 
+#include "logic/test.h"
+
 /*
 #include "data-mov/xchg.h"
 #include "arith/dec.h"
