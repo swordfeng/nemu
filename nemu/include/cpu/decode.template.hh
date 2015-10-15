@@ -62,7 +62,25 @@ opcode(0), require_modrm(false) {
 
 inline Operand::Operand(): type(opt_undefined) {}
 
-inline uint32_t Operand::getValue() {
+inline uint32_t Operand::getSignedValue() {
+   uint32_t ret = 0;
+   switch (type) {
+   case opt_undefined:
+       panic("operand undefined");
+   case opt_register:
+       ret = reg_read(reg_index, size);
+       break;
+   case opt_address:
+       ret = swaddr_read(address, size);
+       break;
+   case opt_immediate:
+       ret = immediate;
+       break;
+   }
+   return signed_extend(ret, size);
+}
+
+inline uint32_t Operand::getUnsignedValue() {
    uint32_t ret = 0;
    switch (type) {
    case opt_undefined:
@@ -121,6 +139,10 @@ inline uint32_t signed_extend(uint32_t val, size_t size) {
     default:
         panic("invalid data size");
     }
+}
+
+inline uint32_t int_trunc(uint32_t val, size_t size) {
+    return val & ~(~0u << (size * 4) << (size * 4));
 }
 
 inline string conv16(uint32_t val) {

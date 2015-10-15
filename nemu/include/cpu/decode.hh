@@ -1,4 +1,7 @@
 #pragma once
+extern "C" {
+#include "cpu/reg.h"
+}
 #include "cpu/exec.hh"
 #include <functional>
 #include <type_traits>
@@ -23,7 +26,8 @@ struct Operand {
     };
     string str_name;
     Operand();
-    uint32_t getValue();
+    uint32_t getSignedValue();
+    uint32_t getUnsignedValue();
     void setValue(uint32_t v);
     string suffix();
 };
@@ -68,7 +72,8 @@ typedef std::function<int (InstructionContext &, swaddr_t)> helper_fun;
 size_t op_get_size(InstructionContext &ctx, OperandName opname);
 uint32_t reg_read(int reg_index, size_t size);
 string reg_name(int reg_index, size_t size);
-uint32_t signed_extend(uint8_t val);
+uint32_t signed_extend(uint32_t val, size_t size);
+uint32_t int_trunc(uint32_t val, size_t size);
 string conv16(uint32_t val); /* Signed!!! */
 
 TEMPLATE_HELPER(decode_operands);
