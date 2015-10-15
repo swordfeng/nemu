@@ -1,6 +1,11 @@
-#include "prefix/prefix.h"
+/* public header */
+#pragma once
+#include "cpu/decode.hh"
 
-#include "data-mov/mov.h"
+#include "data-trans/push.h"
+#include "data-trans/mov.h"
+
+#include "ctrl-trans/call.h"
 
 #include "arith/sub.h"
 
@@ -22,8 +27,7 @@
 #include "logic/shl.h"
 #include "logic/shr.h"
 #include "logic/shrd.h"
-#include "stack/push.h"
-#include "stack/call.h"
+#include "control/call.h"
 #include "stack/leave.h"
 #include "stack/ret.h"
 #include "string/rep.h"

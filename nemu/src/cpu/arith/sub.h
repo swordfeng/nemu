@@ -1,7 +1,3 @@
-#pragma once
-
-#include "cpu/decode.hh"
-
 TEMPLATE_INSTRUCTION_HELPER(sub) {
     int len = decode_operands(ctx, eip);
     uint32_t val1 = ctx.operands[0].getSignedValue();

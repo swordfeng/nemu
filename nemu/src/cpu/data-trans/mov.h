@@ -1,8 +1,3 @@
-#pragma once
-
-#include "cpu/exec.hh"
-#include "cpu/decode.hh"
-
 TEMPLATE_INSTRUCTION_HELPER(mov) {
     int len = decode_operands(ctx, eip);
     ctx.operands[0].setValue(ctx.operands[1].getUnsignedValue());
