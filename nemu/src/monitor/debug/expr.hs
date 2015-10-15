@@ -20,8 +20,8 @@ import Foreign.Ptr
 ---- C Bool type
 type CBool = Word8
 -- imports from C
-foreign import ccall unsafe "expr_register_read" register_read_c :: CString -> IO Word32
-foreign import ccall unsafe "expr_swaddr_read" swaddr_read_c :: Word32 -> IO Word32
+foreign import ccall unsafe "reg_read_name" reg_read_name :: CString -> IO Word32
+foreign import ccall unsafe "swaddr_read" swaddr_read :: Word32 -> CSize -> IO Word32
 -- exports to C
 foreign export ccall "expr" expr_hs :: CString -> Ptr CBool -> IO Word32
 foreign export ccall "expr_prettify" expr_prettify_hs :: CString -> Ptr CString -> IO CBool
@@ -43,14 +43,14 @@ getInt :: BaseInt -> IO ValueType
 getInt x = case x of
     Dec n -> return n
     Hex n -> return n
-    Reg s -> newCString s >>= register_read_c
+    Reg s -> newCString s >>= reg_read_name
 
 ---- Operator
 data OpAssoc = AssocL | AssocR deriving (Eq)
 data OpAry = Unary | Binary deriving (Eq, Show)
 data Op = Op {
-    getAssoc :: OpAssoc, 
-    getAry :: OpAry, 
+    getAssoc :: OpAssoc,
+    getAry :: OpAry,
     getFunc :: IO ValueType -> IO ValueType -> IO ValueType,
     getOp :: String
 }
@@ -85,7 +85,7 @@ opDefs' = [ -- operators with precedance
             | i == 0 = 1
             | otherwise = 0
         opDeref _ addr = do
-            addr >>= swaddr_read_c
+            addr >>= flip swaddr_read 4
 opDefs = sortBy (compare `on` (negate . length . getOp)) `map` opDefs'
 
 ---- Expression
@@ -120,7 +120,7 @@ decP = -- [0-9]+
 hexP = -- 0(x|X)[0-9a-fA-F]+
         Number . Hex . fst . head . readHex <$> (char '0' *> (char 'x' <|> char 'X') *> many1 hexDigit)
 numP =  -- Num = Dec | Hex
-    try hexP <|> decP <?> "digit" 
+    try hexP <|> decP <?> "digit"
 ---- Register
 registerP = -- Register = $ <RegName>
     fmap (Number . Reg) $ char '$' *> empty *> choice (map (try . string) validRegNames ++ [fail "invalid register name"])
@@ -130,9 +130,9 @@ pathernessP = -- Patherness = (Expr)
 
 ---- Operators
 operatorP :: Op -> CharParser () Op
-operatorP op = 
+operatorP op =
     (string . getOp) op $> op
-opClassP precedance aryType = 
+opClassP precedance aryType =
     choice $ map (try . operatorP) $ filter ((== aryType) . getAry) $ opDefs !! precedance
 
 operandP = -- Operand = Patherness | Num
@@ -149,7 +149,7 @@ exprRP precedance exp1 = flip (<|>) (return exp1) $ try $ do -- ExprR[p] = <BiOp
     exp2 <- empty *> exprLP precedance
     case getAssoc op of
         AssocL -> exprRP precedance $ BiOp op exp1 exp2
-        AssocR -> BiOp op exp1 <$> exprRP precedance exp2 
+        AssocR -> BiOp op exp1 <$> exprRP precedance exp2
 
 printErrInfo :: ParseError -> String -> IO ()
 printErrInfo err str = do
@@ -179,7 +179,7 @@ expr_prettify_hs cstr pstring = do
     let exp = parseExpr str
     case exp of
         Right res -> do
-            newCString (show res) >>= poke pstring 
+            newCString (show res) >>= poke pstring
             return 1
         Left err -> do
             printErrInfo err str

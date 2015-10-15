@@ -1,6 +1,7 @@
 #include "nemu.h"
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 CPU_state cpu;
 
@@ -42,3 +43,12 @@ void reg_test() {
 	assert(eip_sample == cpu.eip);
 }
 
+uint32_t reg_read_name(const char *name) {
+    int index;
+    for (index = 0; index < 8; index++) {
+	    if (strcmp(name, regsl[index]) == 0) return reg_l(index);
+	    if (strcmp(name, regsw[index]) == 0) return reg_w(index);
+	    if (strcmp(name, regsb[index]) == 0) return reg_b(index);
+		}
+		return cpu.eip;
+}
