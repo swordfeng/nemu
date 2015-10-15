@@ -1,4 +1,3 @@
-#include <HsFFI.h>
 #include <string.h>
 #include <stdio.h>
 #include "nemu.h"
