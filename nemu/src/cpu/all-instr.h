@@ -6,6 +6,7 @@
 #include "data-trans/mov.h"
 
 #include "ctrl-trans/call.h"
+#include "ctrl-trans/jcc.h"
 
 #include "arith/sub.h"
 

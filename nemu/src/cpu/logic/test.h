@@ -6,5 +6,10 @@ TEMPLATE_INSTRUCTION_HELPER(test) {
     cpu.pf = calc_pf(test_res);
     cpu.cf = 0;
     cpu.of = 0;
+    string instr_name = "test";
+    if (ctx.operands[0].type != opt_register && ctx.operands[1].type != opt_register) {
+        instr_name += ctx.operands[0].suffix();
+    }
+    print_instr(ctx, instr_name);
     return len;
 }
