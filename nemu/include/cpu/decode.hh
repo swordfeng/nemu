@@ -69,12 +69,12 @@ union SIB {
 
 typedef std::function<int (InstructionContext &, swaddr_t)> helper_fun;
 
-#define TEMPLATE_INSTRUCTION_HELPER(name) HELPER(name##_internal); \
+#define TEMPLATE_INSTRUCTION_HELPER(name) HELPER(name); \
     template<OperandName ...operand_names> HELPER(name) { \
         decode_operands<operand_names...>(ctx, eip); \
-        return name##_internal(ctx, eip); \
+        return name(ctx, eip); \
     } \
-    HELPER(name##_internal)
+    HELPER(name)
 
 #define op_name_is(opname, groupname) \
     ((opname & ~0x3u) == op_##groupname##_b)

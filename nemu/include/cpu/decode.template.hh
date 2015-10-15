@@ -346,6 +346,8 @@ DECODE_TEMPLATE_HELPER(decode_r) {
     return 0;
 }
 
+#undef DECODE_TEMPLATE_HELPER
+
 TEMPLATE_HELPER(decode_operands) {
     Assert(ctx.prefix[3] == 0, "Address prefix is not implemented");
     decode_r<0, operand_names...>::call(ctx, eip);
