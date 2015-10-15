@@ -3,8 +3,8 @@
 #include "cpu/exec.hh"
 #include "cpu/decode.hh"
 
-TEMPLATE_HELPER(mov) {
-    int len = decode_operands<operand_names...>(ctx, eip);
+TEMPLATE_INSTRUCTION_HELPER(mov) {
+    int len = decode_operands(ctx, eip);
     ctx.operands[0].setValue(ctx.operands[1].getUnsignedValue());
     string instr_name = "mov";
     if (ctx.operands[0].type == opt_address &&
