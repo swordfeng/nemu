@@ -2,6 +2,8 @@
 
 .PHONY: nemu entry all_testcase kernel run gdb test submit clean
 
+MAKEFLAGS := -j4
+
 CC := gcc
 CXX := g++
 LD := ld
