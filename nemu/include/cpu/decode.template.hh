@@ -158,19 +158,19 @@ inline string conv16(uint32_t val) {
 #define DECODE_TEMPLATE_HELPER(name) \
     template <size_t index, OperandName ...operand_names> struct name; \
     template <size_t index> struct name<index> { \
-        public: static HELPER(call) { return 0; } \
+        static HELPER(call) { return 0; } \
     }; \
     template <size_t index, OperandName opname, OperandName opname2, OperandName ...operand_names> \
-    class name<index, opname, opname2, operand_names...> { \
-        public: static HELPER(call) { \
+    struct name<index, opname, opname2, operand_names...> { \
+        static HELPER(call) { \
             int ret1 = name<index, opname>::call(ctx, eip); \
             int ret2 = name<index + 1, opname2, operand_names...>::call(ctx, eip); \
             return ret2 > ret1 ? ret2 : ret1; \
         } \
     }; \
     template <size_t index, OperandName opname> \
-    class name<index, opname> { \
-        public: static HELPER(call); \
+    struct name<index, opname> { \
+        static HELPER(call); \
     }; \
     template <size_t index, OperandName opname> \
     int name<index, opname>::call HELPER_PARAM_LIST
