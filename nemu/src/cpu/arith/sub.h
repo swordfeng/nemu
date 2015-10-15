@@ -10,7 +10,8 @@ HELPER(sub) {
     uint32_t result = int_trunc(val1 - val2, ctx.operands[0].size);
     ctx.operands[0].setValue(result);
     // TODO: set EFLAGS
-    if (result > val2) cpu.cf = 1;
+    cpu.cf = result > val2;
+    cpu.zf = result == 0;
     print_instr(ctx, "sub");
     return len;
 }
