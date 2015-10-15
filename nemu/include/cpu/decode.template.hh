@@ -56,7 +56,7 @@ inline void print_instr(InstructionContext &ctx, string name) {
 }
 
 inline InstructionContext::InstructionContext():
-opcode(0), require_modrm(false) {
+opcode(0), require_modrm(false), decoded_len(0) {
     memset(prefix, 0, 4 * sizeof(prefix[0]));
 }
 
@@ -357,5 +357,13 @@ TEMPLATE_HELPER(decode_operands) {
     int imm_size = decode_imm<0, operand_names...>::call(ctx, eip + consumed_size);
     consumed_size += imm_size;
     //printf("opcode = %x, decoded length = %d, m = %d, o = %d, i = %d\n", instr_fetch(eip, 1), consumed_size, modrm_size, moffs_size, imm_size);
+    ctx.decoded_len = consumed_size;
+    ctx.decoded_eip = eip;
     return consumed_size;
+}
+
+inline HELPER(decode_operands) {
+    Assert(eip == ctx.decoded_eip, "unexpected call");
+    Assert(ctx.decoded_len > 0, "unexpected call");
+    return ctx.decoded_len;
 }

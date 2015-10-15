@@ -38,6 +38,9 @@ struct InstructionContext {
     bool require_modrm;
     Operand operands[4];
     InstructionContext();
+    // for templated decode function
+    int decoded_len;
+    swaddr_t decoded_eip;
 };
 
 union ModR_M {
@@ -78,6 +81,7 @@ string conv16(uint32_t val); /* Signed!!! */
 uint8_t calc_pf(uint8_t val);
 
 TEMPLATE_HELPER(decode_operands);
+HELPER(decode_operands); // simply check and read result from previous function template
 
 template <size_t size> struct standard_type;
 template <> struct standard_type<1> {
