@@ -2,8 +2,8 @@
 
 #include "cpu/decode.hh"
 
-TEMPLATE_HELPER(sub) {
-    int len = decode_operands<operand_names...>(ctx, eip);
+TEMPLATE_INSTRUCTION_HELPER(sub) {
+    int len = decode_operands(ctx, eip);
     uint32_t val1 = ctx.operands[0].getSignedValue();
     uint32_t val2 = ctx.operands[1].getSignedValue();
     uint32_t result = val1 - val2;
