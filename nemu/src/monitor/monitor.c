@@ -84,6 +84,8 @@ void restart() {
 	/* Read the entry code into memory. */
 	load_entry();
 
+	/* Set the initial eflags. */
+	cpu.eflags = 0x2; // According to Intel Manual
 	/* Set the initial instruction pointer. */
 	cpu.eip = ENTRY_START;
 
