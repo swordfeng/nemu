@@ -1,4 +1,4 @@
-TEMPLATE_INSTRUCTION_HELPER(sub) {
+TEMPLATE_INSTRUCTION_HELPER(cmp) {
     int len = decode_operands(ctx, eip);
     uint32_t val1 = ctx.operands[0].getSignedValue();
     uint32_t val2 = ctx.operands[1].getSignedValue();
