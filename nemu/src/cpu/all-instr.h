@@ -9,6 +9,7 @@
 #include "ctrl-trans/jcc.h"
 
 #include "arith/sub.h"
+#include "arith/cmp.h"
 
 #include "logic/test.h"
 
