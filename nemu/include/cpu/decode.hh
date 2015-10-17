@@ -49,6 +49,10 @@ enum OperandType {
     opt_undefined, opt_register, opt_address, opt_immediate
 };
 
+enum InstructionPrefixIndex {
+    prefix_lock_rep, prefix_segment, prefix_operand, prefix_address
+};
+
 /* Operand */
 struct Operand {
     OperandType type;

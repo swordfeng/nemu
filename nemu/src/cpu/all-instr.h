@@ -5,10 +5,13 @@
 #include "data-trans/push.h"
 #include "data-trans/mov.h"
 #include "data-trans/xchg.h"
+#include "data-trans/pop.h"
+#include "data-trans/leave.h"
 
 #include "ctrl-trans/call.h"
 #include "ctrl-trans/jcc.h"
 #include "ctrl-trans/jmp.h"
+#include "ctrl-trans/ret.h"
 
 #include "arith/sub.h"
 #include "arith/cmp.h"
@@ -19,6 +22,8 @@
 #include "arith/add.h"
 
 #include "logic/test.h"
+
+#include "misc/lea.h"
 
 #include "special/special.h"
 
