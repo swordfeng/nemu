@@ -99,6 +99,11 @@ inline uint32_t Operand::getUnsignedValue() {
    return ret;
 }
 
+inline swaddr_t Operand::getAddress() {
+    Assert(type == opt_address, "operand is not from memory address");
+    return address;
+}
+
 inline void Operand::setValue(uint32_t v) {
     switch (type) {
     case opt_undefined:
