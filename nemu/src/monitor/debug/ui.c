@@ -74,6 +74,15 @@ static int cmd_info_r() {
 			printf("%s\t%#4x\t%3d\n", regsb[i], reg_b(i), reg_b(i));
 		} else printf("\n");
 	}
+	printf("eflags\t%#10x [%s%s%s%s%s%s%s ]\n", cpu.eflags,
+			cpu.cf ? "CF" : "",
+			cpu.pf ? "PF" : "",
+			cpu.zf ? "ZF" : "",
+			cpu.sf ? "SF" : "",
+			cpu.ief? "IF" : "",
+			cpu.df ? "DF" : "",
+			cpu.of ? "OF" : ""
+	);
 	printf("eip\t%#10x\n", cpu.eip);
 	return 0;
 }

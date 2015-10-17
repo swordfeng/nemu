@@ -50,5 +50,7 @@ uint32_t reg_read_name(const char *name) {
 	    if (strcmp(name, regsw[index]) == 0) return reg_w(index);
 	    if (strcmp(name, regsb[index]) == 0) return reg_b(index);
 		}
-		return cpu.eip;
+		if (strcmp(name, "eflags") == 0) return cpu.eflags;
+		if (strcmp(name, "eip") == 0) return cpu.eip;
+		panic("invalid register name");
 }

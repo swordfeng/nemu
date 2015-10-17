@@ -34,7 +34,7 @@ type ValueType = Word32
 data BaseInt = Dec ValueType | Hex ValueType | Reg String
 validRegNames = ["eax", "ecx", "edx", "ebx", "esp", "ebp", "esi", "edi",
     "ax", "cx", "dx", "bx", "sp", "bp", "si", "di",
-    "al", "cl", "dl", "bl", "ah", "ch", "dh", "bh", "eip"]
+    "al", "cl", "dl", "bl", "ah", "ch", "dh", "bh", "eflags", "eip"]
 instance Show BaseInt where
     show (Dec x) = show x
     show (Hex x) = "0x" ++ showHex x ""

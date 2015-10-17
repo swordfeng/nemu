@@ -17,6 +17,9 @@ extern "C" {
 
 using std::string;
 
+/* Set to save operand name */
+#define OPERAND_SET_NAME
+
 /* Forward Declaration */
 struct InstructionContext;
 
@@ -122,10 +125,6 @@ typedef std::function<int (InstructionContext &, swaddr_t)> helper_fun;
 
 /* Get operand size according to name and instruction prefix */
 size_t op_get_size(InstructionContext &ctx, OperandName opname);
-/* Fast way to get a register value */
-uint32_t reg_read(int reg_index, size_t size);
-/* Get register name */
-string reg_name(int reg_index, size_t size);
 /* Extend a signed value (wrapper in uint32_t) */
 uint32_t signed_extend(uint32_t val, size_t size);
 /* Force trunc a value, make high bits zero */
@@ -149,5 +148,3 @@ template <> struct standard_type<2> {
 template <> struct standard_type<4> {
     typedef uint32_t type;
 };
-
-#define OPERAND_SET_NAME

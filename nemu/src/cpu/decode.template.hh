@@ -14,7 +14,7 @@ inline size_t op_get_size(InstructionContext &ctx, OperandName opname) {
     return 0;
 }
 
-inline uint32_t reg_read(uint8_t reg_index, size_t size) {
+static inline uint32_t reg_read_index(uint8_t reg_index, size_t size) {
     switch (size) {
     case 1:
         return reg_b(reg_index);
@@ -27,7 +27,7 @@ inline uint32_t reg_read(uint8_t reg_index, size_t size) {
     }
 }
 
-inline string reg_name(int reg_index, size_t size) {
+inline static string reg_get_name(int reg_index, size_t size) {
     switch (size) {
     case 1:
         return regsb[reg_index];
@@ -69,7 +69,7 @@ inline uint32_t Operand::getSignedValue() {
    case opt_undefined:
        panic("operand undefined");
    case opt_register:
-       ret = reg_read(reg_index, size);
+       ret = reg_read_index(reg_index, size);
        break;
    case opt_address:
        ret = swaddr_read(address, size);
@@ -87,7 +87,7 @@ inline uint32_t Operand::getUnsignedValue() {
    case opt_undefined:
        panic("operand undefined");
    case opt_register:
-       ret = reg_read(reg_index, size);
+       ret = reg_read_index(reg_index, size);
        break;
    case opt_address:
        ret = swaddr_read(address, size);
@@ -194,7 +194,7 @@ DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
         ctx.operands[index].size = op_get_size(ctx, opname);
 #ifdef OPERAND_SET_NAME
         ctx.operands[index].str_name = string("%") +
-            reg_name(ctx.operands[index].reg_index, ctx.operands[index].size);
+            reg_get_name(ctx.operands[index].reg_index, ctx.operands[index].size);
 #endif
         return 1;
     } else if (op_name_is(opname, rm)) {
@@ -210,7 +210,7 @@ DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
             ctx.operands[index].size = op_get_size(ctx, opname);
 #ifdef OPERAND_SET_NAME
             ctx.operands[index].str_name = string("%") +
-                reg_name(ctx.operands[index].reg_index, ctx.operands[index].size);
+                reg_get_name(ctx.operands[index].reg_index, ctx.operands[index].size);
 #endif
             ret = 1;
         } else {
@@ -226,14 +226,14 @@ DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
                 uint8_t scale_factor = (1u << sib.ss);
                 /* index */
                 if (sib.index != 4) {
-                    index_name = string("%") + reg_name(sib.index, 4);
-                    addr = reg_read(sib.index, 4);
+                    index_name = string("%") + reg_get_name(sib.index, 4);
+                    addr = reg_read_index(sib.index, 4);
                 }
                 addr *= scale_factor;
                 /* base */
                 if (sib.base != 5 || modrm.rm != 0) {
-                    base_name = string("%") + reg_name(sib.base, 4);
-                    base_addr = reg_read(sib.base, 4);
+                    base_name = string("%") + reg_get_name(sib.base, 4);
+                    base_addr = reg_read_index(sib.base, 4);
                 } else {
                     // manually fetch disp32
                     base_addr = instr_fetch(eip + 2, 4);
@@ -264,10 +264,10 @@ DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
                 // [EAX]...
                 ctx.operands[index].type = opt_address;
                 ctx.operands[index].size = op_get_size(ctx, opname);
-                ctx.operands[index].address = reg_read(modrm.rm, 4);
+                ctx.operands[index].address = reg_read_index(modrm.rm, 4);
 #ifdef OPERAND_SET_NAME
                 ctx.operands[index].str_name = string("(%") +
-                    reg_name(modrm.rm, 4) + ")";
+                    reg_get_name(modrm.rm, 4) + ")";
 #endif
 
                 ret = 1;
@@ -329,7 +329,7 @@ DECODE_TEMPLATE_HELPER(decode_a) {
         ctx.operands[index].reg_index = R_EAX;
         ctx.operands[index].size = op_get_size(ctx, opname);
 #ifdef OPERAND_SET_NAME
-        ctx.operands[index].str_name = string("%") + reg_name(R_EAX, op_get_size(ctx, opname));
+        ctx.operands[index].str_name = string("%") + reg_get_name(R_EAX, op_get_size(ctx, opname));
 #endif
     }
     return 0;
@@ -341,7 +341,7 @@ DECODE_TEMPLATE_HELPER(decode_r) {
         ctx.operands[index].reg_index = instr_fetch(eip, 1) & 0x7;
         ctx.operands[index].size = op_get_size(ctx, opname);
 #ifdef OPERAND_SET_NAME
-        ctx.operands[index].str_name = string("%") + reg_name(ctx.operands[index].reg_index, op_get_size(ctx, opname));
+        ctx.operands[index].str_name = string("%") + reg_get_name(ctx.operands[index].reg_index, op_get_size(ctx, opname));
 #endif
     }
     return 0;
