@@ -27,7 +27,7 @@ $(1)_OBJS := $$($(1)_CXXOBJS) $$($(1)_HSOBJS) $$($(1)_COBJS) $$($(1)_HCOBJS) $$(
 $(1)_BIN := $$($(1)_OBJ_DIR)/$(1)
 
 $(1)_CFLAGS = $(CFLAGS) -I$$($(1)_INC_DIR) $(2)
-$(1)_CXXFLAGS = -std=c++14 $(CFLAGS) -I$$($(1)_INC_DIR) $(2)
+$(1)_CXXFLAGS = -std=c++14 -fno-exceptions $(CFLAGS) -I$$($(1)_INC_DIR) $(2)
 $(1)_ASFLAGS = -m32 -MMD -c -I$$($(1)_INC_DIR) -I$(LIB_COMMON_DIR)
 $(1)_HSFLAGS = -c -no-hs-main -optc-O -debug -hidir /tmp -stubdir /tmp
 $(1)_HCFLAGS = -c -I$$($(1)_INC_DIR) -I$(LIB_COMMON_DIR) -no-hs-main -optc-O -debug -hidir /tmp -stubdir /tmp
