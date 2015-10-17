@@ -16,6 +16,7 @@
 #include "arith/inc.h"
 #include "arith/neg.h"
 #include "arith/mul.h"
+#include "arith/add.h"
 
 #include "logic/test.h"
 
