@@ -21,7 +21,7 @@ template <OperandName op> HELPER(j##name) { \
     int len = decode_operands<op>(ctx, eip); \
     swaddr_t temp_eip = eip + len + ctx.operands[0].getSignedValue(); \
     if (ctx.operands[0].size == 4) temp_eip = int_trunc(temp_eip, 4); \
-    print_asm("%s %x", "j" #name, temp_eip); \
+    print_asm("%s\t%x", "j" #name, temp_eip); \
     if (cond) return temp_eip - eip; \
     else return len; \
 }

@@ -14,7 +14,7 @@ HELPER(call_near) {
     reg_l(R_ESP) -= ctx.operands[0].size;
     swaddr_write(reg_l(R_ESP), ctx.operands[0].size, int_trunc(eip + len, ctx.operands[0].size));
 
-    print_asm("call %x", temp_eip);
+    print_asm("call\t%x", temp_eip);
 
     // eip <- temp_eip;
     return temp_eip - eip;
