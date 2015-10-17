@@ -3,6 +3,9 @@
 #include "decode.template.hh"
 #include "all-instr.h"
 
+/* +rb/+rw/+rd occupies 8 opcodes to represent registers */
+#define op_r_rep(...) __VA_ARGS__, __VA_ARGS__, __VA_ARGS__, __VA_ARGS__, \
+						__VA_ARGS__, __VA_ARGS__, __VA_ARGS__, __VA_ARGS__
 /* opcode with reg/op */
 helper_fun op_group(std::vector<helper_fun> fun_list);
 /* 2-byte opcode */
@@ -29,12 +32,9 @@ helper_fun opcode_table[256] = {
 /* 0x34 */	inv, inv, inv, inv,
 /* 0x38 */	&cmp<op_rm_b, op_r_b>, &cmp<op_rm_v, op_r_v>, &cmp<op_r_b, op_rm_b>, &cmp<op_r_v, op_rm_v>,
 /* 0x3c */	&cmp<op_a_b, op_imm_b>, &cmp<op_a_v, op_imm_v>, inv, inv,
-/* 0x40 */	inv, inv, inv, inv,
-/* 0x44 */	inv, inv, inv, inv,
-/* 0x48 */	inv, inv, inv, inv,
-/* 0x4c */	inv, inv, inv, inv,
-/* 0x50 */	&push<op_r_v>, &push<op_r_v>, &push<op_r_v>, &push<op_r_v>,
-/* 0x54 */	&push<op_r_v>, &push<op_r_v>, &push<op_r_v>, &push<op_r_v>,
+/* 0x40 */	op_r_rep(&inc<op_r_v>),
+/* 0x48 */	op_r_rep(&dec<op_r_v>),
+/* 0x50 */	op_r_rep(&push<op_r_v>),
 /* 0x58 */	inv, inv, inv, inv,
 /* 0x5c */	inv, inv, inv, inv,
 /* 0x60 */	inv, inv, inv, inv,
@@ -52,18 +52,15 @@ helper_fun opcode_table[256] = {
 /* 0x84 */	&test<op_rm_b, op_reg_b>, &test<op_rm_v, op_reg_v>, inv, inv,
 /* 0x88 */	&mov<op_rm_b, op_reg_b>, &mov<op_rm_v, op_reg_v>, &mov<op_reg_b, op_rm_b>, &mov<op_reg_v, op_rm_v>, //mov_r2rm_b, mov_r2rm_v, mov_rm2r_b, mov_rm2r_v,
 /* 0x8c */	inv, inv, inv, inv,
-/* 0x90 */	inv, inv, inv, inv,
-/* 0x94 */	inv, inv, inv, inv,
+/* 0x90 */	op_r_rep(&xchg<op_a_v, op_r_v>),
 /* 0x98 */	inv, inv, inv, inv,
 /* 0x9c */	inv, inv, inv, inv,
 /* 0xa0 */	&mov<op_a_b, op_moffs_b>, &mov<op_a_v, op_moffs_v>, &mov<op_moffs_b, op_a_b>, &mov<op_moffs_v, op_a_v>, //mov_moffs2a_b, mov_moffs2a_v, mov_a2moffs_b, mov_a2moffs_v,
 /* 0xa4 */	inv, inv, inv, inv,
 /* 0xa8 */	&test<op_a_b, op_imm_b>, &test<op_a_v, op_imm_v>, inv, inv,
 /* 0xac */	inv, inv, inv, inv,
-/* 0xb0 */	&mov<op_r_b, op_imm_b>, &mov<op_r_b, op_imm_b>, &mov<op_r_b, op_imm_b>, &mov<op_r_b, op_imm_b>, //mov_i2r_b, mov_i2r_b, mov_i2r_b, mov_i2r_b,
-/* 0xb4 */	&mov<op_r_b, op_imm_b>, &mov<op_r_b, op_imm_b>, &mov<op_r_b, op_imm_b>, &mov<op_r_b, op_imm_b>, //mov_i2r_b, mov_i2r_b, mov_i2r_b, mov_i2r_b,
-/* 0xb8 */	&mov<op_r_v, op_imm_v>, &mov<op_r_v, op_imm_v>, &mov<op_r_v, op_imm_v>, &mov<op_r_v, op_imm_v>, //mov_i2r_v, mov_i2r_v, mov_i2r_v, mov_i2r_v,
-/* 0xbc */	&mov<op_r_v, op_imm_v>, &mov<op_r_v, op_imm_v>, &mov<op_r_v, op_imm_v>, &mov<op_r_v, op_imm_v>, //mov_i2r_v, mov_i2r_v, mov_i2r_v, mov_i2r_v,
+/* 0xb0 */	op_r_rep(&mov<op_r_b, op_imm_b>),
+/* 0xb8 */	op_r_rep(&mov<op_r_v, op_imm_v>),
 /* 0xc0 */	op_group({inv, inv, inv, inv, inv, inv, inv, inv}),
 /* 0xc1 */  op_group({inv, inv, inv, inv, inv, inv, inv, inv}),
 /* 0xc2 */  inv, inv,
@@ -83,12 +80,12 @@ helper_fun opcode_table[256] = {
 /* 0xec */	inv, inv, inv, inv,
 /* 0xf0 */	inv, inv, inv, inv,
 /* 0xf4 */	inv, inv,
-/* 0xf6 */  op_group({&test<op_rm_b, op_imm_b>, inv, inv, inv, inv, inv, inv, inv}),
-/* 0xf7 */  op_group({&test<op_rm_v, op_imm_v>, inv, inv, inv, inv, inv, inv, inv}),
+/* 0xf6 */  op_group({&test<op_rm_b, op_imm_b>, inv, inv, &neg<op_rm_b>, &mul<op_rm_b>, inv, inv, inv}),
+/* 0xf7 */  op_group({&test<op_rm_v, op_imm_v>, inv, inv, &neg<op_rm_v>, &mul<op_rm_v>, inv, inv, inv}),
 /* 0xf8 */	inv, inv, inv, inv,
 /* 0xfc */	inv, inv,
-/* 0xfe */  op_group({inv, inv, inv, inv, inv, inv, inv, inv}),
-/* 0xff */  op_group({inv, inv, &call_near<op_rm_v>, inv, inv, inv, &push<op_rm_v>, inv})
+/* 0xfe */  op_group({&inc<op_rm_b>, &dec<op_rm_b>, inv, inv, inv, inv, inv, inv}),
+/* 0xff */  op_group({&inc<op_rm_v>, &dec<op_rm_v>, &call_near<op_rm_v>, inv, inv, inv, &push<op_rm_v>, inv})
 };
 
 helper_fun _2byte_opcode_table[256] = {
