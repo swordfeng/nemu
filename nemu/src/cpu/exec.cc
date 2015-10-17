@@ -76,7 +76,7 @@ helper_fun opcode_table[256] = {
 /* 0xdc */	inv, inv, inv, inv,
 /* 0xe0 */	inv, inv, inv, &jcxz<op_imm_b>,
 /* 0xe4 */	inv, inv, inv, inv,
-/* 0xe8 */	&call_near<op_imm_v>, inv, inv, inv,
+/* 0xe8 */	&call_near<op_imm_v>, &jmp_near<op_imm_v>, inv, &jmp_near<op_imm_b>,
 /* 0xec */	inv, inv, inv, inv,
 /* 0xf0 */	inv, inv, inv, inv,
 /* 0xf4 */	inv, inv,
@@ -85,7 +85,7 @@ helper_fun opcode_table[256] = {
 /* 0xf8 */	inv, inv, inv, inv,
 /* 0xfc */	inv, inv,
 /* 0xfe */  op_group({&inc<op_rm_b>, &dec<op_rm_b>, inv, inv, inv, inv, inv, inv}),
-/* 0xff */  op_group({&inc<op_rm_v>, &dec<op_rm_v>, &call_near<op_rm_v>, inv, inv, inv, &push<op_rm_v>, inv})
+/* 0xff */  op_group({&inc<op_rm_v>, &dec<op_rm_v>, &call_near<op_rm_v>, inv, &jmp_near<op_rm_v>, inv, &push<op_rm_v>, inv})
 };
 
 helper_fun _2byte_opcode_table[256] = {

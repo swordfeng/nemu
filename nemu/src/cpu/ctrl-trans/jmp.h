@@ -1,4 +1,4 @@
-TEMPLATE_INSTRUCTION_HELPER(jump_near) {
+TEMPLATE_INSTRUCTION_HELPER(jmp_near) {
     int len = decode_operands(ctx, eip);
     uint32_t temp_eip = 0;
     if (op_name_is(op, imm)) {
