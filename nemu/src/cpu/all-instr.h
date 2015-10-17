@@ -8,6 +8,7 @@
 
 #include "ctrl-trans/call.h"
 #include "ctrl-trans/jcc.h"
+#include "ctrl-trans/jmp.h"
 
 #include "arith/sub.h"
 #include "arith/cmp.h"

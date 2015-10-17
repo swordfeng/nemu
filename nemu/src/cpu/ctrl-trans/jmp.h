@@ -1,7 +1,7 @@
 TEMPLATE_INSTRUCTION_HELPER(jmp_near) {
     int len = decode_operands(ctx, eip);
     uint32_t temp_eip = 0;
-    if (op_name_is(op, imm)) {
+    if (ctx.operands[0].type == opt_immediate) {
         // rel8 / rel16 / rel32 relative address
         temp_eip = eip + len + ctx.operands[0].getSignedValue();
     } else {
