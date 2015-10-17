@@ -245,7 +245,7 @@ DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
                 }
                 addr *= scale_factor;
                 /* base */
-                if (sib.base != 5 || modrm.rm != 0) {
+                if (sib.base != 5 || modrm.mod != 0) {
                     base_name = string("%") + reg_get_name(sib.base, 4);
                     base_addr = reg_read_index(sib.base, 4);
                 } else {
