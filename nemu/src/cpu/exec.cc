@@ -1,7 +1,7 @@
-#include "cpu/exec.hh"
-#include "all-instr.h"
-
 #include <vector>
+
+#include "decode.template.hh"
+#include "all-instr.h"
 
 /* opcode with reg/op */
 helper_fun op_group(std::vector<helper_fun> fun_list);

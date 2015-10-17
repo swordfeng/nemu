@@ -1,3 +1,4 @@
+#include "cpu/decode.hh"
 
 inline size_t op_get_size(InstructionContext &ctx, OperandName opname) {
     switch (opname & 0x3u) {
