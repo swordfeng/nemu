@@ -30,7 +30,7 @@ extern char assembly[];
 #else
 #define print_asm(...)
 #endif
-/* print asm automatically, instruction suffix not included */
+/* print asm automatically */
 void print_instr(InstructionContext &ctx, string name);
 
 /* operand names */

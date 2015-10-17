@@ -6,8 +6,6 @@ TEMPLATE_INSTRUCTION_HELPER(push) {
   uint32_t val = ctx.operands[0].getUnsignedValue();
   reg_l(R_ESP) -= ctx.operands[0].size;
   swaddr_write(reg_l(R_ESP), ctx.operands[0].size, val);
-  string instr_name = "push";
-  if (ctx.operands[0].type != opt_register) instr_name += ctx.operands[0].suffix();
-  print_instr(ctx, instr_name);
+  print_instr(ctx, "push");
   return len;
 }

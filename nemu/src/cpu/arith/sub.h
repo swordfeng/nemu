@@ -11,10 +11,6 @@ TEMPLATE_INSTRUCTION_HELPER(sub) {
     cpu.of = (val1 >> 31) != (val2 >> 31) && (val1 >> 31) != (result >> 31);
     cpu.pf = calc_pf(result);
     // AF ignored
-    string instr_name = "sub";
-    if (ctx.operands[0].type == opt_address && ctx.operands[1].type != opt_register) {
-        instr_name += ctx.operands[0].suffix();
-    }
-    print_instr(ctx, instr_name);
+    print_instr(ctx, "sub");
     return len;
 }
