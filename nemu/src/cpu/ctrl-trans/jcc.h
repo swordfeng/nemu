@@ -17,7 +17,7 @@ TEMPLATE_INSTRUCTION_HELPER(jcxz) {
 #define JCC_HELPER(name, cond) \
 TEMPLATE_INSTRUCTION_HELPER(j##name) { \
     swaddr_t temp_eip = cpu.eip + ctx.operands[0].getSignedValue(); \
-    if (ctx.operands[0].size == 4) temp_eip = int_trunc(temp_eip, 4); \
+    if (ctx.operands[0].size == 2) temp_eip = int_trunc(temp_eip, 2); \
     print_asm("%s\t%x", "j" #name, temp_eip); \
     if (cond) cpu.eip = temp_eip; \
 }
