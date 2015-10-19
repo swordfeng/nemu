@@ -186,5 +186,5 @@ HELPER(op_prefix) {
 HELPER(op_escape) {
 	uint8_t _2nd_opcode = instr_fetch(eip + 1, 1);
 	cpu.eip++;
-	return _2byte_opcode_table[_2nd_opcode](ctx, eip) + 1;
+	return _2byte_opcode_table[_2nd_opcode](ctx, eip + 1) + 1;
 }

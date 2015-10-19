@@ -13,7 +13,6 @@ TEMPLATE_INSTRUCTION_HELPER(jcxz) {
     if (val == 0) cpu.eip += ctx.operands[0].getSignedValue();
 }
 
-
 #define JCC_HELPER(name, cond) \
 TEMPLATE_INSTRUCTION_HELPER(j##name) { \
     swaddr_t temp_eip = cpu.eip + ctx.operands[0].getSignedValue(); \
