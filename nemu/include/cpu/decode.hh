@@ -126,6 +126,7 @@ union SIB {
 
 /* Functional helper function type */
 typedef std::function<int (InstructionContext &, swaddr_t)> helper_fun;
+typedef HELPER(*helper_ptr);
 
 /* Get operand size according to name and instruction prefix */
 size_t op_get_size(InstructionContext &ctx, OperandName opname);
