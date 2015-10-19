@@ -1,5 +1,4 @@
-template <OperandName op> HELPER(jcxz) {
-    int len = decode_operands<op>(ctx, eip);
+TEMPLATE_INSTRUCTION_HELPER(jcxz) {
     uint32_t val;
     string instr_name;
     if (ctx.prefix[3]) {
@@ -10,20 +9,17 @@ template <OperandName op> HELPER(jcxz) {
         val = reg_l(R_ECX);
         instr_name = "jecxz";
     }
-    print_asm("%s %x", instr_name.c_str(), eip + len + ctx.operands[0].getSignedValue());
-    if (val == 0) return len + ctx.operands[0].getSignedValue();
-    else return len;
+    print_asm("%s\t%x", instr_name.c_str(), cpu.eip + ctx.operands[0].getSignedValue());
+    if (val == 0) cpu.eip += ctx.operands[0].getSignedValue();
 }
 
 
 #define JCC_HELPER(name, cond) \
-template <OperandName op> HELPER(j##name) { \
-    int len = decode_operands<op>(ctx, eip); \
-    swaddr_t temp_eip = eip + len + ctx.operands[0].getSignedValue(); \
+TEMPLATE_INSTRUCTION_HELPER(j##name) { \
+    swaddr_t temp_eip = cpu.eip + ctx.operands[0].getSignedValue(); \
     if (ctx.operands[0].size == 4) temp_eip = int_trunc(temp_eip, 4); \
     print_asm("%s\t%x", "j" #name, temp_eip); \
-    if (cond) return temp_eip - eip; \
-    else return len; \
+    if (cond) cpu.eip = temp_eip; \
 }
 
 JCC_HELPER(o, cpu.of)

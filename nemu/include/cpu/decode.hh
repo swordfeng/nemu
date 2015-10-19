@@ -117,12 +117,25 @@ union SIB {
  * A templated version to execute decoding operations
  * A normal version to do the real work
  **/
-#define TEMPLATE_INSTRUCTION_HELPER(name) inline HELPER(name); \
+#define TEMPLATE_INSTRUCTION_HELPER(name) inline void name##_internal HELPER_PARAM_LIST; \
     template<OperandName ...operand_names> HELPER(name) { \
-        decode_operands<operand_names...>(ctx, eip); \
-        return name(ctx, eip); \
+        int len = decode_operands<operand_names...>(ctx, eip); \
+        cpu.eip += len; \
+        name ## _internal(ctx, eip); \
+        return len; \
     } \
-    inline HELPER(name)
+    inline void name##_internal HELPER_PARAM_LIST
+
+/**
+ * Special helper function for instructions
+ **/
+#define INSTRUCTION_HELPER(name) inline void name##_internal HELPER_PARAM_LIST; \
+    inline HELPER(name) { \
+        cpu.eip += 1; \
+        name##_internal(ctx, eip); \
+        return 1; \
+    } \
+    inline void name##_internal HELPER_PARAM_LIST
 
 /* Functional helper function type */
 typedef std::function<int (InstructionContext &, swaddr_t)> helper_fun;

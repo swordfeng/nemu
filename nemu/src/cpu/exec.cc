@@ -177,6 +177,7 @@ helper_fun op_group(std::vector<helper_fun> fun_list) {
 template <size_t prefix_group>
 HELPER(op_prefix) {
 	ctx.prefix[prefix_group] = instr_fetch(eip, 1);
+	cpu.eip++;
 	int len = opcode_table[instr_fetch(eip + 1, 1)] (ctx, eip + 1);
 	ctx.prefix[prefix_group] = 0;
 	return len + 1;
@@ -184,5 +185,6 @@ HELPER(op_prefix) {
 
 HELPER(op_escape) {
 	uint8_t _2nd_opcode = instr_fetch(eip + 1, 1);
+	cpu.eip++;
 	return _2byte_opcode_table[_2nd_opcode](ctx, eip) + 1;
 }

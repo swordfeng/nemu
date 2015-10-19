@@ -1,5 +1,4 @@
 TEMPLATE_INSTRUCTION_HELPER(neg) {
-    int len = decode_operands(ctx, eip);
     uint32_t src = ctx.operands[0].getSignedValue();
     uint32_t result = ~src + 1;
     ctx.operands[0].setValue(result);
@@ -9,5 +8,4 @@ TEMPLATE_INSTRUCTION_HELPER(neg) {
     cpu.zf = result == 0;
     cpu.pf = calc_pf(result);
     print_instr(ctx, "neg");
-    return len;
 }

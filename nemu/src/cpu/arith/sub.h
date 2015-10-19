@@ -1,5 +1,4 @@
 TEMPLATE_INSTRUCTION_HELPER(sub) {
-    int len = decode_operands(ctx, eip);
     uint32_t val1 = ctx.operands[0].getSignedValue();
     uint32_t val2 = ctx.operands[1].getSignedValue();
     size_t result_size = ctx.operands[0].size;
@@ -12,5 +11,4 @@ TEMPLATE_INSTRUCTION_HELPER(sub) {
     cpu.pf = calc_pf(result);
     // AF ignored
     print_instr(ctx, "sub");
-    return len;
 }

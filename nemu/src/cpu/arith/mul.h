@@ -1,5 +1,4 @@
 TEMPLATE_INSTRUCTION_HELPER(mul) {
-    int len = decode_operands(ctx, eip);
     uint64_t result = ctx.operands[0].getUnsignedValue();
     uint32_t upper = 0;
     switch (ctx.operands[0].size) {
@@ -22,5 +21,4 @@ TEMPLATE_INSTRUCTION_HELPER(mul) {
     }
     if (upper) cpu.of = cpu.cf = 1;
     else cpu.of = cpu.cf = 0;
-    return len;
 }
