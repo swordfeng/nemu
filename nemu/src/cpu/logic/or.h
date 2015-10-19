@@ -6,5 +6,5 @@ TEMPLATE_INSTRUCTION_HELPER(or_) {
     cpu.pf = calc_pf(result);
     cpu.cf = 0;
     cpu.of = 0;
-    print_instr(ctx, "test");
+    print_instr(ctx, "or");
 }

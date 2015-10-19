@@ -36,7 +36,8 @@ void print_instr(InstructionContext &ctx, string name);
 /* operand names */
 #define OP_NAMES(name) op_##name##_b, op_##name##_w, op_##name##_l, op_##name##_v
 enum OperandName {
-    OP_NAMES(suffix), OP_NAMES(rm), OP_NAMES(reg), OP_NAMES(r), OP_NAMES(a), OP_NAMES(moffs), OP_NAMES(imm)
+    OP_NAMES(suffix), OP_NAMES(rm), OP_NAMES(reg), OP_NAMES(r), OP_NAMES(moffs),
+    OP_NAMES(imm), OP_NAMES(a), OP_NAMES(c)
 };
 #undef OP_NAMES
 
