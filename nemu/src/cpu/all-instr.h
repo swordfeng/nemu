@@ -26,6 +26,9 @@
 #include "logic/and.h"
 #include "logic/xor.h"
 #include "logic/or.h"
+#include "logic/shl.h"
+#include "logic/shr.h"
+#include "logic/sar.h"
 
 #include "misc/lea.h"
 

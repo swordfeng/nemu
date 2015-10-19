@@ -337,13 +337,28 @@ DECODE_TEMPLATE_HELPER(decode_moffs) {
     } else return 0;
 }
 
-DECODE_TEMPLATE_HELPER(decode_a) {
+// decode type 'a', 'c', '1' ...
+DECODE_TEMPLATE_HELPER(decode_const) {
     if (op_name_is(opname, a)) {
         ctx.operands[index].type = opt_register;
         ctx.operands[index].reg_index = R_EAX;
         ctx.operands[index].size = op_get_size(ctx, opname);
 #ifdef OPERAND_SET_NAME
         ctx.operands[index].str_name = string("%") + reg_get_name(R_EAX, op_get_size(ctx, opname));
+#endif
+    } else if (op_name_is(opname, c)) {
+        ctx.operands[index].type = opt_register;
+        ctx.operands[index].reg_index = R_ECX;
+        ctx.operands[index].size = op_get_size(ctx, opname);
+#ifdef OPERAND_SET_NAME
+        ctx.operands[index].str_name = string("%") + reg_get_name(R_ECX, op_get_size(ctx, opname));
+#endif
+    } else if (op_name_is(opname, 1)) {
+        ctx.operands[index].type = opt_immediate;
+        ctx.operands[index].immediate = 1;
+        ctx.operands[index].size = 4;
+#ifdef OPERAND_SET_NAME
+        ctx.operands[index].str_name = string("$1");
 #endif
     }
     return 0;
@@ -367,7 +382,7 @@ TEMPLATE_HELPER(decode_operands) {
     Assert(ctx.prefix[3] == 0, "Address prefix is not implemented");
     decode_r<0, operand_names...>::call(ctx, eip);
     int consumed_size = 1;
-    decode_a<0, operand_names...>::call(ctx, eip + consumed_size);
+    decode_const<0, operand_names...>::call(ctx, eip + consumed_size);
     int modrm_size = decode_modrm_disp<0, operand_names...>::call(ctx, eip + consumed_size);
     consumed_size += modrm_size;
     int moffs_size = decode_moffs<0, operand_names...>::call(ctx, eip + consumed_size);
