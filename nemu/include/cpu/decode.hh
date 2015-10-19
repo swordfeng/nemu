@@ -117,16 +117,15 @@ union SIB {
  * A templated version to execute decoding operations
  * A normal version to do the real work
  **/
-#define TEMPLATE_INSTRUCTION_HELPER(name) HELPER(name); \
+#define TEMPLATE_INSTRUCTION_HELPER(name) inline HELPER(name); \
     template<OperandName ...operand_names> HELPER(name) { \
         decode_operands<operand_names...>(ctx, eip); \
         return name(ctx, eip); \
     } \
-    HELPER(name)
+    inline HELPER(name)
 
 /* Functional helper function type */
 typedef std::function<int (InstructionContext &, swaddr_t)> helper_fun;
-typedef HELPER(*helper_ptr);
 
 /* Get operand size according to name and instruction prefix */
 size_t op_get_size(InstructionContext &ctx, OperandName opname);
