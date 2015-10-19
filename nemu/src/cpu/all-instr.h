@@ -20,8 +20,12 @@
 #include "arith/neg.h"
 #include "arith/mul.h"
 #include "arith/add.h"
+#include "arith/adc.h"
 
 #include "logic/test.h"
+#include "logic/and.h"
+#include "logic/xor.h"
+#include "logic/or.h"
 
 #include "misc/lea.h"
 

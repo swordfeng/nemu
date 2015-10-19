@@ -107,7 +107,7 @@ union SIB {
 #define HELPER_PARAM_LIST (InstructionContext &ctx, swaddr_t eip)
 
 /* Normal helper function */
-#define HELPER(name) int (name) HELPER_PARAM_LIST
+#define HELPER(name) int name HELPER_PARAM_LIST
 
 /* Templated helper function */
 #define TEMPLATE_HELPER(name) template<OperandName ...operand_names> HELPER(name)
