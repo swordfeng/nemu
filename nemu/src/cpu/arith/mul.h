@@ -21,4 +21,5 @@ TEMPLATE_INSTRUCTION_HELPER(mul) {
     }
     if (upper) cpu.of = cpu.cf = 1;
     else cpu.of = cpu.cf = 0;
+    print_instr(ctx, "mul");
 }

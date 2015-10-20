@@ -21,6 +21,9 @@
 #include "arith/mul.h"
 #include "arith/add.h"
 #include "arith/adc.h"
+#include "arith/imul.h"
+#include "arith/div.h"
+#include "arith/idiv.h"
 
 #include "logic/test.h"
 #include "logic/and.h"

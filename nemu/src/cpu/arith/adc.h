@@ -10,5 +10,5 @@ TEMPLATE_INSTRUCTION_HELPER(adc) {
     cpu.of = (val1 >> 31) == (val2 >> 31) && (val1 >> 31) != (result >> 31);
     cpu.pf = calc_pf(result);
     // AF ignored
-    print_instr(ctx, "add");
+    print_instr(ctx, "adc");
 }
