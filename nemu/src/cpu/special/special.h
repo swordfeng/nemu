@@ -1,6 +1,5 @@
 extern "C" {
 #include "monitor/monitor.h"
-#include "lib-common/trap.h"
 }
 
 INSTRUCTION_HELPER(inv) {
@@ -40,6 +39,7 @@ INSTRUCTION_HELPER(nemu_trap) {
 }
 
 INSTRUCTION_HELPER(int3) {
+	extern void do_int3();
 	print_asm("int3");
 	do_int3();
 }
