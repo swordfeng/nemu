@@ -1,5 +1,5 @@
 TEMPLATE_INSTRUCTION_HELPER(imul) {
-    if (ctx.operands[1].type == opt_unsigned) {
+    if (ctx.operands[1].type == opt_undefined) {
         // 1 operand
         int32_t val = ctx.operands[0].getSignedValue();
         int64_t result = val;
@@ -27,7 +27,7 @@ TEMPLATE_INSTRUCTION_HELPER(imul) {
         }
         if (cpu.sf ? ~upper : upper) cpu.of = cpu.cf = 1;
         else cpu.of = cpu.cf = 0;
-    } else if (ctx.operands[2].type == opt_unsigned) {
+    } else if (ctx.operands[2].type == opt_undefined) {
         // 2 operands
         int32_t val1 = ctx.operands[0].getSignedValue();
         int32_t val2 = ctx.operands[1].getSignedValue();
