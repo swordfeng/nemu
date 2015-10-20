@@ -66,7 +66,7 @@ helper_fun opcode_table[256] = {
 /* 0xc2 */  &ret_near<op_imm_w>, &ret_near<>,
 /* 0xc4 */	inv, inv, &mov<op_rm_b, op_imm_b>, &mov<op_rm_v, op_imm_v>, //mov_i2rm_b, mov_i2rm_v,
 /* 0xc8 */	inv, leave, inv, inv,
-/* 0xcc */	inv, inv, inv, inv,
+/* 0xcc */	int3, inv, inv, inv,
 /* 0xd0 */	op_group({inv, inv, inv, inv, &shl<op_rm_b, op_1>, &shr<op_rm_b, op_1>, inv, &sar<op_rm_b, op_1>}),
 /* 0xd1 */  op_group({inv, inv, inv, inv, &shl<op_rm_v, op_1>, &shr<op_rm_v, op_1>, inv, &sar<op_rm_v, op_1>}),
 /* 0xd2 */  op_group({inv, inv, inv, inv, &shl<op_rm_b, op_c_b>, &shr<op_rm_b, op_c_b>, inv, &sar<op_rm_b, op_c_b>}),

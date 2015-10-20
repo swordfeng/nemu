@@ -1,5 +1,6 @@
 extern "C" {
 #include "monitor/monitor.h"
+#include "lib-common/trap.h"
 }
 
 INSTRUCTION_HELPER(inv) {
@@ -36,4 +37,9 @@ INSTRUCTION_HELPER(nemu_trap) {
 					(cpu.eax == 0 ? "GOOD" : "BAD"), cpu.eip);
 			nemu_state = END;
 	}
+}
+
+INSTRUCTION_HELPER(int3) {
+	print_asm("int3");
+	do_int3();
 }
