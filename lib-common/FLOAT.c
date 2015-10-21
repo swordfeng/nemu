@@ -1,23 +1,29 @@
 #include "FLOAT.h"
 
+union
+
 FLOAT F_mul_F(FLOAT a, FLOAT b) {
-	nemu_assert(0);
-	return 0;
+	return ((long long)a * b) >> 16;
 }
 
 FLOAT F_div_F(FLOAT a, FLOAT b) {
-	nemu_assert(0);
-	return 0;
+	return (((long long)a << 16) / b);
 }
 
 FLOAT f2F(float a) {
-	nemu_assert(0);
-	return 0;
+	uint32_t af = *(uint32_t *)&a;
+	uint32_t sign = af >> 31;
+	uint32_t exp = (af >> 23) & 0xff;
+	uint32_t sig = af & 0x7fffff;
+	if (exp != 0) sig += 1 << 23;
+	exp -= 150;
+	if (exp < -16) sig >>= -16 - exp;
+	if (exp > -16) sig <<= exp + 16;
+	return sign == 0 ? sig : -sig;
 }
 
 FLOAT Fabs(FLOAT a) {
-	nemu_assert(0);
-	return 0;
+	return a >= 0 ? a : -a;
 }
 
 FLOAT sqrt(FLOAT x) {
@@ -43,4 +49,3 @@ FLOAT pow(FLOAT x, FLOAT y) {
 
 	return t;
 }
-
