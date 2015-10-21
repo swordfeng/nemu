@@ -47,7 +47,7 @@ inline void print_instr(InstructionContext &ctx, string name) {
     }
     // TODO: prefix
     string showstr = name;
-    bool print_suffix = true;
+    bool print_suffix = operands_size != 0;
     for (size_t i = 0; i < operands_size; i++) {
         if (ctx.operands[i].type == opt_register) {
             print_suffix = false;
