@@ -1,3 +1,4 @@
+#include <type_traits>
 #include "cpu/decode.hh"
 
 inline size_t op_get_size(InstructionContext &ctx, OperandName opname) {
@@ -151,6 +152,22 @@ inline uint32_t signed_extend(uint32_t val, size_t size) {
         return static_cast<uint32_t>(static_cast<int16_t>(val));
     case 4:
         return val;
+    default:
+        panic("invalid data size");
+    }
+}
+
+template <typename int_type>
+inline int_type signed_extend(uint64_t val, size_t size) {
+    switch (size) {
+    case 1:
+        return static_cast<typename std::make_signed<int_type>::type>(static_cast<int8_t>(val));
+    case 2:
+        return static_cast<typename std::make_signed<int_type>::type>(static_cast<int16_t>(val));
+    case 4:
+        return static_cast<typename std::make_signed<int_type>::type>(static_cast<int32_t>(val));
+    case 8:
+        return static_cast<typename std::make_signed<int_type>::type>(static_cast<int64_t>(val));
     default:
         panic("invalid data size");
     }
