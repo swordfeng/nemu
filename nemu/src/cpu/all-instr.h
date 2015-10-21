@@ -7,6 +7,7 @@
 #include "data-trans/xchg.h"
 #include "data-trans/pop.h"
 #include "data-trans/leave.h"
+#include "data-trans/cwtl-cltd.h"
 
 #include "ctrl-trans/call.h"
 #include "ctrl-trans/jcc.h"
