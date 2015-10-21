@@ -4,6 +4,7 @@
 /* solve 0.5x^2 + 0.5x - 0.5 = 0 */
 
 int main() {
+	nemu_assert(F_mul_F(0x00020000, 0xffff8000) == 0xffff0000);
 	FLOAT a = f2F(0.5);
 	FLOAT b = f2F(0.5);
 	FLOAT c = f2F(-0.5);
