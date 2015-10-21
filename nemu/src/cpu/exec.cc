@@ -30,7 +30,7 @@ helper_fun opcode_table[256] = {
 /* 0x2c */	&sub<op_a_b, op_imm_b>, &sub<op_a_v, op_imm_v>, inv, inv,
 /* 0x30 */	&xor_<op_rm_b, op_reg_b>, &xor_<op_rm_v, op_reg_v>, &xor_<op_reg_b, op_rm_b>, &xor_<op_reg_v, op_rm_v>,
 /* 0x34 */	&xor_<op_a_b, op_imm_b>, &xor_<op_a_v, op_imm_v>, inv, inv,
-/* 0x38 */	&cmp<op_rm_b, op_r_b>, &cmp<op_rm_v, op_r_v>, &cmp<op_r_b, op_rm_b>, &cmp<op_r_v, op_rm_v>,
+/* 0x38 */	&cmp<op_rm_b, op_reg_b>, &cmp<op_rm_v, op_reg_v>, &cmp<op_reg_b, op_rm_b>, &cmp<op_reg_v, op_rm_v>,
 /* 0x3c */	&cmp<op_a_b, op_imm_b>, &cmp<op_a_v, op_imm_v>, inv, inv,
 /* 0x40 */	op_r_rep(&inc<op_r_v>),
 /* 0x48 */	op_r_rep(&dec<op_r_v>),
