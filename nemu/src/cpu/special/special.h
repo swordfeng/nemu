@@ -33,7 +33,7 @@ INSTRUCTION_HELPER(nemu_trap) {
 
 		default:
 			printf("\33[1;31mnemu: HIT %s TRAP\33[0m at eip = 0x%08x\n\n",
-					(cpu.eax == 0 ? "GOOD" : "BAD"), cpu.eip);
+					(cpu.eax == 0 ? "GOOD" : "BAD"), eip);
 			nemu_state = END;
 	}
 }
