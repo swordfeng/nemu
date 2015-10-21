@@ -1,4 +1,4 @@
-testcase_CFLAGS_EXTRA := -m32 -msoft-float -fno-builtin -fno-stack-protector \
+testcase_CFLAGS_EXTRA := -march=i386 -fno-builtin -fno-stack-protector \
 						-I$(LIB_COMMON_DIR) -I$(NEWLIBC_DIR)/include
 
 $(eval $(call make_common_rules,testcase,$(testcase_CFLAGS_EXTRA)))
