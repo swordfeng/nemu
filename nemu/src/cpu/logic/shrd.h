@@ -2,7 +2,7 @@ TEMPLATE_INSTRUCTION_HELPER(shrd) {
     uint32_t bits = ctx.operands[2].getUnsignedValue() & 0x1f;
     uint64_t value = ctx.operands[0].getUnsignedValue();
     size_t size = ctx.operands[0].size;
-    value |= ctx.operands[1].getUnsignedValue() << (size * 8);
+    value |= static_cast<uint64_t>(ctx.operands[1].getUnsignedValue()) << (size * 8);
     uint32_t result = value >> bits;
     ctx.operands[0].setValue(result);
     if (bits) {
