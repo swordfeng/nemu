@@ -7,4 +7,4 @@ $(FLOAT): $(FLOAT_OBJ)
 
 $(FLOAT_OBJ): $(LIB_COMMON_DIR)/FLOAT.c
 	mkdir -p obj/$(LIB_COMMON_DIR)
-	$(CC) -c -o $(FLOAT_OBJ) $(LIB_COMMON_DIR)/FLOAT.c -m32 -mno-fancy-math-387 -mno-fp-ret-in-387 -fno-builtin
+	$(CC) -c -o $(FLOAT_OBJ) $(LIB_COMMON_DIR)/FLOAT.c -m32 -msoft-float -fno-builtin
