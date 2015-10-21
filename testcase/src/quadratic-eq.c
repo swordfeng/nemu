@@ -9,7 +9,7 @@ int main() {
 	FLOAT c = f2F(-0.5);
 
 	FLOAT dt = F_mul_F(b, b) - F_mul_F(F_mul_int(a, 4), c);
-	nemu_assert(F_mul_F(F_mul_int(a, 4), c) == 0x00004000);
+	nemu_assert(F_mul_F(F_mul_int(a, 4), c) == 0xffff0000);
 	nemu_assert(dt == 0x00014000);
 	FLOAT sqrt_dt = sqrt(dt);
 
