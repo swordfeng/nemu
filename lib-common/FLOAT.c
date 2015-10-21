@@ -1,10 +1,10 @@
 #include "FLOAT.h"
 
 typedef unsigned int uint32_t;
-typedef long long int64_t;
+typedef unsigned long long uint64_t;
 
 FLOAT F_mul_F(FLOAT a, FLOAT b) {
-	return ((int64_t)a * b) >> 16;
+	return ((uint64_t)a * b) >> 16;
 }
 
 FLOAT F_div_F(FLOAT a, FLOAT b) {
