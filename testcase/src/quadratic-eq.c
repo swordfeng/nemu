@@ -6,12 +6,10 @@
 int main() {
 	FLOAT a = f2F(0.5);
 	FLOAT b = f2F(0.5);
-	nemu_assert(a == 0x00008000);
 	FLOAT c = f2F(-0.5);
-	nemu_assert(c == 0xffff8000);
 
 	FLOAT dt = F_mul_F(b, b) - F_mul_F(F_mul_int(a, 4), c);
-	nemu_assert(F_mul_F(b, b) == 0x00004000);
+	nemu_assert(F_mul_F(F_mul_int(a, 4), c) == 0x00004000);
 	nemu_assert(dt == 0x00014000);
 	FLOAT sqrt_dt = sqrt(dt);
 
