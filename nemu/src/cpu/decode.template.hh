@@ -235,18 +235,24 @@ DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
                 SIB sib;
                 sib.value = instr_fetch(eip + 1, 1);
                 ctx.operands[index].type = opt_address;
+#ifdef OPERAND_SET_NAME
                 string base_name, index_name;
+#endif
                 uint32_t addr = 0, base_addr = 0;
                 uint8_t scale_factor = (1u << sib.ss);
                 /* index */
                 if (sib.index != 4) {
+#ifdef OPERAND_SET_NAME
                     index_name = string("%") + reg_get_name(sib.index, 4);
+#endif
                     addr = reg_read_index(sib.index, 4);
                 }
                 addr *= scale_factor;
                 /* base */
                 if (sib.base != 5 || modrm.mod != 0) {
+#ifdef OPERAND_SET_NAME
                     base_name = string("%") + reg_get_name(sib.base, 4);
+#endif
                     base_addr = reg_read_index(sib.base, 4);
                 } else {
                     // manually fetch disp32
