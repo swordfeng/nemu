@@ -7,4 +7,4 @@ $(FLOAT): $(FLOAT_OBJ)
 
 $(FLOAT_OBJ): $(LIB_COMMON_DIR)/FLOAT.c
 	mkdir -p obj/$(LIB_COMMON_DIR)
-	$(CC) -c -o $(FLOAT_OBJ) $(LIB_COMMON_DIR)/FLOAT.c -fno-builtin -m32
+	$(CC) -c -o $(FLOAT_OBJ) $(LIB_COMMON_DIR)/FLOAT.c -fno-builtin -marm
