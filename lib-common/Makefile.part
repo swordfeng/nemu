@@ -5,4 +5,6 @@ FLOAT_OBJ := $(FLOAT:.a=.o)
 $(FLOAT): $(FLOAT_OBJ)
 	ar r $(FLOAT) $(FLOAT_OBJ)
 
-obj/lib-common/FLOAT.o: lib-common/FLOAT.c
+$(FLOAT_OBJ): $(LIB_COMMON_DIR)/FLOAT.c
+	mkdir -p obj/$(LIB_COMMON_DIR)
+	$(CC) -c -o $(FLOAT_OBJ) $(LIB_COMMON_DIR)/FLOAT.c -fno-builtin -m32

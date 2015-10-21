@@ -1,19 +1,39 @@
 #include "FLOAT.h"
 
-union
+typedef unsigned int uint32_t;
+typedef long long int64_t;
 
 FLOAT F_mul_F(FLOAT a, FLOAT b) {
-	return ((long long)a * b) >> 16;
+	return ((int64_t)a * b) >> 16;
 }
 
 FLOAT F_div_F(FLOAT a, FLOAT b) {
-	return (((long long)a << 16) / b);
+	int sign = 1;
+	if (a < 0) {
+		sign *= -1;
+		a = -a;
+	}
+	if (b < 0) {
+		sign *= -1;
+		b = -b;
+	}
+	int res = a / b;
+	a = a % b;
+	for (int i = 0; i < 16; i++) {
+		a <<= 1;
+		res <<= 1;
+		if (a >= b) {
+			a -= b;
+			res++;
+		}
+	}
+	return res * sign;
 }
 
 FLOAT f2F(float a) {
 	uint32_t af = *(uint32_t *)&a;
 	uint32_t sign = af >> 31;
-	uint32_t exp = (af >> 23) & 0xff;
+	int exp = (af >> 23) & 0xff;
 	uint32_t sig = af & 0x7fffff;
 	if (exp != 0) sig += 1 << 23;
 	exp -= 150;
