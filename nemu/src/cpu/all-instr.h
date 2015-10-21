@@ -33,6 +33,7 @@
 #include "logic/shl.h"
 #include "logic/shr.h"
 #include "logic/sar.h"
+#include "logic/shrd.h"
 
 #include "misc/lea.h"
 
