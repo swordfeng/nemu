@@ -1,4 +1,4 @@
-INSTRUCTION_HELPER(cltd) {
+INSTRUCTION_HELPER(cwtl_cltd) {
     if (ctx.prefix[prefix_operand]) {
         // DX:AX <- AX
         reg_w(R_DX) = signed_extend(reg_w(R_AX), 4) >> 16;

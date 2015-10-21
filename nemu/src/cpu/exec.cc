@@ -53,7 +53,7 @@ helper_fun opcode_table[256] = {
 /* 0x8c */	inv, &lea<op_reg_v, op_rm_l>, inv,
 /* 0x8f */	op_group({&pop<op_rm_v>, inv, inv, inv, inv, inv, inv, inv}),
 /* 0x90 */	op_r_rep(&xchg<op_a_v, op_r_v>),
-/* 0x98 */	inv, inv, inv, inv,
+/* 0x98 */	inv, cwtl_cltd, inv, inv,
 /* 0x9c */	inv, inv, inv, inv,
 /* 0xa0 */	&mov<op_a_b, op_moffs_b>, &mov<op_a_v, op_moffs_v>, &mov<op_moffs_b, op_a_b>, &mov<op_moffs_v, op_a_v>,
 /* 0xa4 */	inv, inv, inv, inv,
