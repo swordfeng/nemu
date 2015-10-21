@@ -11,6 +11,7 @@ long long ans[] = { 1860719719092984036LL }; //, -1579188499418773362LL, 2758992
 #define NR_DATA (sizeof(test_data) / sizeof(test_data[0]))
 
 int main() {
+	nemu_assert(mul(-1364082006l, -1364082006l) == 1860719719092984036ll);
 	int i,j,ans_idx = 0;
 	for (i = 0;i < NR_DATA;i++) {
 		for (j = i;j < NR_DATA;j++) { 
