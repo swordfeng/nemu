@@ -37,3 +37,5 @@ JCC_HELPER(l, cpu.sf != cpu.of)
 JCC_HELPER(ge, cpu.sf == cpu.of)
 JCC_HELPER(le, cpu.zf || cpu.sf != cpu.of)
 JCC_HELPER(g, !cpu.zf && cpu.sf == cpu.of)
+
+#undef JCC_HELPER
