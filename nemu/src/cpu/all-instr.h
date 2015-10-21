@@ -8,6 +8,8 @@
 #include "data-trans/pop.h"
 #include "data-trans/leave.h"
 #include "data-trans/cwtl-cltd.h"
+#include "data-trans/movsx.h"
+#include "data-trans/movzx.h"
 
 #include "ctrl-trans/call.h"
 #include "ctrl-trans/jcc.h"
