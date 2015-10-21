@@ -32,6 +32,7 @@
 #include "logic/and.h"
 #include "logic/xor.h"
 #include "logic/or.h"
+#include "logic/not.h"
 #include "logic/shl.h"
 #include "logic/shld.h"
 #include "logic/sar.h"
