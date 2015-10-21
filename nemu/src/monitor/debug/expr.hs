@@ -3,7 +3,8 @@
 module Expr where
 -- processing libraries
 import Numeric (showHex, readHex)
-import Text.ParserCombinators.Parsec
+import Text.Parsec
+import Text.Parsec.String (Parser)
 import Debug.Trace (trace)
 import Control.Monad (liftM2)
 import Data.Function (on)
@@ -129,7 +130,7 @@ pathernessP = -- Patherness = (Expr)
     Patherness `fmap` between (char '(' >> empty) (empty *> char ')' <|> fail "patherness does not match") (exprP 0)
 
 ---- Operators
-operatorP :: Op -> CharParser () Op
+operatorP :: Op -> Parser Op
 operatorP op =
     (string . getOp) op $> op
 opClassP precedance aryType =
@@ -138,7 +139,7 @@ opClassP precedance aryType =
 operandP = -- Operand = Patherness | Num
     numP <|> registerP <|> pathernessP <|> fail "require operand"
 
-exprP :: Int -> CharParser () Expr
+exprP :: Int -> Parser Expr
 exprP precedance -- Expr[p] = ExprL[p] ExprR[p] | Operand
     | precedance >= length opDefs = empty >> operandP
     | otherwise = empty >> exprLP precedance >>= exprRP precedance
