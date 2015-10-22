@@ -72,9 +72,10 @@ start:
   jne bad
   // div
   int3
+  mov $0, %edx
   mov %ecx, %eax
-  mov $65, %edx
-  div %edx
+  mov $65, %ecx
+  div %ecx
   cmp $7316038, %eax
   jne bad
   HIT_GOOD_TRAP
