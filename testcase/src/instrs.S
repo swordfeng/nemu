@@ -42,7 +42,7 @@ start:
   // sbb
   mov $0, %eax
   call set_cf
-  sub $0, %eax
+  sbb $0, %eax
   call test_cf
   cmp 0xffffffff, %eax
   jne bad
