@@ -67,6 +67,9 @@ start:
   imul $-50, %edx, %ecx
   cmp $-9510850, %ecx
   jne bad
+  imul $-50, %ecx
+  cmp $475542500, %ecx
+  jne bad
   HIT_GOOD_TRAP
 
 test_cf:
