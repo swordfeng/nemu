@@ -71,8 +71,7 @@ start:
   cmp $475542500, %ecx
   jne bad
   // div
-  int3
-  mov %edx, %eax
+  mov %ecx, %eax
   mov $65, %edx
   div %edx
   cmp $7316038, %eax
