@@ -31,6 +31,9 @@ start:
   call test_pf
   // adc
   call set_cf
+  setc %al
+  test %al, %al
+  jz bad
   adc $0, %eax
   call test_cf
   mov $0, %eax
