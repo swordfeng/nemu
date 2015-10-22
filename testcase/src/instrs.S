@@ -30,9 +30,7 @@ start:
   sub $0xffffffff, %edx
   call test_pf
   // adc
-  mov $0, %eax
-  cmp $1, %eax
-  mov $0xffffffff, %eax
+  call set_cf
   adc $0, %eax
   call test_cf
   mov $0, %eax
@@ -71,6 +69,20 @@ test_pf:
   setp %al
   test %al, %al
   jz bad
+  pop %eax
+  ret
+
+set_cf:
+  push %eax
+  mov $0, %eax
+  cmp $1, %eax
+  pop %eax
+  ret
+
+set_of:
+  push %eax
+  mov $0x7fffffff, %eax
+  cmp $0xffffffff, %eax
   pop %eax
   ret
 
