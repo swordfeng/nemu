@@ -53,6 +53,8 @@ start:
   // dec
   dec %ax
   call test_of
+  cmp $0x7fff, %ax
+  jne bad
   HIT_GOOD_TRAP
 
 test_cf:
