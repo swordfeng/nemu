@@ -12,9 +12,9 @@ TEMPLATE_INSTRUCTION_HELPER(idiv) {
         src |= reg_w(R_AX);
         break;
     case 4:
-        src = static_cast<int32_t>(reg_w(R_EDX));
+        src = static_cast<int32_t>(reg_l(R_EDX));
         src <<= 32;
-        src |= reg_w(R_AX);
+        src |= reg_l(R_EAX);
     }
     int32_t quotient = src / val;
     int32_t remainder = src % val;
