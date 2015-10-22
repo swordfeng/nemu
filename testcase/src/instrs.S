@@ -46,6 +46,13 @@ start:
   call test_cf
   cmp $0xffffffff, %eax
   jne bad
+  // inc
+  mov $0x7fff, %ax
+  inc %ax
+  call test_of
+  // dec
+  dec %ax
+  call test_of
   HIT_GOOD_TRAP
 
 test_cf:
