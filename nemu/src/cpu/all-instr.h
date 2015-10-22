@@ -27,6 +27,7 @@
 #include "arith/imul.h"
 #include "arith/div.h"
 #include "arith/idiv.h"
+#include "arith/sbb.h"
 
 #include "logic/test.h"
 #include "logic/and.h"
