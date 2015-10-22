@@ -56,12 +56,17 @@ start:
   cmp $0x7fff, %ax
   jne bad
   // mul
-  mov $100, %eax
-  mov $800, %ecx
+  mov $1010101, %eax
+  mov $808808808, %ecx
   mul %ecx
-  cmp $80000, %eax
+  cmp $0xa664d688, %eax
+  jne bad
+  cmp $0x2e709, %edx
   jne bad
   // imul
+  imul $-50, %edx, %ecx
+  cmp $-9510850, %ecx
+  jne bad
   HIT_GOOD_TRAP
 
 test_cf:
