@@ -64,7 +64,6 @@ start:
   cmp $0x2e709, %edx
   jne bad
   // imul
-  int3
   imul $-50, %edx, %ecx
   cmp $-9510850, %ecx
   jne bad
