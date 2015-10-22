@@ -15,3 +15,7 @@ $(testcase_BIN): % : $(testcase_START_OBJ) %.o $(FLOAT) $(NEWLIBC)
 $(testcase_OBJ_DIR)/mov: % : %.o
 	$(call make_command, $(LD), $(testcase_LDFLAGS), ld $@, $^)
 	@objdump -d $@ > $@.txt
+
+$(testcase_OBJ_DIR)/instrs: % : %.o
+	$(call make_command, $(LD), $(testcase_LDFLAGS), ld $@, $^)
+	@objdump -d $@ > $@.txt
