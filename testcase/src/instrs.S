@@ -71,10 +71,10 @@ start:
   cmp $475542500, %ecx
   jne bad
   // div
-  int3
   mov $0, %edx
   mov %ecx, %eax
   mov $65, %ecx
+  int3
   div %ecx
   cmp $7316038, %eax
   jne bad

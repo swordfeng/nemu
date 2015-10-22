@@ -10,7 +10,7 @@ TEMPLATE_INSTRUCTION_HELPER(div) {
         src = (reg_w(R_DX) << 16) | reg_w(R_AX);
         break;
     case 4:
-        src = (static_cast<uint64_t>(reg_w(R_DX)) << 32) | reg_w(R_AX);
+        src = (static_cast<uint64_t>(reg_l(R_EDX)) << 32) | reg_l(R_EAX);
     }
     uint32_t quotient = src / val;
     uint32_t remainder = src % val;
