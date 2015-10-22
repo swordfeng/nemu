@@ -55,6 +55,13 @@ start:
   call test_of
   cmp $0x7fff, %ax
   jne bad
+  // mul
+  mov $100, %eax
+  mov $800, %ecx
+  mul %ecx
+  cmp $80000, %eax
+  jne bad
+  // imul
   HIT_GOOD_TRAP
 
 test_cf:
