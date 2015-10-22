@@ -71,8 +71,11 @@ start:
   cmp $475542500, %ecx
   jne bad
   // div
-  mov $0, %edx
+  mov %edx, %eax
+  mov $65, %edx
   div %edx
+  cmp $7316038, %eax
+  jne bad
   HIT_GOOD_TRAP
 
 test_cf:
