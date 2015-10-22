@@ -44,7 +44,7 @@ start:
   call set_cf
   sbb $0, %eax
   call test_cf
-  cmp 0xffffffff, %eax
+  cmp $0xffffffff, %eax
   jne bad
   HIT_GOOD_TRAP
 
