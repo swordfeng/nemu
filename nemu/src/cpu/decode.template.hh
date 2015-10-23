@@ -41,14 +41,27 @@ inline static string reg_get_name(int reg_index, size_t size) {
     }
 }
 
+static inline const char *prefix_name(int opcode, int prefix_code) {
+    switch (prefix_code) {
+    case prefix_0_rep: /* == repe */
+        return ((opcode | ~1) == 0xa6) || ((opcode | ~1) == 0xae) ? "repe " : "rep ";
+    case prefix_0_repne:
+        return "repne ";
+    case prefix_0_lock:
+        return "lock ";
+    default:
+        return "";
+    }
+}
+
 inline void print_instr(InstructionContext &ctx, string name) {
 #ifdef PRINT_INSTR
     size_t operands_size = 0;
     while (operands_size < 4 && ctx.operands[operands_size].type != opt_undefined) {
         operands_size++;
     }
-    // TODO: prefix
-    string showstr = name;
+    string showstr = prefix_name(ctx.opcode, ctx.prefix[0]);
+    showstr += name;
     bool print_suffix = operands_size != 0;
     for (size_t i = 0; i < operands_size; i++) {
         if (ctx.operands[i].type == opt_register) {
@@ -66,6 +79,7 @@ inline void print_instr(InstructionContext &ctx, string name) {
     }
     Assert(showstr.size() < 80, "assembly buffer overflow");
     std::copy(showstr.begin(), showstr.end(), assembly);
+    assembly[showstr.size()] = 0;
 #endif
 }
 
