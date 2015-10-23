@@ -64,7 +64,8 @@ inline void print_instr(InstructionContext &ctx, string name) {
         showstr += ctx.operands[i].str_name;
         add_comma = true;
     }
-    print_asm("%s", showstr.c_str());
+    Assert(showstr.size() < 80, "assembly buffer overflow");
+    std::copy(showstr.begin(), showstr.end(), assembly);
 #endif
 }
 
