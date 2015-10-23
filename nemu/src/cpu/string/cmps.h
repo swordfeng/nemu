@@ -19,5 +19,5 @@ REP_INSTRUCTION_HELPER(cmps) {
         ctx.operands[1].setValue(ctx.operands[1].getUnsignedValue() + ctx.operands[2].size);
         ctx.operands[0].setValue(ctx.operands[0].getUnsignedValue() + ctx.operands[2].size);
     }
-    return ctx.prefix[0] == prefix_0_repe ? cpu.zf : !cpu.zf;
+    return ctx.prefix[0] == prefix_0_repe ? !cpu.zf : cpu.zf;
 }
