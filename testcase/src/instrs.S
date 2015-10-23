@@ -8,7 +8,20 @@ start:
   jne bad
   call arith_test
   call ctrl_trans_test
+  call data_trans_test
   HIT_GOOD_TRAP
+
+data_trans_test:
+  mov $0xf001, %ax
+  mov $0xff, %dx
+  cwtl
+  cmp $0xffff, %dx
+  jne bad
+  mov $1, %eax
+  cltd
+  cmp $0, %edx
+  jne bad
+  ret
 
 ctrl_trans_test:
   // jmp
