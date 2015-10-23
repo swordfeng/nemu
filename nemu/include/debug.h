@@ -7,7 +7,7 @@
 extern FILE* log_fp;
 
 #ifdef LOG_FILE
-#	define Log_write(format, ...) fprintf(log_fp, format, ## __VA_ARGS__), fflush(log_fp)
+#	define Log_write(format, ...) fprintf(log_fp, format, ## __VA_ARGS__)
 #else
 #	define Log_write(format, ...)
 #endif
