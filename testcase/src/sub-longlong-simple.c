@@ -1,7 +1,9 @@
 #include "trap.h"
 
 int main() {
-	nemu_assert((long long)0 - (long long)1 == 0xffffffffffffffffULL);
+	long long a = 0;
+	long long b = 1;
+	nemu_assert(a - b == 0xffffffffffffffffULL);
 	HIT_GOOD_TRAP;
 	return 0;
 }
