@@ -44,6 +44,7 @@
 
 #include "string/movs.h"
 #include "string/stos.h"
+#include "string/cmps.h"
 
 #include "flagctl/cld.h"
 
