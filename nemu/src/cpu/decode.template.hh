@@ -61,7 +61,7 @@ inline void print_instr(InstructionContext &ctx, string name) {
         operands_size++;
     }
     string showstr;
-    showstr.reserve(30);
+    showstr.reserve(24);
     showstr = prefix_name(ctx.opcode, ctx.prefix[0]);
     showstr += name;
     bool print_suffix = operands_size != 0;
