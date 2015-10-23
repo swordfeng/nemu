@@ -41,17 +41,26 @@ string_test:
   cmpw $0x0605, 0x22345a
   jne bad
   // stos
-  mov $0xef, %ax
+  mov $0x03, %ax
   mov $0x223456, %edi
   mov $5, %ecx
   stosb
   rep stosb
   cmp $0x22345c, %edi
   jne bad
-  cmpl $0xefefefef, 0x223456
+  cmpl $0x03030303, 0x223456
   jne bad
-  cmpw $0xefef, 0x22345a
+  cmpw $0x0303, 0x22345a
   jne bad
+  // cmps
+  /*
+  mov $6, %ecx
+  mov $0x123456, %esi
+  mov $0x223456, %edi
+  cmpsb
+  cmp $3, %ecx
+  jne bad
+  */
   ret
 
 logic_test:

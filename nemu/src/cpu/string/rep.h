@@ -1,6 +1,7 @@
 #pragma once
 
-#define REP_INSTRUCTION_HELPER(name)
+#define REP_INSTRUCTION_HELPER(name) \
+bool name##_rep_internal HELPER_PARAM_LIST; \
 INSTRUCTION_HELPER(name) { \
     size_t size; \
     if (ctx.opcode & 1) { \
@@ -26,18 +27,20 @@ INSTRUCTION_HELPER(name) { \
     if (ctx.prefix[prefix_address]) { \
         ctx.operands[0].size = 2; \
         ctx.operands[1].size = 2; \
+        ctx.operands[3].size = 2; \
     } else { \
         ctx.operands[0].size = 4; \
         ctx.operands[1].size = 4; \
+        ctx.operands[3].size = 4; \
     } \
     uint32_t countReg; \
-    if (ctx.operands[0]) countReg = ctx.operands[2].getUnsignedValue(); \
+    if (ctx.prefix[prefix_lock_rep]) countReg = ctx.operands[3].getUnsignedValue(); \
     else countReg = 1; \
     bool cont; \
     do { \
         cont = name##_rep_internal(ctx, eip); \
         --countReg; \
     } while (countReg && cont); \
-    if (ctx.operands[0]) ctx.operands[3].setValue(countReg); \
+    if (ctx.prefix[prefix_lock_rep]) ctx.operands[3].setValue(countReg); \
 } \
 bool name##_rep_internal HELPER_PARAM_LIST
