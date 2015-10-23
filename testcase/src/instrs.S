@@ -1,23 +1,26 @@
 #include "trap.h"
 
+// about 300 instrs per round
+
 .globl start
 start:
-  mov $8000000, %esp
+  mov $0x1000000, %esp
   mov $1, %eax
   cmp $1, %eax
   jne bad
-  mov $1000000, %eax
+  mov $0, %eax // test for 1000000 instrs
   jmp loop_test
 loop_main:
   call arith_test
   call ctrl_trans_test
   call data_trans_test
   call logic_test
-  popl %eax
+  mov 0x10000, %eax
   sub $1, %eax
 loop_test:
-  push %eax
-  jz loop_main
+  mov %eax, 0x10000
+  test %eax, %eax
+  jnz loop_main
   HIT_GOOD_TRAP
 
 logic_test:
