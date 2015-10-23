@@ -6,12 +6,12 @@ MAKEFLAGS := -j4
 
 CC := gcc
 CXX := g++
-GHC := ghc
+HC := ghc
 LD := ld
 ASFLAGS := -m32 -MMD -c
 CFLAGS := -MMD -Wall -Werror -c
 CXXFLAGS := -MMD -Wall -Werror -c -std=c++14 -fno-exceptions
-HSFLAGS := -c
+HCFLAGS := -c
 
 LIB_COMMON_DIR := lib-common
 NEWLIBC_DIR := $(LIB_COMMON_DIR)/newlib
