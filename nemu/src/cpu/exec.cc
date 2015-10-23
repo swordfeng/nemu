@@ -159,16 +159,18 @@ helper_fun _2byte_opcode_table[256] = {
 
 extern "C" int exec(swaddr_t eip) {
 	InstructionContext ctx;
-	uint8_t opcode = instr_fetch(eip, 1);
-	return opcode_table[opcode](ctx, eip);
+	ctx.opcode = instr_fetch(eip, 1);
+	return opcode_table[ctx.opcode](ctx, eip);
 }
 
 helper_fun op_group(std::vector<helper_fun> fun_list) {
-	return [fun_list(std::move(fun_list))] HELPER_PARAM_LIST {
+	helper_fun *fun_list_array = new helper_fun[8];
+	copy(fun_list.begin(), fun_list.end(), fun_list_array);
+	return [fun_list_array] HELPER_PARAM_LIST {
 		ModR_M modrm;
 		modrm.value = instr_fetch(eip + 1, 1);
 		ctx.require_modrm = true;
-		int ret = fun_list[modrm.regop] (ctx, eip);
+		int ret = fun_list_array[modrm.regop] (ctx, eip);
 		ctx.require_modrm = false;
 		return ret;
 	};
@@ -185,8 +187,8 @@ HELPER(op_prefix) {
 }
 
 HELPER(op_escape) {
-	uint8_t _2nd_opcode = instr_fetch(eip + 1, 1);
-	cpu.eip++;
+	eip = ++cpu.eip;
+	uint8_t _2nd_opcode = instr_fetch(eip, 1);
 	ctx.opcode = (ctx.opcode << 8) | _2nd_opcode;
-	return _2byte_opcode_table[_2nd_opcode](ctx, eip + 1) + 1;
+	return _2byte_opcode_table[_2nd_opcode](ctx, eip) + 1;
 }
