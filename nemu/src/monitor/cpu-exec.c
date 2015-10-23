@@ -21,12 +21,17 @@ char asm_buf[128];
 jmp_buf jbuf;
 
 void print_bin_instr(swaddr_t eip, int len) {
-	int i;
-	int l = sprintf(asm_buf, "%8x:   ", eip);
-	for(i = 0; i < len; i ++) {
-		l += sprintf(asm_buf + l, "%02x ", instr_fetch(eip + i, 1));
+	swaddr_t target = eip + len;
+	char *pbuf = asm_buf;
+	pbuf += sprintf(pbuf, "%8x:   ", eip);
+	for(; eip < target; eip++) {
+		pbuf += sprintf(pbuf, "%02x ", instr_fetch(eip, 1));
 	}
-	sprintf(asm_buf + l, "%*.s", 50 - (12 + 3 * len), "");
+	char *bufend = asm_buf + 50;
+	for (; pbuf < bufend; pbuf++) {
+		*pbuf = ' ';
+	}
+	*pbuf = 0;
 }
 
 /* This function will be called when an `int3' instruction is being executed. */
