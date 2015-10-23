@@ -18,7 +18,12 @@ extern "C" {
 using std::string;
 
 /* Set to save operand name */
+#define PRINT_INSTR
+
+/* if print instructions, then enable operand output */
+#ifdef PRINT_INSTR
 #define OPERAND_SET_NAME
+#endif
 
 /* Forward Declaration */
 struct InstructionContext;
@@ -64,10 +69,12 @@ struct Operand {
         swaddr_t address;
         uint32_t immediate;
     };
+#ifdef OPERAND_SET_NAME
     string str_name;
+#endif
     Operand();
-    uint32_t getSignedValue();
-    uint32_t getUnsignedValue();
+    inline uint32_t getSignedValue();
+    inline uint32_t getUnsignedValue();
     swaddr_t getAddress();
     void setValue(uint32_t v);
     string suffix();

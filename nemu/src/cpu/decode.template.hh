@@ -42,6 +42,7 @@ inline static string reg_get_name(int reg_index, size_t size) {
 }
 
 inline void print_instr(InstructionContext &ctx, string name) {
+#ifdef PRINT_INSTR
     size_t operands_size = 0;
     while (operands_size < 4 && ctx.operands[operands_size].type != opt_undefined) {
         operands_size++;
@@ -64,6 +65,7 @@ inline void print_instr(InstructionContext &ctx, string name) {
         add_comma = true;
     }
     print_asm("%s", showstr.c_str());
+#endif
 }
 
 inline InstructionContext::InstructionContext():

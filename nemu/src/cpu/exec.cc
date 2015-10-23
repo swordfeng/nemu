@@ -1,6 +1,7 @@
 #include <vector>
 
 #include "decode.template.hh"
+//#define print_instr(...)
 #include "all-instr.h"
 
 /* +rb/+rw/+rd occupies 8 opcodes to represent registers */
@@ -168,7 +169,7 @@ helper_fun op_group(std::vector<helper_fun> fun_list) {
 		ModR_M modrm;
 		modrm.value = instr_fetch(eip + 1, 1);
 		ctx.require_modrm = true;
-		int ret = (fun_list.begin()[modrm.regop]) (ctx, eip);
+		int ret = fun_list[modrm.regop] (ctx, eip);
 		ctx.require_modrm = false;
 		return ret;
 	};
