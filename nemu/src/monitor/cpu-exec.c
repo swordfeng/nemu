@@ -21,7 +21,7 @@ char asm_buf[128];
 jmp_buf jbuf;
 
 static inline void sprint_hex(char *buf, uint32_t value, int digits, bool fillzero) {
-	char *p = buf + digits; 
+	char *p = buf + digits;
 	do {
 		p--;
 		char c = value & 0xf;
@@ -98,9 +98,9 @@ void cpu_exec(volatile uint32_t n) {
 		int instr_len = exec(cpu.eip);
 
 #ifdef DEBUG
+		print_bin_instr(eip_temp, instr_len);
+		//Log_write("%s\n", asm_buf);
 		if(n_temp < MAX_INSTR_TO_PRINT) {
-			print_bin_instr(eip_temp, instr_len);
-			//Log_write("%s\n", asm_buf);
 			printf("%s%s\n", asm_buf, assembly);
 		}
 #endif
