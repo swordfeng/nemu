@@ -77,3 +77,7 @@ submit: clean
 
 count-nemu:
 	find nemu/ -regextype posix-egrep -regex ".*\.c|.*\.h|.*\.hc|.*\.hs" -exec cat '{}' \; | sed '/^\s*$$/d' | wc -l
+
+profile:
+	@gprof obj/nemu/nemu > prof.txt
+	@echo "See prof.txt"
