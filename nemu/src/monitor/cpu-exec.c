@@ -20,12 +20,34 @@ char asm_buf[128];
 /* Used with exception handling. */
 jmp_buf jbuf;
 
+static inline void sprint_hex(char *buf, uint32_t value, int digits, bool fillzero) {
+	char *p = buf + digits; 
+	do {
+		p--;
+		char c = value & 0xf;
+		c = c > 9 ? c - 10 + 'a' : c + '0';
+		*p = c;
+		value >>= 4;
+	} while (p != buf && value != 0);
+	char fill = fillzero ? '0' : ' ';
+	while (p-- != buf) {
+		*p = fill;
+	}
+}
+
 void print_bin_instr(swaddr_t eip, int len) {
 	swaddr_t target = eip + len;
 	char *pbuf = asm_buf;
-	pbuf += sprintf(pbuf, "%8x:   ", eip);
+	sprint_hex(pbuf, eip, 8, false);
+	pbuf += 8;
+	*(pbuf++) = ':';
+	*(pbuf++) = ' ';
+	*(pbuf++) = ' ';
+	*(pbuf++) = ' ';
 	for(; eip < target; eip++) {
-		pbuf += sprintf(pbuf, "%02x ", instr_fetch(eip, 1));
+		sprint_hex(pbuf, instr_fetch(eip, 1), 2, true);
+		pbuf[2] = ' ';
+		pbuf += 3;
 	}
 	char *bufend = asm_buf + 50;
 	for (; pbuf < bufend; pbuf++) {
