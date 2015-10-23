@@ -26,19 +26,31 @@ loop_test:
 
 string_test:
   // movs
-  movb $1, 0x123456;
-  movb $2, 0x123457;
-  movb $3, 0x123458;
-  movb $4, 0x123459;
-  movb $5, 0x12345a;
-  movb $6, 0x12345b;
+  movb $1, 0x123456
+  movb $2, 0x123457
+  movb $3, 0x123458
+  movb $4, 0x123459
+  movb $5, 0x12345a
+  movb $6, 0x12345b
   mov $0x123456, %esi
   mov $0x223456, %edi
   mov $3, %ecx
   rep movsw
   cmpl $0x04030201, 0x223456
   jne bad
-  cmpl $0x00000605, 0x22345a
+  cmpw $0x0605, 0x22345a
+  jne bad
+  // stos
+  mov $0xef, %ax
+  mov $0x223456, %edi
+  mov $5, %ecx
+  stosb
+  rep stosb
+  cmp $0x22345c, %edi
+  jne bad
+  cmpl $0xefefefef, 0x223456
+  jne bad
+  cmpw $0xefef, 0x22345a
   jne bad
   ret
 
