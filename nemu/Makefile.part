@@ -1,10 +1,10 @@
-nemu_CFLAGS_EXTRA := -ggdb3 #-pg
+nemu_CFLAGS_EXTRA := -ggdb3 -funroll-loops -flto #-pg
 $(eval $(call make_common_rules,nemu,$(nemu_CFLAGS_EXTRA)))
 
-nemu_LDFLAGS := -lreadline -package parsec -lubsan -lstdc++ -optl-flto #-optl-pg
+nemu_LDFLAGS := -no-hs-main -lreadline -package parsec -lubsan -lstdc++ -optl-flto #-optl-pg
 
 $(nemu_BIN): $(nemu_OBJS)
-	$(call make_command, $(GHC), -no-hs-main $(nemu_LDFLAGS), ld $@, $^)
+	$(call make_command, $(GHC), $(nemu_LDFLAGS), ld $@, $^)
 	$(call git_commit, "compile NEMU")
 
 
