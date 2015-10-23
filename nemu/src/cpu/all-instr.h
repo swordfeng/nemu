@@ -42,6 +42,8 @@
 #include "logic/shrd.h"
 #include "logic/setcc.h"
 
+#include "string/movs.h"
+
 #include "flagctl/cld.h"
 
 #include "misc/lea.h"

@@ -56,7 +56,7 @@ helper_fun opcode_table[256] = {
 /* 0x98 */	cwtl, cltd, inv, inv,
 /* 0x9c */	inv, inv, inv, inv,
 /* 0xa0 */	&mov<op_a_b, op_moffs_b>, &mov<op_a_v, op_moffs_v>, &mov<op_moffs_b, op_a_b>, &mov<op_moffs_v, op_a_v>,
-/* 0xa4 */	inv, inv, inv, inv,
+/* 0xa4 */	movs, movs, inv, inv,
 /* 0xa8 */	&test<op_a_b, op_imm_b>, &test<op_a_v, op_imm_v>, inv, inv,
 /* 0xac */	inv, inv, inv, inv,
 /* 0xb0 */	op_r_rep(&mov<op_r_b, op_imm_b>),
@@ -178,7 +178,8 @@ template <size_t prefix_group>
 HELPER(op_prefix) {
 	ctx.prefix[prefix_group] = instr_fetch(eip, 1);
 	cpu.eip++;
-	int len = opcode_table[instr_fetch(eip + 1, 1)] (ctx, eip + 1);
+	ctx.opcode = instr_fetch(eip + 1, 1);
+	int len = opcode_table[ctx.opcode] (ctx, eip + 1);
 	ctx.prefix[prefix_group] = 0;
 	return len + 1;
 }
@@ -186,5 +187,6 @@ HELPER(op_prefix) {
 HELPER(op_escape) {
 	uint8_t _2nd_opcode = instr_fetch(eip + 1, 1);
 	cpu.eip++;
+	ctx.opcode = (ctx.opcode << 8) | _2nd_opcode;
 	return _2byte_opcode_table[_2nd_opcode](ctx, eip + 1) + 1;
 }

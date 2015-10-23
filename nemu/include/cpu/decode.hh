@@ -60,6 +60,15 @@ enum InstructionPrefixIndex {
     prefix_lock_rep, prefix_segment, prefix_operand, prefix_address
 };
 
+enum InstructionPrefixOpcode {
+    prefix_0_lock = 0xf0,
+    prefix_0_rep = 0xf3,
+    prefix_0_repe = 0xf3,
+    prefix_0_repne = 0xf2,
+    prefix_2_operand = 0x66,
+    prefix_3_address = 0x67
+};
+
 /* Operand */
 struct Operand {
     OperandType type;

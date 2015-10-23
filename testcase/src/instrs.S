@@ -15,6 +15,7 @@ loop_main:
   call ctrl_trans_test
   call data_trans_test
   call logic_test
+  call string_test
   mov 0x10000, %eax
   sub $1, %eax
 loop_test:
@@ -22,6 +23,24 @@ loop_test:
   test %eax, %eax
   jnz loop_main
   HIT_GOOD_TRAP
+
+string_test:
+  // movs
+  movb $1, 0x123456;
+  movb $2, 0x123457;
+  movb $3, 0x123458;
+  movb $4, 0x123459;
+  movb $5, 0x12345a;
+  movb $6, 0x12345b;
+  mov $0x123456, %esi
+  mov $0x223456, %edi
+  mov $3, %ecx
+  rep movsw
+  cmpl $0x04030201, 0x223456
+  jne bad
+  cmpl $0x00000605, 0x22345a
+  jne bad
+  ret
 
 logic_test:
   // and
