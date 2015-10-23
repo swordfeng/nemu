@@ -6,6 +6,57 @@ start:
   mov $1, %eax
   cmp $1, %eax
   jne bad
+  call arith_test
+  call ctrl_trans_test
+  HIT_GOOD_TRAP
+
+ctrl_trans_test:
+  // jmp
+  jmp jmp_test0
+  jmp bad
+jmp_test0:
+  // jcc
+  mov $3, %eax
+  cmp $0, %eax
+  jz bad
+  js bad
+  jc bad
+  jo bad
+  jp bad
+  cmp $5, %eax
+  jo bad
+  jz bad
+  jnc bad
+  jns bad
+  jnp bad
+  cmp $0x80000000, %eax
+  jno bad
+  cmp %eax, %eax
+  jnz bad
+  // call
+  call call_test0
+call_ret_pos:
+  jmp bad
+  // ret
+  lea ret_ret_pos, %ebx
+  push %ebx
+  jmp ret_test0
+  jmp bad
+  jmp bad
+  jmp bad
+ret_ret_pos:
+  ret
+call_test0:
+  pop %eax
+  lea call_ret_pos, %edx
+  cmp %eax, %edx
+  jne bad
+  add $5, %eax
+  jmp %eax
+ret_test0:
+  ret
+
+arith_test:
   // add
   mov $0x12, %al
   add $0xef, %al
@@ -86,7 +137,14 @@ start:
   jne bad
   cmp $-1781136, %eax
   jne bad
-  HIT_GOOD_TRAP
+  // neg
+  mov $12345678, %eax
+  lea -1(%eax), %ecx
+  not %ecx
+  neg %eax
+  cmp %eax, %ecx
+  jne bad
+  ret
 
 test_cf:
   push %eax
