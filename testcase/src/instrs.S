@@ -74,9 +74,17 @@ start:
   mov $0, %edx
   mov %ecx, %eax
   mov $65, %ecx
-  int3
   div %ecx
   cmp $7316038, %eax
+  jne bad
+  // idiv
+  mov $0xffffec00, %edx
+  mov $0x353523a7, %eax
+  mov $12345678, %ecx
+  idiv %ecx
+  cmp $-8350329, %edx
+  jne bad
+  cmp $-1781136, %eax
   jne bad
   HIT_GOOD_TRAP
 

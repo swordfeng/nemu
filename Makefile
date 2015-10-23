@@ -55,7 +55,7 @@ clean: clean-cpp
 
 
 ##### some convinient rules #####
-TEST=add
+TEST=instrs
 USERPROG := obj/testcase/$(TEST)
 ENTRY := $(USERPROG)
 
