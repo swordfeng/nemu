@@ -35,7 +35,7 @@ static inline void sprint_hex(char *buf, uint32_t value, int digits, bool fillze
 	}
 }
 
-void print_bin_instr(swaddr_t eip, int len) {
+static inline void print_bin_instr(swaddr_t eip, int len) {
 	swaddr_t target = eip + len;
 	char *pbuf = asm_buf;
 	sprint_hex(pbuf, eip, 8, false);
@@ -98,11 +98,10 @@ void cpu_exec(volatile uint32_t n) {
 		int instr_len = exec(cpu.eip);
 
 #ifdef DEBUG
-		print_bin_instr(eip_temp, instr_len);
-		strcat(asm_buf, assembly);
-		//Log_write("%s\n", asm_buf);
 		if(n_temp < MAX_INSTR_TO_PRINT) {
-			printf("%s\n", asm_buf);
+			print_bin_instr(eip_temp, instr_len);
+			//Log_write("%s\n", asm_buf);
+			printf("%s%s\n", asm_buf, assembly);
 		}
 #endif
 
