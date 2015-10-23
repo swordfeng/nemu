@@ -6,6 +6,7 @@ cmd="c\nq"
 for file in $@; do
 	printf "[$file]"
 	logfile=`basename $file`-log.txt
+	objcopy -S -O binary $file entry
 	echo -e $cmd | /usr/bin/time -f '%e' -o time.log $nemu $file &> $logfile
 	time_cost=`cat time.log`
 	printf "($time_cost s): "

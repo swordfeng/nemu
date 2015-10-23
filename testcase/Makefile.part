@@ -10,7 +10,7 @@ testcase_START_OBJ := $(testcase_OBJ_DIR)/start.o
 testcase_LDFLAGS := -m elf_i386 -e start -Ttext=0x00100000
 
 $(testcase_CBIN): % : $(testcase_START_OBJ) %.o $(FLOAT) $(NEWLIBC)
-	$(call make_command, $(LD), $(testcase_LDFLAGS) -lnewlib, ld $@, $^)
+	$(call make_command, $(LD), $(testcase_LDFLAGS), ld $@, $^)
 	@objdump -d $@ > $@.txt
 
 $(testcase_OBJ_DIR)/mov: % : %.o
