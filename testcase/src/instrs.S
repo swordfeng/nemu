@@ -17,7 +17,7 @@ loop_main:
   sub $1, %eax
 loop_test:
   push %eax
-  jnz loop_main
+  jz loop_main
   HIT_GOOD_TRAP
 
 logic_test:
