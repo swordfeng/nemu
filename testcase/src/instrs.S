@@ -1,6 +1,6 @@
 #include "trap.h"
 
-// about 300 instrs per round
+// about 350 instrs per round
 
 .globl start
 start:
@@ -8,7 +8,7 @@ start:
   mov $1, %eax
   cmp $1, %eax
   jne bad
-  mov $33333, %eax // test for 10000000 instrs
+  mov $28571, %eax // test for 10000000 instrs
   jmp loop_test
 loop_main:
   call arith_test
