@@ -6,10 +6,18 @@ start:
   mov $1, %eax
   cmp $1, %eax
   jne bad
+  mov $1000000, %eax
+  jmp loop_test
+loop_main:
   call arith_test
   call ctrl_trans_test
   call data_trans_test
   call logic_test
+  popl %eax
+  sub $1, %eax
+loop_test:
+  push %eax
+  jnz loop_main
   HIT_GOOD_TRAP
 
 logic_test:
