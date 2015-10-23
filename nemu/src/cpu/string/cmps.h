@@ -1,6 +1,6 @@
 #include "rep.h"
 
-REP_INSTRUCTION_HELPER(movs) {
+REP_INSTRUCTION_HELPER(cmps) {
     // copied from cmp.h
     uint32_t val1 = swaddr_read(ctx.operands[0].getUnsignedValue(), ctx.operands[2].size);
     uint32_t val2 = swaddr_read(ctx.operands[1].getUnsignedValue(), ctx.operands[2].size);
