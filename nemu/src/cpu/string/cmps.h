@@ -1,12 +1,12 @@
-INSTRUCTION_HELPER(stos) {
+INSTRUCTION_HELPER(cmps) {
     size_t size;
-    if (ctx.opcode & 1) { /* AB */
+    if (ctx.opcode & 1) { /* A7 */
         if (ctx.prefix[2]) {
             size = 2;
         } else {
             size = 4;
         }
-    } else { /* AA */
+    } else { /* A6 */
         size = 1;
     }
     size_t len = 1;
@@ -15,11 +15,13 @@ INSTRUCTION_HELPER(stos) {
             len = reg_w(R_CX);
         }
         while (len--) {
-            uint32_t val = reg_read_index(R_EAX, size);
+            uint32_t val = swaddr_read(reg_w(R_SI), size);
             swaddr_write(reg_w(R_DI), size, val);
             if (cpu.df) {
+                reg_w(R_SI) -= size;
                 reg_w(R_DI) -= size;
             } else {
+                reg_w(R_SI) += size;
                 reg_w(R_DI) += size;
             }
         }
@@ -28,24 +30,26 @@ INSTRUCTION_HELPER(stos) {
             len = reg_l(R_ECX);
         }
         while (len--) {
-            uint32_t val = reg_read_index(R_EAX, size);
+            uint32_t val = swaddr_read(reg_l(R_ESI), size);
             swaddr_write(reg_l(R_EDI), size, val);
             if (cpu.df) {
+                reg_l(R_ESI) -= size;
                 reg_l(R_EDI) -= size;
             } else {
+                reg_l(R_ESI) += size;
                 reg_l(R_EDI) += size;
             }
         }
     }
     switch (size) {
     case 1:
-        print_instr(ctx, "stosb");
+        print_instr(ctx, "cmpsb");
         break;
     case 2:
-        print_instr(ctx, "stosw");
+        print_instr(ctx, "cmpsw");
         break;
     case 4:
-        print_instr(ctx, "stosl");
+        print_instr(ctx, "cmpsl");
         break;
     }
 }
