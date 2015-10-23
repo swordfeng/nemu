@@ -180,13 +180,13 @@ inline uint32_t int_trunc(uint32_t val, size_t size) {
 }
 
 inline string conv16(uint32_t val) {
-    std::stringstream ss;
+    static char conv_buf[16];
     if (static_cast<int32_t>(val) < 0) {
-        ss << "-";
-        val = -static_cast<int32_t>(val);
+        snprintf(conv_buf, 16, "-%#x", -val);
+    } else {
+        snprintf(conv_buf, 16, "%#x", val);
     }
-    ss << "0x" << std::hex << val;
-    return ss.str();
+    return conv_buf;
 }
 
 inline uint8_t calc_pf(uint8_t val) {
