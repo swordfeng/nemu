@@ -1,55 +1,23 @@
-INSTRUCTION_HELPER(cmps) {
-    size_t size;
-    if (ctx.opcode & 1) { /* A7 */
-        if (ctx.prefix[2]) {
-            size = 2;
-        } else {
-            size = 4;
-        }
-    } else { /* A6 */
-        size = 1;
-    }
-    size_t len = 1;
-    if (ctx.prefix[prefix_address]) {
-        if (ctx.prefix[0] == prefix_0_rep) {
-            len = reg_w(R_CX);
-        }
-        while (len--) {
-            uint32_t val = swaddr_read(reg_w(R_SI), size);
-            swaddr_write(reg_w(R_DI), size, val);
-            if (cpu.df) {
-                reg_w(R_SI) -= size;
-                reg_w(R_DI) -= size;
-            } else {
-                reg_w(R_SI) += size;
-                reg_w(R_DI) += size;
-            }
-        }
+#include "rep.h"
+
+REP_INSTRUCTION_HELPER(movs) {
+    // copied from cmp.h
+    uint32_t val1 = swaddr_read(ctx.operands[0].getUnsignedValue(), ctx.operands[2].size);
+    uint32_t val2 = swaddr_read(ctx.operands[1].getUnsignedValue(), ctx.operands[2].size);
+    size_t result_size = ctx.operands[0].size;
+    uint32_t result = signed_extend(int_trunc(val1 - val2, result_size), result_size);
+
+    cpu.cf = int_trunc(result, result_size) > int_trunc(val1, result_size);
+    cpu.zf = result == 0;
+    cpu.sf = result >> 31;
+    cpu.of = (val1 >> 31) != (val2 >> 31) && (val1 >> 31) != (result >> 31);
+    cpu.pf = calc_pf(result);
+    if (cpu.df) {
+        ctx.operands[1].setValue(ctx.operands[1].getUnsignedValue() - ctx.operands[2].size);
+        ctx.operands[0].setValue(ctx.operands[0].getUnsignedValue() - ctx.operands[2].size);
     } else {
-        if (ctx.prefix[0] == prefix_0_rep) {
-            len = reg_l(R_ECX);
-        }
-        while (len--) {
-            uint32_t val = swaddr_read(reg_l(R_ESI), size);
-            swaddr_write(reg_l(R_EDI), size, val);
-            if (cpu.df) {
-                reg_l(R_ESI) -= size;
-                reg_l(R_EDI) -= size;
-            } else {
-                reg_l(R_ESI) += size;
-                reg_l(R_EDI) += size;
-            }
-        }
+        ctx.operands[1].setValue(ctx.operands[1].getUnsignedValue() + ctx.operands[2].size);
+        ctx.operands[0].setValue(ctx.operands[0].getUnsignedValue() + ctx.operands[2].size);
     }
-    switch (size) {
-    case 1:
-        print_instr(ctx, "cmpsb");
-        break;
-    case 2:
-        print_instr(ctx, "cmpsw");
-        break;
-    case 4:
-        print_instr(ctx, "cmpsl");
-        break;
-    }
+    return ctx.prefix[0] == prefix_0_repe ? cpu.zf : !cpu.zf;
 }
