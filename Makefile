@@ -6,9 +6,12 @@ MAKEFLAGS := -j4
 
 CC := gcc
 CXX := g++
-LD := ld
-CFLAGS := -MMD -Wall -Werror -c
 GHC := ghc
+LD := ld
+ASFLAGS := -m32 -MMD -c
+CFLAGS := -MMD -Wall -Werror -c
+CXXFLAGS := -MMD -Wall -Werror -c -std=c++14 -fno-exceptions
+HSFLAGS := -c
 
 LIB_COMMON_DIR := lib-common
 NEWLIBC_DIR := $(LIB_COMMON_DIR)/newlib
@@ -49,10 +52,11 @@ clean-kernel:
 clean-game:
 	-rm -rf obj/game 2> /dev/null
 
-clean: clean-cpp
-	-rm -rf obj 2> /dev/null
+clean-log:
 	-rm -f *log.txt entry $(FLOAT) 2> /dev/null
 
+clean: clean-cpp clean-log
+	-rm -rf obj 2> /dev/null
 
 ##### some convinient rules #####
 TEST=instrs

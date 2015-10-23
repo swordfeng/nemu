@@ -1,5 +1,7 @@
-nemu_CFLAGS_EXTRA := -ggdb3 -funroll-loops -flto #-pg
-$(eval $(call make_common_rules,nemu,$(nemu_CFLAGS_EXTRA)))
+nemu_CFLAGS_EXTRA := -ggdb3 -Ofast -funroll-loops -flto #-pg
+nemu_CXXFLAGS_EXTRA := -ggdb3 -Ofast -funroll-loops -flto #-pg
+
+$(eval $(call make_common_rules,nemu))
 
 nemu_LDFLAGS := -no-hs-main -lreadline -package parsec -lubsan -lstdc++ -optl-flto #-optl-pg
 
