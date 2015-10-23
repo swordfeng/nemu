@@ -53,14 +53,14 @@ string_test:
   cmpw $0x0303, 0x22345a
   jne bad
   // cmps
-  /*
-  mov $6, %ecx
+  mov $5, %ecx
   mov $0x123456, %esi
   mov $0x223456, %edi
   cmpsb
+  je bad
+  rep cmpsb
   cmp $3, %ecx
   jne bad
-  */
   ret
 
 logic_test:

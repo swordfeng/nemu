@@ -56,7 +56,7 @@ helper_fun opcode_table[256] = {
 /* 0x98 */	cwtl, cltd, inv, inv,
 /* 0x9c */	inv, inv, inv, inv,
 /* 0xa0 */	&mov<op_a_b, op_moffs_b>, &mov<op_a_v, op_moffs_v>, &mov<op_moffs_b, op_a_b>, &mov<op_moffs_v, op_a_v>,
-/* 0xa4 */	movs, movs, inv, inv,
+/* 0xa4 */	movs, movs, cmps, cmps,
 /* 0xa8 */	&test<op_a_b, op_imm_b>, &test<op_a_v, op_imm_v>, &stos, &stos,
 /* 0xac */	inv, inv, inv, inv,
 /* 0xb0 */	op_r_rep(&mov<op_r_b, op_imm_b>),
