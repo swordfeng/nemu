@@ -7,7 +7,8 @@
 #include "data-trans/xchg.h"
 #include "data-trans/pop.h"
 #include "data-trans/leave.h"
-#include "data-trans/cwtl-cltd.h"
+#include "data-trans/cwtl.h"
+#include "data-trans/cltd.h"
 #include "data-trans/movsx.h"
 #include "data-trans/movzx.h"
 
