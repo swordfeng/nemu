@@ -60,8 +60,9 @@ inline void print_instr(InstructionContext &ctx, string name) {
     while (operands_size < 4 && ctx.operands[operands_size].type != opt_undefined) {
         operands_size++;
     }
-    string showstr = prefix_name(ctx.opcode, ctx.prefix[0]);
-    showstr.reserve(15);
+    string showstr;
+    showstr.reserve(30);
+    showstr = prefix_name(ctx.opcode, ctx.prefix[0]);
     showstr += name;
     bool print_suffix = operands_size != 0;
     for (size_t i = 0; i < operands_size; i++) {
