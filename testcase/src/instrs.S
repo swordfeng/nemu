@@ -8,7 +8,7 @@ start:
   mov $1, %eax
   cmp $1, %eax
   jne bad
-  mov $0, %eax // test for 1000000 instrs
+  mov $3333, %eax // test for 1000000 instrs
   jmp loop_test
 loop_main:
   call arith_test
