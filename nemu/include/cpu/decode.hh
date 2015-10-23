@@ -18,7 +18,9 @@ extern "C" {
 using std::string;
 
 /* Set to save operand name */
+#ifdef DEBUG
 #define PRINT_INSTR
+#endif
 
 /* if print instructions, then enable operand output */
 #ifdef PRINT_INSTR
