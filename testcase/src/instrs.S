@@ -8,7 +8,7 @@ start:
   jne bad
   call arith_test
   call ctrl_trans_test
-  call data_trans_test
+  //call data_trans_test
   HIT_GOOD_TRAP
 
 data_trans_test:
