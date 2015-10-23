@@ -12,11 +12,11 @@ start:
   HIT_GOOD_TRAP
 
 data_trans_test:
-  mov $0xf001, %ax
-  mov $0xff, %dx
+  mov $0xfff001, %eax
   cwtl
-  cmp $0xffff, %dx
+  cmp $0xfffff001, %eax
   jne bad
+  mov $0xff, %edx
   mov $1, %eax
   cltd
   cmp $0, %edx
