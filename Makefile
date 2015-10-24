@@ -59,7 +59,7 @@ clean: clean-cpp clean-log
 	-rm -rf obj 2> /dev/null
 
 ##### some convinient rules #####
-TEST=instrs
+TEST=add
 USERPROG := obj/testcase/$(TEST)
 ENTRY := $(USERPROG)
 
