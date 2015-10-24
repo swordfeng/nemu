@@ -8,6 +8,7 @@ struct watchpoint {
 	int NO;
 	struct watchpoint *next;
 	char *exp;
+	ExprFun expr_fun;
 	uint32_t result;
 };
 
@@ -20,6 +21,7 @@ void init_wp_list() {
 	for(i = 0; i < NR_WP; i ++) {
 		wp_list[i].NO = i;
 		wp_list[i].next = &wp_list[i + 1];
+		wp_list[i].expr_fun = NULL;
 	}
 	wp_list[NR_WP - 1].next = NULL;
 
@@ -42,6 +44,10 @@ WP* wp_new() {
 void wp_free(WP *wp) {
 	free(wp->exp);
 	wp->exp = NULL;
+	if (wp->expr_fun) {
+		free_expr_fun(wp->expr_fun);
+		wp->expr_fun = NULL;
+	}
 	// if wp is the first in the list
 	if (head == wp) {
 		head = wp->next;
@@ -76,6 +82,7 @@ void wp_set_expr(WP *wp, const char *exp) {
 	free(wp->exp);
 	wp->exp = malloc(len + 1);
 	strcpy(wp->exp, exp);
+	wp->expr_fun = new_expr_fun(exp);
 	wp_eval(wp);
 	return;
 }
@@ -83,7 +90,7 @@ void wp_set_expr(WP *wp, const char *exp) {
 bool wp_eval(WP *wp) {
 	Assert(wp->exp, "NULL EXPRESSION IN WATCHPOINT");
 	bool success;
-	wp->result = expr(wp->exp, &success);
+	wp->result = wp->expr_fun(&success); //expr(wp->exp, &success);
 	Assert(success, "WRONG EXPRESSION IN WATCHPOINT");
 	return true;
 }

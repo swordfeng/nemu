@@ -20,43 +20,54 @@ import Foreign.Ptr
 
 ---- C Bool type
 type CBool = Word8
+---- C ExprFun type
+type CExprFun = Ptr CBool -> IO Word32
 -- imports from C
 foreign import ccall unsafe "reg_read_name" reg_read_name :: CString -> IO Word32
 foreign import ccall unsafe "swaddr_read" swaddr_read :: Word32 -> CSize -> IO Word32
+-- imports from Haskell library
+foreign import ccall "wrapper" makeCExprFun :: CExprFun -> IO (FunPtr CExprFun)
 -- exports to C
 foreign export ccall "expr" expr_hs :: CString -> Ptr CBool -> IO Word32
 foreign export ccall "expr_prettify" expr_prettify_hs :: CString -> Ptr CString -> IO CBool
+foreign export ccall "new_expr_fun" new_expr_fun_hs :: CString -> IO (FunPtr CExprFun)
+foreign export ccall "free_expr_fun" free_expr_fun_hs :: FunPtr CExprFun -> IO ()
 
 -- expression structure definition
 ---- Memory unit type
 type ValueType = Word32
+
+-- ShowExpr
+-- Types can be showed as Expr
+class ShowExpr a where
+  showExpr :: a -> String
 
 ---- Base Integer Type
 data BaseInt = Dec ValueType | Hex ValueType | Reg String
 validRegNames = ["eax", "ecx", "edx", "ebx", "esp", "ebp", "esi", "edi",
     "ax", "cx", "dx", "bx", "sp", "bp", "si", "di",
     "al", "cl", "dl", "bl", "ah", "ch", "dh", "bh", "eflags", "eip"]
-instance Show BaseInt where
-    show (Dec x) = show x
-    show (Hex x) = "0x" ++ showHex x ""
-    show (Reg s) = "$" ++ s
+instance ShowExpr BaseInt where
+    showExpr (Dec x) = show x
+    showExpr (Hex x) = "0x" ++ showHex x ""
+    showExpr (Reg s) = "$" ++ s
 getInt :: BaseInt -> IO ValueType
 getInt x = case x of
     Dec n -> return n
     Hex n -> return n
-    Reg s -> newCString s >>= reg_read_name
+    Reg s -> withCString s reg_read_name
 
 ---- Operator
 data OpAssoc = AssocL | AssocR deriving (Eq)
-data OpAry = Unary | Binary deriving (Eq, Show)
+data OpAry = Unary | Binary deriving (Eq)
 data Op = Op {
     getAssoc :: OpAssoc,
     getAry :: OpAry,
     getFunc :: IO ValueType -> IO ValueType -> IO ValueType,
     getOp :: String
 }
-instance Show Op where
-    show op = getOp op
+instance ShowExpr Op where
+    showExpr op = getOp op
 
 makeOp s = case lookup s $ map (\op -> (getOp op, op)) $ concat opDefs of
     Just op -> op
@@ -96,10 +107,11 @@ data Expr = ExprNone
     | UnOp Op Expr
     | BiOp Op Expr Expr
 
-showExpr (Number x) = show x
-showExpr (Patherness x) = "(" ++ showExpr x ++ ")"
-showExpr (UnOp op x) = show op ++ showExpr x
-showExpr (BiOp op x y) = showExpr x ++ " " ++ show op ++ " " ++ showExpr y
+instance ShowExpr Expr where
+    showExpr (Number x) = showExpr x
+    showExpr (Patherness x) = "(" ++ showExpr x ++ ")"
+    showExpr (UnOp op x) = showExpr op ++ showExpr x
+    showExpr (BiOp op x y) = showExpr x ++ " " ++ showExpr op ++ " " ++ showExpr y
 
 evalExpr :: Expr -> IO ValueType
 evalExpr (Number x) = getInt x
@@ -108,9 +120,6 @@ evalExpr (UnOp op x) = getFunc op (pure 0) (evalExpr x)
 evalExpr (BiOp op x y) = getFunc op (evalExpr x) (evalExpr y)
 
 parseExpr str = parse (exprP 0 >>= \exp -> empty >> eof $> exp) "" str
-
-instance Show Expr where
-    show exp = showExpr exp
 
 -- Parser Combinators
 ---- Empty
@@ -180,8 +189,23 @@ expr_prettify_hs cstr pstring = do
     let exp = parseExpr str
     case exp of
         Right res -> do
-            newCString (show res) >>= poke pstring
+            newCString (showExpr res) >>= poke pstring
             return 1
         Left err -> do
             printErrInfo err str
             return 0
+
+makeExprFun :: Expr -> CExprFun
+makeExprFun exp = \pbool -> poke pbool 1 >> evalExpr exp
+
+new_expr_fun_hs cstr = do
+  str <- peekCString cstr
+  let exp = parseExpr str
+  case exp of
+      Left err -> do
+          printErrInfo err str
+          return nullFunPtr
+      Right res -> do
+          makeCExprFun . makeExprFun $ res
+
+free_expr_fun_hs = freeHaskellFunPtr
