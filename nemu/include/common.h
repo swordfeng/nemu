@@ -17,8 +17,12 @@
 #include <string.h>
 
 #ifndef __cplusplus
-typedef uint8_t bool;
+typedef enum {
+	false = 0,
+	true = 1
+} bool;
 #endif
+
 typedef uint32_t hwaddr_t;
 typedef uint32_t lnaddr_t;
 typedef uint32_t swaddr_t;
@@ -33,8 +37,5 @@ typedef union {
 	uint8_t _1;
 } unalign;
 #pragma pack ()
-
-#define false 0
-#define true 1
 
 #endif
