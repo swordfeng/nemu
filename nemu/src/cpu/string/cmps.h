@@ -1,17 +1,13 @@
 #include "rep.h"
+#include "../general-add.h"
 
 REP_INSTRUCTION_HELPER(cmps) {
     // copied from cmp.h
     uint32_t val1 = swaddr_read(ctx.operands[0].getUnsignedValue(), ctx.operands[2].size);
     uint32_t val2 = swaddr_read(ctx.operands[1].getUnsignedValue(), ctx.operands[2].size);
     size_t result_size = ctx.operands[0].size;
-    uint32_t result = signed_extend(int_trunc(val1 - val2, result_size), result_size);
-
-    cpu.cf = result > val1;
-    cpu.zf = result == 0;
-    cpu.sf = result >> 31;
-    cpu.of = (val1 >> 31) != (val2 >> 31) && (val1 >> 31) != (result >> 31);
-    cpu.pf = calc_pf(result);
+    cpu.cf = 1;
+    general_add(val1, ~val2, result_size);
     if (cpu.df) {
         ctx.operands[1].setValue(ctx.operands[1].getUnsignedValue() - ctx.operands[2].size);
         ctx.operands[0].setValue(ctx.operands[0].getUnsignedValue() - ctx.operands[2].size);
