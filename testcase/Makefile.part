@@ -9,7 +9,7 @@ testcase_SBIN := $(filter-out $(testcase_OBJ_DIR)/start,$(testcase_SOBJS:.o=))
 testcase_BIN := $(testcase_CBIN) $(testcase_SBIN)
 
 testcase_START_OBJ := $(testcase_OBJ_DIR)/start.o
-testcase_LDFLAGS := -m elf_i386 -e start -Ttext=0x00100000
+testcase_LDFLAGS := -m elf_i386 -e main -Ttext=0x00800000
 
 $(testcase_CBIN): % : $(testcase_START_OBJ) %.o $(FLOAT) $(NEWLIBC)
 	$(call make_command, $(LD), $(testcase_LDFLAGS), ld $@, $^)

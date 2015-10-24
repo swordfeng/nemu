@@ -61,7 +61,7 @@ clean: clean-cpp clean-log
 ##### some convinient rules #####
 TEST=add
 USERPROG := obj/testcase/$(TEST)
-ENTRY := $(USERPROG)
+ENTRY := $(kernel_BIN)
 
 entry: $(ENTRY)
 	objcopy -S -O binary $(ENTRY) entry
