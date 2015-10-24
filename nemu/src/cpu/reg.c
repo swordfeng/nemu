@@ -43,6 +43,19 @@ void reg_test() {
 	assert(eip_sample == cpu.eip);
 }
 
+const char *reg_get_name(int reg_index, size_t size) {
+    switch (size) {
+    case 1:
+        return regsb[reg_index];
+    case 2:
+        return regsw[reg_index];
+    case 4:
+        return regsl[reg_index];
+    default:
+        panic("wrong reg size!");
+    }
+}
+
 uint32_t reg_name_mask(const char *name) {
     int index;
     for (index = 0; index < 8; index++) {

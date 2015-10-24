@@ -69,4 +69,8 @@ extern const char* regsl[];
 extern const char* regsw[];
 extern const char* regsb[];
 
+const char *reg_get_name(int reg_index, size_t size);
+uint32_t reg_name_mask(const char *name);
+uint32_t *reg_name_ptr(const char *name);
+
 #endif

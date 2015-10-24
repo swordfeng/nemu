@@ -28,19 +28,6 @@ static inline uint32_t reg_read_index(uint8_t reg_index, size_t size) {
     }
 }
 
-inline static string reg_get_name(int reg_index, size_t size) {
-    switch (size) {
-    case 1:
-        return regsb[reg_index];
-    case 2:
-        return regsw[reg_index];
-    case 4:
-        return regsl[reg_index];
-    default:
-        panic("wrong reg size!");
-    }
-}
-
 static inline const char *prefix_name(int opcode, int prefix_code) {
     switch (prefix_code) {
     case prefix_0_rep: /* == repe */
