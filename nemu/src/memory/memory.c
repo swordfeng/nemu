@@ -28,10 +28,24 @@ uint32_t swaddr_read(swaddr_t addr, size_t len) {
 	return lnaddr_read(addr, len);
 }
 
+void swaddr_read_bytes(void *dest, swaddr_t addr, size_t len) {
+	while (len >= 4) {
+		*(uint32_t *)dest = swaddr_read(addr, 4);
+		dest += 4;
+		addr += 4;
+		len -= 4;
+	}
+	while (len > 1) {
+		*(uint8_t *)dest = swaddr_read(addr, 1);
+		dest += 1;
+		addr += 1;
+		len -= 1;
+	}
+}
+
 void swaddr_write(swaddr_t addr, size_t len, uint32_t data) {
 #ifdef DEBUG
 	assert(len == 1 || len == 2 || len == 4);
 #endif
 	lnaddr_write(addr, len, data);
 }
-

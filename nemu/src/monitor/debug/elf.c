@@ -1,5 +1,4 @@
 #include "common.h"
-#include "monitor/expr.h"
 #include <stdlib.h>
 #include <elf.h>
 
@@ -91,4 +90,15 @@ bool elf_find_sym(const char *name, uint32_t *result) {
 		}
 	}
 	return false;
+}
+
+const char *elf_find_func(swaddr_t addr) {
+	int i, res = -1;
+	for (i = 0; i < nr_symtab_entry; i++) {
+		if (symtab[i].st_info & STT_FUNC) {
+			if (res == -1 || (addr >= symtab[i].st_value && symtab[i].st_value > symtab[res].st_value)) res = i;
+		}
+	}
+	if (res == -1) return NULL;
+	else return symtab[res].st_name + strtab;
 }

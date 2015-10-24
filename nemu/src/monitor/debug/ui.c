@@ -9,6 +9,13 @@
 #include <readline/history.h>
 
 void cpu_exec(uint32_t);
+const char *elf_find_func(swaddr_t addr);
+
+typedef struct {
+    swaddr_t prev_ebp;
+	swaddr_t ret_addr;
+	uint32_t args[4];
+} StackFrameBottom;
 
 /* We use the ``readline'' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
@@ -160,6 +167,24 @@ static int cmd_d(char *args) {
 	return 0;
 }
 
+static int cmd_bt(char *args) {
+	StackFrameBottom st;
+	st.prev_ebp = cpu.ebp;
+	st.ret_addr = cpu.eip;
+	int count = 0;
+	do {
+		swaddr_t eip_temp = st.ret_addr;
+		swaddr_t ebp_temp = st.prev_ebp;
+		swaddr_read_bytes(&st, ebp_temp, sizeof(StackFrameBottom));
+		const char *func_name = elf_find_func(eip_temp);
+		if (func_name == NULL) func_name = "??";
+		printf("#%d\t0x%08x in %s (%#x, %#x, %#x, %#x)\n", count, eip_temp, func_name, st.args[0]
+			, st.args[1], st.args[2], st.args[3]);
+		count++;
+	} while (st.prev_ebp);
+	return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -176,6 +201,7 @@ static struct {
 	{ "p", "Calculate and print expression", cmd_p },
 	{ "w", "Set new watchpoint", cmd_w },
 	{ "d", "Delete new watchpoint", cmd_d },
+	{ "bt", "Display Back Trace", cmd_bt}
 
 	/* TODO: Add more commands */
 
