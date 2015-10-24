@@ -25,7 +25,6 @@ type CBool = Word8
 ---- C ExprFun type
 type CExprFun = Ptr CBool -> IO Word32
 -- imports from C
-foreign import ccall unsafe "reg_read_name" reg_read_name :: CString -> IO Word32
 foreign import ccall unsafe "reg_name_mask" reg_name_mask :: CString -> IO Word32
 foreign import ccall unsafe "reg_name_ptr" reg_name_ptr :: CString -> IO (Ptr Word32)
 foreign import ccall unsafe "swaddr_read" swaddr_read :: Word32 -> CSize -> IO Word32
