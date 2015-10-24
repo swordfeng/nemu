@@ -4,7 +4,7 @@ nemu_HCFLAGS_EXTRA := -O
 
 $(eval $(call make_common_rules,nemu))
 
-nemu_LDFLAGS := -no-hs-main -lreadline -package parsec -lubsan -lstdc++ -optl-flto
+nemu_LDFLAGS := -no-hs-main -lreadline -package parsec -lstdc++ -optl-flto
 
 $(nemu_BIN): $(nemu_OBJS)
 	$(call make_command, $(HC), $(nemu_LDFLAGS), ld $@, $^)
