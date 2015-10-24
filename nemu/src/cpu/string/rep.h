@@ -36,11 +36,11 @@ INSTRUCTION_HELPER(name) { \
     uint32_t countReg; \
     if (ctx.prefix[prefix_lock_rep]) countReg = ctx.operands[3].getUnsignedValue(); \
     else countReg = 1; \
-    bool cont; \
-    do { \
+    bool cont = true; \
+    while (countReg && cont) { \
         cont = name##_rep_internal(ctx, eip); \
         --countReg; \
-    } while (countReg && cont); \
+    } \
     if (ctx.prefix[prefix_lock_rep]) ctx.operands[3].setValue(countReg); \
 } \
 bool name##_rep_internal HELPER_PARAM_LIST
