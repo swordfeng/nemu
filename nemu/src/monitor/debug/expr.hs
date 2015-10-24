@@ -28,6 +28,7 @@ type CExprFun = Ptr CBool -> IO Word32
 foreign import ccall unsafe "reg_name_mask" reg_name_mask :: CString -> IO Word32
 foreign import ccall unsafe "reg_name_ptr" reg_name_ptr :: CString -> IO (Ptr Word32)
 foreign import ccall unsafe "swaddr_read" swaddr_read :: Word32 -> CSize -> IO Word32
+foreign import ccall unsafe "elf_find_sym" elf_find_sym_c :: CString -> Ptr Word32 -> IO CBool
 -- imports from Haskell library
 foreign import ccall unsafe "wrapper" makeCExprFun :: CExprFun -> IO (FunPtr CExprFun)
 -- exports to C
@@ -35,6 +36,15 @@ foreign export ccall "expr" expr_hs :: CString -> Ptr CBool -> IO Word32
 foreign export ccall "expr_prettify" expr_prettify_hs :: CString -> Ptr CString -> IO CBool
 foreign export ccall "new_expr_fun" new_expr_fun_hs :: CString -> IO (FunPtr CExprFun)
 foreign export ccall "free_expr_fun" free_expr_fun_hs :: FunPtr CExprFun -> IO ()
+
+-- ELF Symbol finding helper
+elf_find_sym :: String -> Maybe Word32
+elf_find_sym name = unsafePerformIO . alloca $ \pValue -> do
+  succ <- withCString name $ flip elf_find_sym_c pValue
+  if succ /= 0 then
+    peek pValue >>= return . Just
+  else
+    return Nothing
 
 -- expression structure definition
 ---- Memory unit type
@@ -46,7 +56,7 @@ class ShowExpr a where
   showExpr :: a -> String
 
 ---- Base Integer Type
-data BaseInt = Dec ValueType | Hex ValueType | Reg String Word32 (Ptr Word32)
+data BaseInt = Dec ValueType | Hex ValueType | Reg String Word32 (Ptr Word32) | Symbol String Word32
 validRegNames = ["eax", "ecx", "edx", "ebx", "esp", "ebp", "esi", "edi",
     "ax", "cx", "dx", "bx", "sp", "bp", "si", "di",
     "al", "cl", "dl", "bl", "ah", "ch", "dh", "bh", "eflags", "eip"]
@@ -54,6 +64,7 @@ instance ShowExpr BaseInt where
     showExpr (Dec x) = show x
     showExpr (Hex x) = "0x" ++ showHex x ""
     showExpr (Reg s m p) = "$" ++ s
+    showExpr (Symbol name val) = name
 getInt :: BaseInt -> IO ValueType
 getInt x = case x of
     Dec n -> return n
@@ -61,8 +72,10 @@ getInt x = case x of
     Reg s m p -> do
       val <- peek p
       return $ val .&. m
+    Symbol name val -> return val
 
 ---- Reg creater
+---- Actually Reference Transparent
 makeReg :: String -> BaseInt
 makeReg name = unsafePerformIO $ do
     mask <- withCString name reg_name_mask
@@ -140,12 +153,21 @@ empty = spaces <?> ""
 decP = -- [0-9]+
     Number . Dec . read <$> many1 digit
 hexP = -- 0(x|X)[0-9a-fA-F]+
-        Number . Hex . fst . head . readHex <$> (char '0' *> (char 'x' <|> char 'X') *> many1 hexDigit)
+    Number . Hex . fst . head . readHex <$> (char '0' *> (char 'x' <|> char 'X') *> many1 hexDigit)
 numP =  -- Num = Dec | Hex
     try hexP <|> decP <?> "digit"
 ---- Register
 registerP = -- Register = $ <RegName>
     fmap (Number . makeReg) $ char '$' *> empty *> choice (map (try . string) validRegNames ++ [fail "invalid register name"])
+---- Symbol
+symbolP = do -- [a-zA-Z_][a-zA-Z0-9_]
+    name <- (:) <$> (t <?> "symbol") <*> many (t <|> digit <?> "")
+    case elf_find_sym name of
+      Nothing -> fail $ "symbol \"" ++ name ++ "\" does not exist"
+      Just value -> return . Number $ Symbol name value
+    where
+      t :: Parser Char
+      t = upper <|> lower <|> char '_'
 ---- Expression in patherness
 pathernessP = -- Patherness = (Expr)
     Patherness `fmap` between (char '(' >> empty) (empty *> char ')' <|> fail "patherness does not match") (exprP 0)
@@ -157,8 +179,8 @@ operatorP op =
 opClassP precedance aryType =
     choice $ map (try . operatorP) $ filter ((== aryType) . getAry) $ opDefs !! precedance
 
-operandP = -- Operand = Patherness | Num
-    numP <|> registerP <|> pathernessP <|> fail "require operand"
+operandP = -- Operand = Num | Register | Symbol | Patherness
+    numP <|> registerP <|> symbolP <|> pathernessP <|> fail "require operand"
 
 exprP :: Int -> Parser Expr
 exprP precedance -- Expr[p] = ExprL[p] ExprR[p] | Operand
