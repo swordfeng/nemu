@@ -28,7 +28,7 @@ $(1)_BIN := $$($(1)_OBJ_DIR)/$(1)
 $(1)_CFLAGS = $(CFLAGS) $$($(1)_CFLAGS_EXTRA) -I$$($(1)_INC_DIR)
 $(1)_CXXFLAGS = $(CXXFLAGS) $$($(1)_CXXFLAGS_EXTRA) -I$$($(1)_INC_DIR)
 $(1)_ASFLAGS = $(ASFLAGS) $$($(1)_ASFLAGS_EXTRA) -I$$($(1)_INC_DIR) -I$(LIB_COMMON_DIR)
-$(1)_HCFLAGS = $(HCFLAGS) $$($(1)_HCFLAGS_EXTRA) -I$$($(1)_INC_DIR) -hidir $(1)_OBJ_DIR/haskell -stubdir /tmp
+$(1)_HCFLAGS = $(HCFLAGS) $$($(1)_HCFLAGS_EXTRA) -I$$($(1)_INC_DIR) -hidir $$($(1)_OBJ_DIR)/haskell -stubdir /tmp
 
 $$($(1)_OBJ_DIR)%.o: $$($(1)_SRC_DIR)%.c
 	$$(call make_command, $(CC), $$($(1)_CFLAGS), cc $$<, $$<)
