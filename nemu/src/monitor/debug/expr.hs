@@ -30,7 +30,7 @@ foreign import ccall unsafe "reg_name_mask" reg_name_mask :: CString -> IO Word3
 foreign import ccall unsafe "reg_name_ptr" reg_name_ptr :: CString -> IO (Ptr Word32)
 foreign import ccall unsafe "swaddr_read" swaddr_read :: Word32 -> CSize -> IO Word32
 -- imports from Haskell library
-foreign import ccall "wrapper" makeCExprFun :: CExprFun -> IO (FunPtr CExprFun)
+foreign import ccall unsafe "wrapper" makeCExprFun :: CExprFun -> IO (FunPtr CExprFun)
 -- exports to C
 foreign export ccall "expr" expr_hs :: CString -> Ptr CBool -> IO Word32
 foreign export ccall "expr_prettify" expr_prettify_hs :: CString -> Ptr CString -> IO CBool
