@@ -6,7 +6,7 @@
 static PDE kpdir[NR_PDE] align_to_page;						// kernel page directory
 static PTE kptable[PHY_MEM / PAGE_SIZE] align_to_page;		// kernel page tables
 
-inline PDE* get_kpdir() { return kpdir; }
+PDE* get_kpdir() { return kpdir; }
 
 /* set up page tables for kernel */
 void init_page(void) {
@@ -36,7 +36,7 @@ void init_page(void) {
 	asm volatile ("std;\
 	 1: stosl;\
 		subl %0, %%eax;\
-		jge 1b" : : 
+		jge 1b" : :
 		"i"(PAGE_SIZE), "a"((PHY_MEM - PAGE_SIZE) | 0x7), "D"(ptable - 1));
 
 
@@ -96,4 +96,3 @@ init_segment(void) {
 
 	write_gdtr(gdt, sizeof(gdt));
 }
-
