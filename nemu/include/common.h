@@ -6,11 +6,9 @@
 /* You will define this macro in PA4 */
 //#define HAS_DEVICE
 
-#define DEBUG
 //#define LOG_FILE
 
 #include "debug.h"
-#include "macro.h"
 
 #include <stdint.h>
 #include <assert.h>
@@ -37,5 +35,6 @@ typedef union {
 	uint8_t _1;
 } unalign;
 #pragma pack ()
+#define unalign_rw(addr, len)	(((unalign *)(addr))->_##len)
 
 #endif
