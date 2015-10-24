@@ -1,4 +1,5 @@
 void hs_init_with_rtsopts(int *, char **[]);
+void hs_exit();
 void init_monitor(int, char *[]);
 void reg_test();
 void restart();
@@ -20,6 +21,9 @@ int main(int argc, char *argv[]) {
 
 	/* Receive commands from user. */
 	ui_mainloop();
+
+	/* Exit Haskell Runtime */
+	hs_exit();
 
 	return 0;
 }
