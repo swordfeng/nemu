@@ -7,7 +7,7 @@ REP_INSTRUCTION_HELPER(cmps) {
     size_t result_size = ctx.operands[0].size;
     uint32_t result = signed_extend(int_trunc(val1 - val2, result_size), result_size);
 
-    cpu.cf = int_trunc(result, result_size) > int_trunc(val1, result_size);
+    cpu.cf = result > val1;
     cpu.zf = result == 0;
     cpu.sf = result >> 31;
     cpu.of = (val1 >> 31) != (val2 >> 31) && (val1 >> 31) != (result >> 31);
