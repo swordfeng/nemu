@@ -12,11 +12,13 @@ import Data.List (sortBy)
 import Data.Either (rights)
 import Data.Word
 import Data.Functor (($>))
+import Data.Bits ((.&.), (.|.))
 -- exporting libraries
 import Foreign
 import Foreign.C.Types
 import Foreign.C.String
 import Foreign.Ptr
+import System.IO.Unsafe (unsafePerformIO)
 
 ---- C Bool type
 type CBool = Word8
@@ -24,6 +26,8 @@ type CBool = Word8
 type CExprFun = Ptr CBool -> IO Word32
 -- imports from C
 foreign import ccall unsafe "reg_read_name" reg_read_name :: CString -> IO Word32
+foreign import ccall unsafe "reg_name_mask" reg_name_mask :: CString -> IO Word32
+foreign import ccall unsafe "reg_name_ptr" reg_name_ptr :: CString -> IO (Ptr Word32)
 foreign import ccall unsafe "swaddr_read" swaddr_read :: Word32 -> CSize -> IO Word32
 -- imports from Haskell library
 foreign import ccall "wrapper" makeCExprFun :: CExprFun -> IO (FunPtr CExprFun)
@@ -43,19 +47,28 @@ class ShowExpr a where
   showExpr :: a -> String
 
 ---- Base Integer Type
-data BaseInt = Dec ValueType | Hex ValueType | Reg String
+data BaseInt = Dec ValueType | Hex ValueType | Reg String Word32 (Ptr Word32)
 validRegNames = ["eax", "ecx", "edx", "ebx", "esp", "ebp", "esi", "edi",
     "ax", "cx", "dx", "bx", "sp", "bp", "si", "di",
     "al", "cl", "dl", "bl", "ah", "ch", "dh", "bh", "eflags", "eip"]
 instance ShowExpr BaseInt where
     showExpr (Dec x) = show x
     showExpr (Hex x) = "0x" ++ showHex x ""
-    showExpr (Reg s) = "$" ++ s
+    showExpr (Reg s m p) = "$" ++ s
 getInt :: BaseInt -> IO ValueType
 getInt x = case x of
     Dec n -> return n
     Hex n -> return n
-    Reg s -> withCString s reg_read_name
+    Reg s m p -> do
+      val <- peek p
+      return $ val .&. m
+
+---- Reg creater
+makeReg :: String -> BaseInt
+makeReg name = unsafePerformIO $ do
+    mask <- withCString name reg_name_mask
+    ptr <- withCString name reg_name_ptr
+    return $ Reg name mask ptr
 
 ---- Operator
 data OpAssoc = AssocL | AssocR deriving (Eq)
@@ -133,7 +146,7 @@ numP =  -- Num = Dec | Hex
     try hexP <|> decP <?> "digit"
 ---- Register
 registerP = -- Register = $ <RegName>
-    fmap (Number . Reg) $ char '$' *> empty *> choice (map (try . string) validRegNames ++ [fail "invalid register name"])
+    fmap (Number . makeReg) $ char '$' *> empty *> choice (map (try . string) validRegNames ++ [fail "invalid register name"])
 ---- Expression in patherness
 pathernessP = -- Patherness = (Expr)
     Patherness `fmap` between (char '(' >> empty) (empty *> char ')' <|> fail "patherness does not match") (exprP 0)

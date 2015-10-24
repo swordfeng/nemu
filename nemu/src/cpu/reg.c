@@ -54,3 +54,27 @@ uint32_t reg_read_name(const char *name) {
 		if (strcmp(name, "eip") == 0) return cpu.eip;
 		panic("invalid register name");
 }
+
+uint32_t reg_name_mask(const char *name) {
+    int index;
+    for (index = 0; index < 8; index++) {
+	    if (strcmp(name, regsl[index]) == 0) return 0xffffffff;
+	    if (strcmp(name, regsw[index]) == 0) return 0xffff;
+	    if (strcmp(name, regsb[index]) == 0) return 0xff;
+		}
+		if (strcmp(name, "eflags") == 0) return 0xffffffff;
+		if (strcmp(name, "eip") == 0) return 0xffffffff;
+		panic("invalid register name");
+}
+
+uint32_t *reg_name_ptr(const char *name) {
+    int index;
+    for (index = 0; index < 8; index++) {
+	    if (strcmp(name, regsl[index]) == 0) return &reg_l(index);
+	    if (strcmp(name, regsw[index]) == 0) return (uint32_t *)&reg_w(index);
+	    if (strcmp(name, regsb[index]) == 0) return (uint32_t *)&reg_b(index);
+		}
+		if (strcmp(name, "eflags") == 0) return &cpu.eflags;
+		if (strcmp(name, "eip") == 0) return &cpu.eip;
+		panic("invalid register name");
+}
