@@ -49,6 +49,7 @@
 #include "flagctl/cld.h"
 
 #include "misc/lea.h"
+#include "misc/nop.h"
 
 #include "special/special.h"
 
