@@ -1,6 +1,6 @@
 #define CMOVCC_HELPER(name, cond) \
 TEMPLATE_INSTRUCTION_HELPER(cmov##name) { \
-    if (!cond) return; \
+    if (!(cond)) return; \
     ctx.operands[0].setValue(ctx.operands[1].getUnsignedValue()); \
     print_instr(ctx, "cmov" #name); \
 }
