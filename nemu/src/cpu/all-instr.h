@@ -11,6 +11,7 @@
 #include "data-trans/cltd.h"
 #include "data-trans/movsx.h"
 #include "data-trans/movzx.h"
+#include "data-trans/cmovcc.h"
 
 #include "ctrl-trans/call.h"
 #include "ctrl-trans/jcc.h"

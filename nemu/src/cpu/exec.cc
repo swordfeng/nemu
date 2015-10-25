@@ -6,6 +6,12 @@
 /* +rb/+rw/+rd occupies 8 opcodes to represent registers */
 #define op_r_rep(...) __VA_ARGS__, __VA_ARGS__, __VA_ARGS__, __VA_ARGS__, \
 						__VA_ARGS__, __VA_ARGS__, __VA_ARGS__, __VA_ARGS__
+/* jcc/setcc/cmovcc */
+#define op_cc(name, ...) \
+/* 0x?0 */	&##name##o<__VA_ARGS__>, &##name##no<__VA_ARGS__>, &##name##b<__VA_ARGS__>, &##name##ae<__VA_ARGS__>,
+/* 0x?4 */	&##name##e<__VA_ARGS__>, &##name##ne<__VA_ARGS__>, &##name##be<__VA_ARGS__>, &##name##a<__VA_ARGS__>,
+/* 0x?8 */	&##name##s<__VA_ARGS__>, &##name##ns<__VA_ARGS__>, &##name##p<__VA_ARGS__>, &##name##np<__VA_ARGS__>,
+/* 0x?c */	&##name##l<__VA_ARGS__>, &##name##ge<__VA_ARGS__>, &##name##le<__VA_ARGS__>, &##name##g<__VA_ARGS__>
 /* opcode with reg/op */
 helper_fun op_group(std::vector<helper_fun> fun_list);
 /* 2-byte opcode */
@@ -40,10 +46,7 @@ helper_fun opcode_table[256] = {
 /* 0x64 */	inv, inv, &op_prefix<2>, &op_prefix<3>,
 /* 0x68 */	&push<op_imm_v>, &imul<op_reg_v, op_rm_v, op_imm_v>, &push<op_imm_b>, &imul<op_reg_v, op_rm_v, op_imm_b>,
 /* 0x6c */	inv, inv, inv, inv,
-/* 0x70 */	&jo<op_imm_b>, &jno<op_imm_b>, &jb<op_imm_b>, &jae<op_imm_b>,
-/* 0x74 */	&je<op_imm_b>, &jne<op_imm_b>, &jbe<op_imm_b>, &ja<op_imm_b>,
-/* 0x78 */	&js<op_imm_b>, &jns<op_imm_b>, &jp<op_imm_b>, &jnp<op_imm_b>,
-/* 0x7c */	&jl<op_imm_b>, &jge<op_imm_b>, &jle<op_imm_b>, &jg<op_imm_b>,
+/* 0x70 */	op_cc(j, op_imm_b),
 /* 0x80 */	op_group({&add<op_rm_b, op_imm_b>, &or_<op_rm_b, op_imm_b>, &adc<op_rm_b, op_imm_b>, &sbb<op_rm_b, op_imm_b>, &and_<op_rm_b, op_imm_b>, &sub<op_rm_b, op_imm_b>, &xor_<op_rm_b, op_imm_b>, &cmp<op_rm_b, op_imm_b>}),
 /* 0x81 */  op_group({&add<op_rm_v, op_imm_v>, &or_<op_rm_v, op_imm_v>, &adc<op_rm_v, op_imm_v>, &sbb<op_rm_v, op_imm_v>, &and_<op_rm_v, op_imm_v>, &sub<op_rm_v, op_imm_v>, &xor_<op_rm_v, op_imm_v>, &cmp<op_rm_v, op_imm_v>}),
 /* 0x82 */  inv,
@@ -124,14 +127,8 @@ helper_fun _2byte_opcode_table[256] = {
 /* 0x74 */	inv, inv, inv, inv,
 /* 0x78 */	inv, inv, inv, inv,
 /* 0x7c */	inv, inv, inv, inv,
-/* 0x80 */	&jo<op_imm_v>, &jno<op_imm_v>, &jb<op_imm_v>, &jae<op_imm_v>,
-/* 0x84 */	&je<op_imm_v>, &jne<op_imm_v>, &jbe<op_imm_v>, &ja<op_imm_v>,
-/* 0x88 */	&js<op_imm_v>, &jns<op_imm_v>, &jp<op_imm_v>, &jnp<op_imm_v>,
-/* 0x8c */	&jl<op_imm_v>, &jge<op_imm_v>, &jle<op_imm_v>, &jg<op_imm_v>,
-/* 0x90 */	&seto<op_rm_b>, &setno<op_rm_b>, &setb<op_rm_b>, &setae<op_rm_b>,
-/* 0x94 */	&sete<op_rm_b>, &setne<op_rm_b>, &setbe<op_rm_b>, &seta<op_rm_b>,
-/* 0x98 */	&sets<op_rm_b>, &setns<op_rm_b>, &setp<op_rm_b>, &setnp<op_rm_b>,
-/* 0x9c */	&setl<op_rm_b>, &setge<op_rm_b>, &setle<op_rm_b>, &setg<op_rm_b>,
+/* 0x80 */	op_cc(j, op_imm_v),
+/* 0x90 */	op_cc(set, op_rm_b),
 /* 0xa0 */	inv, inv, inv, inv,
 /* 0xa4 */	&shld<op_rm_v, op_reg_v, op_imm_b>, &shld<op_rm_v, op_reg_v, op_c_b>, inv, inv,
 /* 0xa8 */	inv, inv, inv, inv,
