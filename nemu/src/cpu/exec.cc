@@ -8,10 +8,10 @@
 						__VA_ARGS__, __VA_ARGS__, __VA_ARGS__, __VA_ARGS__
 /* jcc/setcc/cmovcc */
 #define op_cc(name, ...) \
-/* 0x?0 */	&##name##o<__VA_ARGS__>, &##name##no<__VA_ARGS__>, &##name##b<__VA_ARGS__>, &##name##ae<__VA_ARGS__>, \
-/* 0x?4 */	&##name##e<__VA_ARGS__>, &##name##ne<__VA_ARGS__>, &##name##be<__VA_ARGS__>, &##name##a<__VA_ARGS__>, \
-/* 0x?8 */	&##name##s<__VA_ARGS__>, &##name##ns<__VA_ARGS__>, &##name##p<__VA_ARGS__>, &##name##np<__VA_ARGS__>, \
-/* 0x?c */	&##name##l<__VA_ARGS__>, &##name##ge<__VA_ARGS__>, &##name##le<__VA_ARGS__>, &##name##g<__VA_ARGS__>
+/* 0x?0 */	&name##o<__VA_ARGS__>, &name##no<__VA_ARGS__>, &name##b<__VA_ARGS__>, &name##ae<__VA_ARGS__>, \
+/* 0x?4 */	&name##e<__VA_ARGS__>, &name##ne<__VA_ARGS__>, &name##be<__VA_ARGS__>, &name##a<__VA_ARGS__>, \
+/* 0x?8 */	&name##s<__VA_ARGS__>, &name##ns<__VA_ARGS__>, &name##p<__VA_ARGS__>, &name##np<__VA_ARGS__>, \
+/* 0x?c */	&name##l<__VA_ARGS__>, &name##ge<__VA_ARGS__>, &name##le<__VA_ARGS__>, &name##g<__VA_ARGS__>
 /* opcode with reg/op */
 helper_fun op_group(std::vector<helper_fun> fun_list);
 /* 2-byte opcode */
