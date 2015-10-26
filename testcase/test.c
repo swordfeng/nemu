@@ -1,6 +1,6 @@
 #include "trap.h"
 
-char std[] = "abcdefg";
+char str[] = "abcdefg";
 int main() {
 	HIT_GOOD_TRAP;
 	return 0;
