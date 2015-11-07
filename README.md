@@ -1,3 +1,10 @@
+NEMU: ICS2015 Programming Assignment
+===
+The course is also adopted by Fudan University.  
+I have modified it a lot so this project is somehow different from the original one.
+
+Original README.md
+===
 # ICS2015 Programming Assignment
 
 This project is the programming assignment of the class ICS(Introduction to Computer System) in Department of Computer Science and Technology, NanJing University.
