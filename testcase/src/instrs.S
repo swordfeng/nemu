@@ -58,7 +58,7 @@ string_test:
   mov $0x223456, %edi
   cmpsb
   je bad
-  rep cmpsb
+  repne cmpsb
   cmp $2, %ecx
   jne bad
   ret
