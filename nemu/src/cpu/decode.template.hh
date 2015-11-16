@@ -197,7 +197,7 @@ inline uint8_t calc_pf(uint8_t val) {
     val ^= val >> 1;
     val ^= val >> 2;
     val ^= val >> 4;
-    return val & 1;
+    return !(val & 1);
 }
 
 #define DECODE_TEMPLATE_HELPER(name) \

@@ -192,13 +192,13 @@ jmp_test0:
   js bad
   jc bad
   jo bad
-  jp bad
+  jnp bad
   cmp $5, %eax
   jo bad
   jz bad
   jnc bad
   jns bad
-  jnp bad
+  jp bad
   cmp $0x80000000, %eax
   jno bad
   cmp %eax, %eax
@@ -344,7 +344,7 @@ test_pf:
   push %eax
   setp %al
   test %al, %al
-  jz bad
+  jnz bad
   pop %eax
   ret
 
