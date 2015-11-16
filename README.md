@@ -3,6 +3,8 @@ NEMU: ICS2015 Programming Assignment
 The course is also adopted by Fudan University.  
 I have modified it a lot so this project is somehow different from the original one.
 
+Thanks to **张博洋** for reporting some bugs!
+
 Original README.md
 ===
 # ICS2015 Programming Assignment
