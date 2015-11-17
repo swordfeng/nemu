@@ -5,6 +5,7 @@
 extern uint8_t entry [];
 extern uint32_t entry_len;
 extern char *exec_file;
+extern unsigned char init_logo[];
 
 void load_elf_tables(int, char *[]);
 void init_regex();
@@ -19,8 +20,8 @@ static void init_log() {
 }
 
 static void welcome() {
-	printf("Welcome to NEMU!\nThe executable is %s.\nFor help, type \"help\"\n",
-			exec_file);
+	printf("Welcome to NEMU!\n%sThe executable is %s.\nFor help, type \"help\"\n",
+			init_logo, exec_file);
 }
 
 void init_monitor(int argc, char *argv[]) {
