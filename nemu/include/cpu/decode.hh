@@ -54,15 +54,15 @@ enum OperandName {
     ((opname & ~0x3u) == op_##groupname##_b)
 
 /* operand types */
-enum OperandType {
+enum OperandType : uint8_t {
     opt_undefined, opt_register, opt_address, opt_immediate
 };
 
-enum InstructionPrefixIndex {
+enum InstructionPrefixIndex : uint8_t {
     prefix_lock_rep, prefix_segment, prefix_operand, prefix_address
 };
 
-enum InstructionPrefixOpcode {
+enum InstructionPrefixOpcode : uint8_t {
     prefix_0_lock = 0xf0,
     prefix_0_rep = 0xf3,
     prefix_0_repe = 0xf3,
@@ -74,7 +74,7 @@ enum InstructionPrefixOpcode {
 /* Operand */
 struct Operand {
     OperandType type;
-    size_t size;
+    uint8_t size;
     union {
         uint8_t reg_index;
         swaddr_t address;

@@ -82,10 +82,8 @@ opcode(0), require_modrm(false), decoded_len(0) {
 inline Operand::Operand(): type(opt_undefined) {}
 
 inline uint32_t Operand::getSignedValue() {
-   uint32_t ret = 0;
+   uint32_t ret;
    switch (type) {
-   case opt_undefined:
-       panic("operand undefined");
    case opt_register:
        ret = reg_read_index(reg_index, size);
        break;
@@ -95,6 +93,8 @@ inline uint32_t Operand::getSignedValue() {
    case opt_immediate:
        ret = immediate;
        break;
+   case opt_undefined:
+       panic("operand undefined");
    }
    return signed_extend(ret, size);
 }
@@ -102,8 +102,6 @@ inline uint32_t Operand::getSignedValue() {
 inline uint32_t Operand::getUnsignedValue() {
    uint32_t ret = 0;
    switch (type) {
-   case opt_undefined:
-       panic("operand undefined");
    case opt_register:
        ret = reg_read_index(reg_index, size);
        break;
@@ -113,6 +111,8 @@ inline uint32_t Operand::getUnsignedValue() {
    case opt_immediate:
        ret = immediate;
        break;
+   case opt_undefined:
+       panic("operand undefined");
    }
    return ret;
 }
@@ -152,19 +152,6 @@ inline string Operand::suffix() {
     return "";
 }
 
-inline uint32_t signed_extend(uint32_t val, size_t size) {
-    switch (size) {
-    case 1:
-        return static_cast<uint32_t>(static_cast<int8_t>(val));
-    case 2:
-        return static_cast<uint32_t>(static_cast<int16_t>(val));
-    case 4:
-        return val;
-    default:
-        panic("invalid data size");
-    }
-}
-
 template <typename int_type>
 inline int_type signed_extend(uint64_t val, size_t size) {
     switch (size) {
@@ -179,6 +166,10 @@ inline int_type signed_extend(uint64_t val, size_t size) {
     default:
         panic("invalid data size");
     }
+}
+
+inline uint32_t signed_extend(uint32_t val, size_t size) {
+    return signed_extend<uint32_t>(val, size);
 }
 
 inline uint32_t int_trunc(uint32_t val, size_t size) {

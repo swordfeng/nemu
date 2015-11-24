@@ -1,10 +1,10 @@
-nemu_CFLAGS_EXTRA := -ggdb3 -Ofast -funroll-loops -flto -pg -g
-nemu_CXXFLAGS_EXTRA := -ggdb3 -Ofast -funroll-loops -flto -pg -g
+nemu_CFLAGS_EXTRA := -ggdb3 -Ofast -funroll-loops -flto
+nemu_CXXFLAGS_EXTRA := -ggdb3 -Ofast -funroll-loops -flto
 nemu_HCFLAGS_EXTRA := -O -optc-flto
 
 $(eval $(call make_common_rules,nemu))
 
-nemu_LDFLAGS := -no-hs-main -lreadline -package parsec -lstdc++ -optl-flto -optl-pg -optl-g
+nemu_LDFLAGS := -no-hs-main -lreadline -package parsec -lstdc++ -optl-flto
 
 $(nemu_BIN): $(nemu_OBJS)
 	$(call make_command, $(HC), $(nemu_LDFLAGS), ld $@, $^)
