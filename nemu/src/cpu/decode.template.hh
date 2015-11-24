@@ -41,8 +41,8 @@ static inline const char *prefix_name(int opcode, int prefix_code) {
     }
 }
 
-inline void print_instr(InstructionContext &ctx, string name) {
 #ifdef PRINT_INSTR
+inline void print_instr(InstructionContext &ctx, string name) {
     size_t operands_size = 0;
     while (operands_size < 4 && ctx.operands[operands_size].type != opt_undefined) {
         operands_size++;
@@ -69,8 +69,10 @@ inline void print_instr(InstructionContext &ctx, string name) {
     Assert(showstr.size() < 80, "assembly buffer overflow");
     std::copy(showstr.begin(), showstr.end(), assembly);
     assembly[showstr.size()] = 0;
-#endif
 }
+#else
+#define print_instr(...);
+#endif
 
 inline InstructionContext::InstructionContext():
 opcode(0), require_modrm(false), decoded_len(0) {
@@ -203,11 +205,11 @@ inline uint8_t calc_pf(uint8_t val) {
 #define DECODE_TEMPLATE_HELPER(name) \
     template <size_t index, OperandName ...operand_names> struct name; \
     template <size_t index> struct name<index> { \
-        static HELPER(call) { return 0; } \
+        static inline HELPER(call) { return 0; } \
     }; \
     template <size_t index, OperandName opname, OperandName opname2, OperandName ...operand_names> \
     struct name<index, opname, opname2, operand_names...> { \
-        static HELPER(call) { \
+        static inline HELPER(call) { \
             int ret1 = name<index, opname>::call(ctx, eip); \
             int ret2 = name<index + 1, opname2, operand_names...>::call(ctx, eip); \
             return ret2 > ret1 ? ret2 : ret1; \
@@ -215,10 +217,10 @@ inline uint8_t calc_pf(uint8_t val) {
     }; \
     template <size_t index, OperandName opname> \
     struct name<index, opname> { \
-        static HELPER(call); \
+        static inline HELPER(call); \
     }; \
     template <size_t index, OperandName opname> \
-    int name<index, opname>::call HELPER_PARAM_LIST
+    inline int name<index, opname>::call HELPER_PARAM_LIST
 
 /* decode modrm, sib, disp */
 DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
