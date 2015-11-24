@@ -6,6 +6,10 @@
 
 extern FILE* log_fp;
 
+#ifdef DEBUG
+#define PRINT_INSTR
+#endif
+
 #ifdef LOG_FILE
 #	define Log_write(format, ...) fprintf(log_fp, format, ## __VA_ARGS__)
 #else
