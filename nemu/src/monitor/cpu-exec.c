@@ -20,6 +20,7 @@ char asm_buf[128];
 /* Used with exception handling. */
 jmp_buf jbuf;
 
+#ifdef PRINT_INSTR
 static inline void sprint_hex(char *buf, uint32_t value, int digits, bool fillzero) {
 	char *p = buf + digits;
 	do {
@@ -55,6 +56,7 @@ static inline void print_bin_instr(swaddr_t eip, int len) {
 	}
 	*pbuf = 0;
 }
+#endif
 
 /* This function will be called when an `int3' instruction is being executed. */
 void do_int3() {

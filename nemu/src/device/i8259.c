@@ -84,7 +84,7 @@ uint8_t i8259_query_intr() {
 }
 
 void i8259_ack_intr() {
-	if(intr_NO == NO_INTR) {
+	if(intr_NO == (uint8_t)NO_INTR) {
 		return;
 	}
 

@@ -9,6 +9,7 @@ typedef struct {
 enum {SEEK_SET, SEEK_CUR, SEEK_END};
 
 /* This is the information about all files in disk. */
+/*
 static const file_info file_table[] = {
 	{"1.rpg", 188864, 1048576}, {"2.rpg", 188864, 1237440},
 	{"3.rpg", 188864, 1426304}, {"4.rpg", 188864, 1615168},
@@ -24,6 +25,7 @@ static const file_info file_table[] = {
 	{"wor16.asc", 5374, 28068037}, {"wor16.fon", 82306, 28073411},
 	{"word.dat", 5650, 28155717},
 };
+*/
 
 #define NR_FILES (sizeof(file_table) / sizeof(file_table[0]))
 
