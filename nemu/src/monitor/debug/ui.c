@@ -139,6 +139,10 @@ static int cmd_p(char *args) {
 }
 
 static int cmd_w(char *args) {
+    if (!args) {
+        printf("invalid argument\n");
+        return 0;
+    }
 	while (*args == ' ') args++;
 	char *newexp;
 	bool valid = expr_prettify(args, &newexp);
