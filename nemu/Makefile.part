@@ -1,15 +1,19 @@
 nemu_CFLAGS_EXTRA := -ggdb3 -Ofast -funroll-loops -flto -DDEBUG
 nemu_CXXFLAGS_EXTRA := -ggdb3 -Ofast -funroll-loops -flto -DDEBUG
 nemu_HCFLAGS_EXTRA := -O -optc-flto
+nemu_RUSTSTD := obj/nemu/libruststd.a
 
 $(eval $(call make_common_rules,nemu))
 
-nemu_LDFLAGS := -no-hs-main -lreadline -package parsec -lstdc++ -optl-flto
+nemu_LDFLAGS := -no-hs-main -lpthread -lreadline -package parsec -lstdc++ -optl-flto
 
-$(nemu_BIN): $(nemu_OBJS)
+$(nemu_BIN): $(nemu_OBJS) $(nemu_RUSTSTD)
 	$(call make_command, $(HC), $(nemu_LDFLAGS), ld $@, $^)
 	$(call git_commit, "compile NEMU")
 
+$(nemu_RUSTSTD):
+	@touch obj/nemu/rsstd
+	@rustc --crate-type staticlib -o $(nemu_RUSTSTD) obj/nemu/rsstd 2> /dev/null
 
 ##### rules for generating some preprocessing results #####
 

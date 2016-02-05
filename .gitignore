@@ -7,8 +7,10 @@
 !*.hc
 !*.cc
 !*.hh
+!*rs
 !test.sh
 !.gitignore
 !README.md
 !lib-common/newlib/libc.a
+!lib-common/libcore.a
 !kernel/src/memory/mm_malloc.o

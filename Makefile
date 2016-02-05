@@ -6,17 +6,20 @@ MAKEFLAGS := -j4
 
 CC := gcc
 CXX := g++
+RUSTC := rustc
 HC := ghc
 LD := ld
 ASFLAGS := -m32 -MMD -c
 CFLAGS := -MMD -Wall -Werror -c
 CXXFLAGS := -MMD -Wall -Werror -c -std=c++14 -fno-exceptions
 HCFLAGS := -c
+RSFLAGS := --emit obj
 
 LIB_COMMON_DIR := lib-common
 NEWLIBC_DIR := $(LIB_COMMON_DIR)/newlib
 NEWLIBC := $(NEWLIBC_DIR)/libc.a
 FLOAT := obj/$(LIB_COMMON_DIR)/FLOAT.a
+RSCORE := $(LIB_COMMON_DIR)/libcore.a
 
 include config/Makefile.git
 include config/Makefile.build

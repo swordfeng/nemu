@@ -1,14 +1,18 @@
 testcase_CFLAGS_EXTRA := -m32 -fno-builtin -fno-stack-protector -msoft-float -mno-sse \
 						-I$(LIB_COMMON_DIR) -I$(NEWLIBC_DIR)/include
 
+testcase_RSFLAGS_EXTRA := --target i686-unknown-linux-gnu -C target-feature=-avx,-sse
+
 $(eval $(call make_common_rules,testcase))
 
 # redefine testcase_BIN
 testcase_CBIN := $(testcase_COBJS:.o=)
-testcase_SBIN := $(filter-out $(testcase_OBJ_DIR)/start,$(testcase_SOBJS:.o=))
-testcase_BIN := $(testcase_CBIN) $(testcase_SBIN)
+testcase_SBIN := $(filter-out $(testcase_OBJ_DIR)/start,$(filter-out $(testcase_OBJ_DIR)/start-rs,$(testcase_SOBJS:.o=)))
+testcase_RSBIN := $(testcase_RSOBJS:.o=)
+testcase_BIN := $(testcase_CBIN) $(testcase_SBIN) $(testcase_RSBIN)
 
 testcase_START_OBJ := $(testcase_OBJ_DIR)/start.o
+testcase_START_RS_OBJ := $(testcase_OBJ_DIR)/start-rs.o
 testcase_LDFLAGS := -m elf_i386 -e main -Ttext-segment=0x00800000
 
 $(testcase_CBIN): % : $(testcase_START_OBJ) %.o $(FLOAT) $(NEWLIBC)
@@ -16,5 +20,9 @@ $(testcase_CBIN): % : $(testcase_START_OBJ) %.o $(FLOAT) $(NEWLIBC)
 	@objdump -d $@ > $@.txt
 
 $(testcase_SBIN): % : %.o
+	$(call make_command, $(LD), $(testcase_LDFLAGS), ld $@, $^)
+	@objdump -d $@ > $@.txt
+
+$(testcase_RSBIN): % : $(testcase_START_RS_OBJ) %.o $(FLOAT) $(RSCORE) $(NEWLIBC)
 	$(call make_command, $(LD), $(testcase_LDFLAGS), ld $@, $^)
 	@objdump -d $@ > $@.txt

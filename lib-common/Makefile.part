@@ -9,3 +9,9 @@ $(FLOAT): % : $(FLOAT_OBJ)
 $(FLOAT_OBJ): % : $(LIB_COMMON_DIR)/FLOAT.c
 	@mkdir -p obj/$(LIB_COMMON_DIR)
 	$(call make_command, $(CC), $(FLOAT_CFLAGS), cc $<, $^)
+
+#RSCORE_RSFLAGS := --target=i686-unknown-linux-gnu
+
+#$(RSCORE): % : $(LIB_COMMON_DIR)/core.rs
+#	@mkdir -p obj/$(LIB_COMMON_DIR)
+#	$(call make_command, $(RUSTC), $(RSCORE_RSFLAGS), rustc $<, $^)
