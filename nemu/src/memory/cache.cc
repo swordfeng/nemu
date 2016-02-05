@@ -32,6 +32,13 @@ public:
         uint32_t block_offset = addr & 0x3F;
         uint32_t index = (addr >> 6) & (indexes - 1);
         CacheLine *validline = getCacheLine(addr);
+        /*
+        if (!validline) {
+            printf("miss\n");
+        } else {
+            printf("hit way %ld\n", validline - cache[index]);
+        }
+        */
         if (!validline) {
             validline = &cache[index][rand() % ways];
             // read into line
@@ -40,7 +47,7 @@ public:
             hwaddr_t start_addr = addr & ~0x3F;
             for (uint32_t i = 0; i < 64; i++) validline->data[i] = read_fallback(start_addr + i, 1);
         }
-        return unalign_rw(validline->data + block_offset, 4) & ((1u << (len * 8)) - 1);
+        return unalign_rw(validline->data + block_offset, 4) & ((1llu << (len * 8)) - 1);
     }
     void write(hwaddr_t addr, size_t len, uint32_t data) {
         CacheLine *l = this->getCacheLine(addr);
@@ -93,7 +100,7 @@ extern "C" {
 
     void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
         printf("write: %x %lu %x\n", addr, len, data);
-        panic("first write");
+        //panic("first write");
     	L1.write(addr, len, data);
         //dram_write(addr, len, data);
     }
