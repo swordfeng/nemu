@@ -7,7 +7,7 @@
 !*.hc
 !*.cc
 !*.hh
-!*rs
+!*.rs
 !test.sh
 !.gitignore
 !README.md

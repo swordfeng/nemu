@@ -99,7 +99,7 @@ static void ddr3_write(hwaddr_t addr, void *data, uint8_t *mask) {
 uint32_t dram_read(hwaddr_t addr, size_t len) {
 	uint32_t offset = addr & BURST_MASK;
 	uint8_t temp[2 * BURST_LEN];
-	
+
 	ddr3_read(addr, temp);
 
 	if(offset + len > BURST_LEN) {
@@ -107,7 +107,7 @@ uint32_t dram_read(hwaddr_t addr, size_t len) {
 		ddr3_read(addr + BURST_LEN, temp + BURST_LEN);
 	}
 
-	return unalign_rw(temp + offset, 4);
+	return unalign_rw(temp + offset, 4)  & (~0u >> ((4 - len) << 3));
 }
 
 void dram_write(hwaddr_t addr, size_t len, uint32_t data) {
