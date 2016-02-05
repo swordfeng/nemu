@@ -25,20 +25,15 @@ public:
         uint32_t max_len = 0x40 - (addr & 0x3F);
         if (max_len < len) {
             // cross boundary
+            printf("cross boundary\n");
             uint32_t low = read(addr, max_len);
             uint32_t high = read(addr + max_len, len - max_len);
             return (high << (max_len * 8)) | low;
         }
+
         uint32_t block_offset = addr & 0x3F;
         uint32_t index = (addr >> 6) & (indexes - 1);
         CacheLine *validline = getCacheLine(addr);
-        /*
-        if (!validline) {
-            printf("miss\n");
-        } else {
-            printf("hit way %ld\n", validline - cache[index]);
-        }
-        */
         if (!validline) {
             validline = &cache[index][rand() % ways];
             // read into line
@@ -48,18 +43,20 @@ public:
             for (uint32_t i = 0; i < 64; i++) validline->data[i] = read_fallback(start_addr + i, 1);
         }
         return unalign_rw(validline->data + block_offset, 4) & ((1llu << (len * 8)) - 1);
+        //return read_fallback(addr, len);
     }
     void write(hwaddr_t addr, size_t len, uint32_t data) {
+        /*
+        uint32_t max_len = 0x40 - (addr & 0x3F);
+        if (max_len < len) {
+            // cross boundary
+            write(addr, max_len, data & ((1 << (max_len * 8)) - 1));
+            write(addr + max_len, len - max_len, data >> (max_len * 8));
+            return;
+        }
         CacheLine *l = this->getCacheLine(addr);
         if (l != nullptr) {
             // data is in cache
-            uint32_t max_len = 0x40 - (addr & 0x3F);
-            if (max_len < len) {
-                // cross boundary
-                write(addr, max_len, data & ((1 << (max_len * 8)) - 1));
-                write(addr + max_len, len - max_len, data >> (max_len * 8));
-                return;
-            }
             uint32_t block_offset = addr & 0x3F;
             uint32_t temp_data = data;
             for (uint32_t i = 0; i < len; i++) {
@@ -67,7 +64,13 @@ public:
                 temp_data >>= 8;
             }
         }
-        this->write_fallback(addr, len, data);
+*/
+        uint32_t index = (addr >> 6) & (indexes - 1);
+        for (CacheLine &c: cache[index]) {
+            c.valid = false;
+        }
+
+        write_fallback(addr, len, data);
     }
     Cache(function<uint32_t (hwaddr_t, size_t)> r_fb, function<void (hwaddr_t, size_t, uint32_t)> w_fb): read_fallback(r_fb), write_fallback(w_fb) {}
 protected:
@@ -91,15 +94,15 @@ Cache<128, 8> L1(dram_read, dram_write);
 
 extern "C" {
     uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
-        printf("read: %x %lu ", addr, len);
+        //printf("read: %x %lu ", addr, len);
     	uint32_t ret = L1.read(addr, len);
         //uint32_t ret = dram_read(addr, len);
-        printf("%x\n", ret);
+        //printf("%x\n", ret);
         return ret;
     }
 
     void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
-        printf("write: %x %lu %x\n", addr, len, data);
+        //printf("write: %x %lu %x\n", addr, len, data);
         //panic("first write");
     	L1.write(addr, len, data);
         //dram_write(addr, len, data);
