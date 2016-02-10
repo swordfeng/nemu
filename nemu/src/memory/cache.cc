@@ -1,7 +1,10 @@
 #include <cinttypes>
 #include <functional>
+#include <iostream>
+#include <iomanip>
 #include "common.h"
-#include "memory/cache.h"
+
+#ifdef USE_CACHE
 
 extern "C" {
     uint32_t dram_read(hwaddr_t addr, size_t len);
@@ -32,8 +35,9 @@ class Cache {
     public:
         uint32_t read(hwaddr_t addr, size_t len);
         void write(hwaddr_t addr, size_t len, uint32_t data);
+        void show(hwaddr_t addr);
         Cache(function<uint32_t (hwaddr_t, size_t)> r_fb, function<void (hwaddr_t, size_t, uint32_t)> w_fb): read_fallback(r_fb), write_fallback(w_fb) {}
-    protected:
+    private:
         CacheLine cache[indexes][ways];
         function<uint32_t (hwaddr_t, size_t)> read_fallback;
         function<void (hwaddr_t, size_t, uint32_t)> write_fallback;
@@ -53,12 +57,12 @@ class Cache {
             uint32_t index = (addr >> 6) & (indexes - 1);
             CacheLine *validline = getCacheLine(addr);
             if (!validline) {
-                validline = &cache[index][rand() % ways];
+                validline = &cache[index][rand() & (ways - 1)];
                 hwaddr_t start_addr = addr & ~0x3F;
                 if (validline->valid && validline->dirty) {
                     for (uint32_t i = 0; i < 64; i += 4) write_fallback(start_addr + i, 4, unalign_rw(validline->data + i, 4));
                 }
-                // read into line
+                // read to line
                 validline->valid = true;
                 validline->dirty = false;
                 validline->tag = tag;
@@ -117,16 +121,40 @@ inline void Cache<indexes, ways, hitStrategy, missStrategy>::write(hwaddr_t addr
     }
 }
 
-Cache<128, 8, WRITE_THROUGH, WRITE_NOT_ALLOCATE> L1(dram_read, dram_write);
+template<size_t indexes, size_t ways, CacheWriteHitStrategy hitStrategy, CacheWriteMissStrategy missStrategy>
+inline void Cache<indexes, ways, hitStrategy, missStrategy>::show(hwaddr_t addr) {
+    CacheLine *l = getCacheLine(addr);
+    if (l == nullptr) {
+        std::cout << "miss" << std::endl;
+    } else {
+        std::cout << "hit, tag = " << std::hex << l->tag << ", valid = " << l->valid << ", dirty = " << l->dirty << std::endl;
+        for (int i = 0; i < 64; i += 8) {
+            for (int j = 0; j < 8; j++) {
+                std::cout << std::setfill('0') << std::setw(2) << std::hex << (uint32_t) l->data[i + j] << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
+}
+
 using namespace std::placeholders;
-Cache<4096, 16, WRITE_BACK, WRITE_ALLOCATE> L2(std::bind(&decltype(L1)::read, L1, _1, _2), std::bind(&decltype(L1)::write, L1, _1, _2, _3));
+static Cache<4096, 16, WRITE_BACK, WRITE_ALLOCATE> L2(dram_read, dram_write);
+static Cache<128, 8, WRITE_THROUGH, WRITE_NOT_ALLOCATE> L1(std::bind(&decltype(L2)::read, &L2, _1, _2), std::bind(&decltype(L2)::write, &L2, _1, _2, _3));
 
 extern "C" {
     uint32_t cached_read(hwaddr_t addr, size_t len) {
-        return L2.read(addr, len);
+        return L1.read(addr, len);
     }
-
     void cached_write(hwaddr_t addr, size_t len, uint32_t data) {
-        L2.write(addr, len, data);
+        L1.write(addr, len, data);
+    }
+    void cache_show(hwaddr_t addr) {
+        std::cout << "L1 cache: ";
+        L1.show(addr);
+        std::cout << "L2 cache: ";
+        L2.show(addr);
+        std::cout << std::flush;
     }
 }
+
+#endif

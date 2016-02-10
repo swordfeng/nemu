@@ -17,6 +17,12 @@ extern uint8_t *hw_mem;
 	hwa_to_va(addr); \
 })
 
+#ifdef USE_CACHE
+uint32_t cached_read(hwaddr_t addr, size_t len);
+void cached_write(hwaddr_t addr, size_t len, uint32_t data);
+void cache_show(hwaddr_t addr);
+#endif
+
 uint32_t swaddr_read(swaddr_t, size_t);
 void swaddr_read_bytes(void *, swaddr_t, size_t);
 uint32_t lnaddr_read(lnaddr_t, size_t);
