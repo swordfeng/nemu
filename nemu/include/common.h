@@ -3,6 +3,8 @@
 
 #define USE_RAMDISK
 
+#define USE_CACHE
+
 /* You will define this macro in PA4 */
 //#define HAS_DEVICE
 
