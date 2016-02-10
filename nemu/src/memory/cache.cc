@@ -25,13 +25,9 @@ public:
         uint32_t max_len = 0x40 - (addr & 0x3F);
         if (max_len < len) {
             // cross boundary
-            printf("cross boundary read\n");
-            return read_fallback(addr, len);
-            /*
             uint32_t low = read(addr, max_len);
             uint32_t high = read(addr + max_len, len - max_len);
             return (high << (max_len * 8)) | low;
-            **/
         }
 
         uint32_t tag = (addr >> 6) / indexes;
