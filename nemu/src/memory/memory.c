@@ -33,6 +33,7 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
 
 lnaddr_t seg_translate(swaddr_t offset, size_t len, uint8_t sreg) {
     if (!cpu.cr0.pe) return offset;
+    Assert(sreg < 6, "invalid sreg");
     uint16_t segsel = cpu.sr[sreg].sel;
     uint16_t index = segsel >> 3;
     uint8_t ti = (segsel >> 2) & 1;

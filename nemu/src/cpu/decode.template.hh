@@ -136,7 +136,7 @@ inline void Operand::setValue(uint32_t v) {
         else reg_l(reg_index) = v;
         break;
     case opt_address:
-        swaddr_write(address, size, v, sreg);
+        swaddr_write(address, size, sreg, v);
         break;
     case opt_register_cr:
         reg_cr_index(reg_index) = v;
@@ -202,7 +202,7 @@ inline uint8_t calc_pf(uint8_t val) {
     return !(val & 1);
 }
 
-#define DECODE_TEMPLATE_HELPER(name) \
+#define DECODE_TEMPLATE_HELPER_OPS(name, n) \
     template <size_t index, OperandName ...operand_names> struct name; \
     template <size_t index> struct name<index> { \
         static inline HELPER(call) { return 0; } \
@@ -211,7 +211,7 @@ inline uint8_t calc_pf(uint8_t val) {
     struct name<index, opname, opname2, operand_names...> { \
         static inline HELPER(call) { \
             int ret1 = name<index, opname>::call(ctx, eip); \
-            int ret2 = name<index + 1, opname2, operand_names...>::call(ctx, eip); \
+            int ret2 = name<index + n, opname2, operand_names...>::call(ctx, eip); \
             return ret2 > ret1 ? ret2 : ret1; \
         } \
     }; \
@@ -221,6 +221,8 @@ inline uint8_t calc_pf(uint8_t val) {
     }; \
     template <size_t index, OperandName opname> \
     inline int name<index, opname>::call HELPER_PARAM_LIST
+
+#define DECODE_TEMPLATE_HELPER(name) DECODE_TEMPLATE_HELPER_OPS(name, 1)
 
 /* decode modrm, sib, disp */
 DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
@@ -291,6 +293,7 @@ DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
                 SIB sib;
                 sib.value = instr_fetch(eip + 1, 1);
                 ctx.operands[index].type = opt_address;
+                ctx.operands[index].sreg = sreg_index(ds);
 #ifdef OPERAND_SET_NAME
                 string base_name, index_name;
 #endif
@@ -317,6 +320,10 @@ DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
                 }
                 ctx.operands[index].address = addr + base_addr;
                 ctx.operands[index].size = op_get_size(ctx, opname);
+                if (sib.index == 5) {
+                    // BP in effective address
+                    ctx.operands[index].sreg = sreg_index(ss);
+                }
 #ifdef OPERAND_SET_NAME
                 char scale_factor_str[] = "x";
                 scale_factor_str[0] = scale_factor + '0';
@@ -406,6 +413,40 @@ DECODE_TEMPLATE_HELPER(decode_moffs) {
     } else return 0;
 }
 
+DECODE_TEMPLATE_HELPER_OPS(decode_ptrwv, 2) {
+    if (opname == op_ptrwv) {
+        size_t offsize = ctx.prefix[2] == 0 ? 4 : 2;
+        ctx.operands[index].type = opt_immediate;
+        ctx.operands[index].immediate = instr_fetch(eip, offsize);
+        ctx.operands[index].size = offsize;
+        ctx.operands[index + 1].type = opt_immediate;
+        ctx.operands[index + 1].immediate = instr_fetch(eip + offsize, 2);
+        ctx.operands[index + 1].size = 2;
+#ifdef OPERAND_SET_NAME
+        ctx.operands[index].str_name = string("$") + conv16(ctx.operands[index].immediate);
+        ctx.operands[index + 1].str_name = string("$") + conv16(ctx.operands[index + 1].immediate);
+#endif
+        return offsize + 2;
+    } else return 0;
+}
+/*
+DECODE_TEMPLATE_HELPER_OPS(decode_m16v, 2) {
+    if (opname == op_m16v) {
+        size_t offsize = ctx.prefix[2] == 0 ? 4 : 2;
+        ctx.operands[index].type = opt_address;
+        ctx.operands[index].value = instr_fetch(eip, offsize);
+        ctx.operands[index].size = offsize;
+        ctx.operands[index + 1].type = opt_immediate;
+        ctx.operands[index + 1].value = instr_fetch(eip + offsize, 2);
+        ctx.operands[index + 1].size = 2;
+#ifdef OPERAND_SET_NAME
+        ctx.operands[index].str_name = string("$") + conv16(ctx.operands[index].immediate);
+        ctx.operands[index + 1].str_name = string("$") + conv16(ctx.operands[index + 1].immediate);
+#endif
+        return offsize + 2;
+    } else return 0;
+}
+*/
 // decode type 'a', 'c', '1' ...
 DECODE_TEMPLATE_HELPER(decode_const) {
     if (op_name_is(opname, a)) {
@@ -458,6 +499,8 @@ TEMPLATE_HELPER(decode_operands) {
     consumed_size += moffs_size;
     int imm_size = decode_imm<0, operand_names...>::call(ctx, eip + consumed_size);
     consumed_size += imm_size;
+    int ptrwv_size = decode_ptrwv<0, operand_names...>::call(ctx, eip + consumed_size);
+    consumed_size += ptrwv_size;
     //printf("opcode = %x, decoded length = %d, m = %d, o = %d, i = %d\n", instr_fetch(eip, 1), consumed_size, modrm_size, moffs_size, imm_size);
     ctx.decoded_len = consumed_size;
     ctx.decoded_eip = eip;

@@ -79,7 +79,7 @@ helper_fun opcode_table[256] = {
 /* 0xdc */	inv, inv, inv, inv,
 /* 0xe0 */	inv, inv, inv, &jcxz<op_imm_b>,
 /* 0xe4 */	inv, inv, inv, inv,
-/* 0xe8 */	&call_near<op_imm_v>, &jmp_near<op_imm_v>, inv, &jmp_near<op_imm_b>,
+/* 0xe8 */	&call_near<op_imm_v>, &jmp_near<op_imm_v>, &jmp_long<op_ptrwv>, &jmp_near<op_imm_b>,
 /* 0xec */	inv, inv, inv, inv,
 /* 0xf0 */	&op_prefix<0>, inv, &op_prefix<0>, &op_prefix<0>,
 /* 0xf4 */	inv, inv,

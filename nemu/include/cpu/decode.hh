@@ -41,7 +41,7 @@ enum OperandName {
     OP_NAMES(suffix), OP_NAMES(rm), OP_NAMES(reg), OP_NAMES(r), OP_NAMES(moffs),
     OP_NAMES(imm), OP_NAMES(a), OP_NAMES(c),
     op_1_b = 0x80, op_1 = 0x80,
-    op_reg_cr, op_reg_seg,
+    op_reg_cr, op_reg_seg, op_ptrwv,
 };
 #undef OP_NAMES
 
