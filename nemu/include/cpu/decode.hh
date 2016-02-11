@@ -40,7 +40,8 @@ void print_instr(InstructionContext &ctx, string name);
 enum OperandName {
     OP_NAMES(suffix), OP_NAMES(rm), OP_NAMES(reg), OP_NAMES(r), OP_NAMES(moffs),
     OP_NAMES(imm), OP_NAMES(a), OP_NAMES(c),
-    op_1_b = 0x80, op_1 = 0x80
+    op_1_b = 0x80, op_1 = 0x80,
+    op_reg_cr, op_reg_seg,
 };
 #undef OP_NAMES
 
@@ -50,7 +51,7 @@ enum OperandName {
 
 /* operand types */
 enum OperandType : uint8_t {
-    opt_undefined, opt_register, opt_address, opt_immediate
+    opt_undefined, opt_register, opt_address, opt_immediate, opt_register_cr, opt_register_seg,
 };
 
 enum InstructionPrefixIndex : uint8_t {
@@ -72,7 +73,10 @@ struct Operand {
     uint8_t size;
     union {
         uint8_t reg_index;
-        swaddr_t address;
+        struct {
+            swaddr_t address;
+            uint8_t sreg;
+        };
         uint32_t immediate;
     };
 #ifdef OPERAND_SET_NAME
@@ -82,6 +86,7 @@ struct Operand {
     inline uint32_t getSignedValue();
     inline uint32_t getUnsignedValue();
     swaddr_t getAddress();
+    uint8_t getSreg() { return sreg; }
     void setValue(uint32_t v);
     string suffix();
 };
@@ -90,6 +95,7 @@ struct Operand {
 struct InstructionContext {
     uint8_t prefix[4];
     uint32_t opcode;
+//    uint8_t sreg_override;
     bool require_modrm;
     Operand operands[4];
     InstructionContext();

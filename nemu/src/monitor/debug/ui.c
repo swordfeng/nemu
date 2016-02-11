@@ -116,7 +116,7 @@ static int cmd_x(char *args) {
 	addr = expr(args, &success);
 	if (!success) return 0;
 	while (ins--) {
-		printf("%#x:\t0x%08x\n", addr, swaddr_read(addr, 4));
+		printf("%#x:\t0x%08x\n", addr, swaddr_read(addr, 4, sreg_index(ds)));
 		addr += 4;
 	}
 	return 0;
@@ -180,7 +180,7 @@ static int cmd_bt(char *args) {
 	do {
 		swaddr_t eip_temp = st.ret_addr;
 		swaddr_t ebp_temp = st.prev_ebp;
-		swaddr_read_bytes(&st, ebp_temp, sizeof(StackFrameBottom));
+		swaddr_read_bytes(&st, ebp_temp, sizeof(StackFrameBottom), sreg_index(ss));
 		const char *func_name = elf_find_func(eip_temp);
 		if (func_name == NULL) func_name = "??";
 		printf("#%d\t0x%08x in %s (%#x, %#x, %#x, %#x)\n", count, eip_temp, func_name, st.args[0]

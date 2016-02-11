@@ -28,6 +28,15 @@ static inline uint32_t reg_read_index(uint8_t reg_index, size_t size) {
     }
 }
 
+static inline uint32_t &reg_cr_index(uint8_t reg_index) {
+    switch (reg_index) {
+        case 0:
+            return cpu.cr0.value;
+        default:
+            panic("not implemented");
+    }
+}
+
 static inline const char *prefix_name(int opcode, int prefix_code) {
     switch (prefix_code) {
     case prefix_0_rep: /* == repe */
@@ -82,20 +91,7 @@ opcode(0), require_modrm(false), decoded_len(0) {
 inline Operand::Operand(): type(opt_undefined) {}
 
 inline uint32_t Operand::getSignedValue() {
-   uint32_t ret;
-   switch (type) {
-   case opt_register:
-       ret = reg_read_index(reg_index, size);
-       break;
-   case opt_address:
-       ret = swaddr_read(address, size);
-       break;
-   case opt_immediate:
-       ret = immediate;
-       break;
-   case opt_undefined:
-       panic("operand undefined");
-   }
+   uint32_t ret = getUnsignedValue();
    return signed_extend(ret, size);
 }
 
@@ -106,10 +102,16 @@ inline uint32_t Operand::getUnsignedValue() {
        ret = reg_read_index(reg_index, size);
        break;
    case opt_address:
-       ret = swaddr_read(address, size);
+       ret = swaddr_read(address, size, sreg);
        break;
    case opt_immediate:
        ret = immediate;
+       break;
+   case opt_register_cr:
+       ret = reg_cr_index(reg_index);
+       break;
+   case opt_register_seg:
+       ret = cpu.sr[reg_index].sel;
        break;
    case opt_undefined:
        panic("operand undefined");
@@ -134,7 +136,14 @@ inline void Operand::setValue(uint32_t v) {
         else reg_l(reg_index) = v;
         break;
     case opt_address:
-        swaddr_write(address, size, v);
+        swaddr_write(address, size, v, sreg);
+        break;
+    case opt_register_cr:
+        reg_cr_index(reg_index) = v;
+        break;
+    case opt_register_seg:
+        cpu.sr[reg_index].sel = v;
+        sreg_load(reg_index);
         break;
     }
 }
@@ -227,6 +236,37 @@ DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
             reg_get_name(ctx.operands[index].reg_index, ctx.operands[index].size);
 #endif
         return 1;
+    } else if (opname == op_reg_cr) { 
+        ctx.require_modrm = true;
+        ModR_M modrm;
+        modrm.value = instr_fetch(eip, 1);
+        ctx.operands[index].type = opt_register_cr;
+        ctx.operands[index].reg_index = modrm.regop;
+        if (modrm.regop == 1 || (modrm.regop != 8 && modrm.regop > 4)) {
+            panic("Invalid CR register");
+        }
+        ctx.operands[index].size = 4;
+#ifdef OPERAND_SET_NAME
+        static char num[] = "0";
+        num[0] += ctx.operands[index].reg_index;
+        ctx.operands[index].str_name = string("%cr") + num;
+        num[0] -= ctx.operands[index].reg_index;
+#endif
+        return 1;
+    } else if (opname == op_reg_seg) {
+        ctx.require_modrm = true;
+        ModR_M modrm;
+        modrm.value = instr_fetch(eip, 1);
+        ctx.operands[index].type = opt_register_seg;
+        ctx.operands[index].reg_index = modrm.regop;
+        if (modrm.regop > 5) {
+            panic("Invalid segment register");
+        }
+        ctx.operands[index].size = 2;
+#ifdef OPERAND_SET_NAME
+        ctx.operands[index].str_name = string("%") + reg_seg_get_name(modrm.regop);
+#endif
+        return 1;
     } else if (op_name_is(opname, rm)) {
         Assert(ctx.prefix[3] == 0, "Address size prefix not implemented");
         ctx.require_modrm = true;
@@ -291,6 +331,7 @@ DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
                 uint32_t disp = instr_fetch(eip + 1, 4);
                 ctx.operands[index].type = opt_address;
                 ctx.operands[index].address = disp;
+                ctx.operands[index].sreg = sreg_index(ds);
                 ctx.operands[index].size = op_get_size(ctx, opname);
 #ifdef OPERAND_SET_NAME
                 ctx.operands[index].str_name = conv16(disp);
@@ -301,6 +342,11 @@ DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
                 ctx.operands[index].type = opt_address;
                 ctx.operands[index].size = op_get_size(ctx, opname);
                 ctx.operands[index].address = reg_read_index(modrm.rm, 4);
+                ctx.operands[index].sreg = sreg_index(ds);
+                if (modrm.rm == 2 || modrm.rm == 3 || modrm.rm == 6) {
+                    // BP in effective address
+                    ctx.operands[index].sreg = sreg_index(ss);
+                }
 #ifdef OPERAND_SET_NAME
                 ctx.operands[index].str_name = string("(%") +
                     reg_get_name(modrm.rm, 4) + ")";
@@ -351,6 +397,7 @@ DECODE_TEMPLATE_HELPER(decode_moffs) {
     if (op_name_is(opname, moffs)) {
         ctx.operands[index].type = opt_address;
         ctx.operands[index].address = instr_fetch(eip, 4);
+        ctx.operands[index].sreg = sreg_index(ds);
         ctx.operands[index].size = op_get_size(ctx, opname);
 #ifdef OPERAND_SET_NAME
         ctx.operands[index].str_name = string("$") + conv16(ctx.operands[index].immediate);

@@ -53,7 +53,7 @@ helper_fun opcode_table[256] = {
 /* 0x83 */  op_group({&add<op_rm_v, op_imm_b>, &or_<op_rm_v, op_imm_b>, &adc<op_rm_v, op_imm_b>, &sbb<op_rm_v, op_imm_b>, &and_<op_rm_v, op_imm_b>, &sub<op_rm_v, op_imm_b>, &xor_<op_rm_v, op_imm_b>, &cmp<op_rm_v, op_imm_b>}),
 /* 0x84 */	&test<op_rm_b, op_reg_b>, &test<op_rm_v, op_reg_v>, inv, inv,
 /* 0x88 */	&mov<op_rm_b, op_reg_b>, &mov<op_rm_v, op_reg_v>, &mov<op_reg_b, op_rm_b>, &mov<op_reg_v, op_rm_v>,
-/* 0x8c */	inv, &lea<op_reg_v, op_rm_l>, inv,
+/* 0x8c */	&mov<op_rm_w, op_reg_seg>, &lea<op_reg_v, op_rm_l>, &mov<op_reg_seg, op_rm_w>,
 /* 0x8f */	op_group({&pop<op_rm_v>, inv, inv, inv, inv, inv, inv, inv}),
 /* 0x90 */	op_r_rep(&xchg<op_a_v, op_r_v>),
 /* 0x98 */	cwtl, cltd, inv, inv,
@@ -93,7 +93,7 @@ helper_fun opcode_table[256] = {
 
 helper_fun _2byte_opcode_table[256] = {
 /* 0x00 */	op_group({inv, inv, inv, inv, inv, inv, inv, inv}),
-/* 0x01 */  op_group({inv, inv, inv, inv, inv, inv, inv, inv}),
+/* 0x01 */  op_group({inv, inv, &lgdt<op_rm_v>, inv, inv, inv, inv, inv}),
 /* 0x02 */  inv, inv,
 /* 0x04 */	inv, inv, inv, inv,
 /* 0x08 */	inv, inv, inv, inv,
@@ -103,7 +103,7 @@ helper_fun _2byte_opcode_table[256] = {
 /* 0x18 */	inv, inv, inv, inv,
 /* 0x1c */	inv, inv, inv,
 /* 0x1f */  op_group({&nop<op_rm_v>, inv, inv, inv, inv, inv, inv, inv}),
-/* 0x20 */	inv, inv, inv, inv,
+/* 0x20 */	&mov<op_rm_l, op_reg_cr>, inv, &mov<op_reg_cr, op_rm_l>, inv,
 /* 0x24 */	inv, inv, inv, inv,
 /* 0x28 */	inv, inv, inv, inv,
 /* 0x2c */	inv, inv, inv, inv,

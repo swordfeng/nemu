@@ -10,7 +10,7 @@ TEMPLATE_INSTRUCTION_HELPER(call_near) {
     temp_eip = int_trunc(temp_eip, ctx.operands[0].size);
     // push eip/ip
     reg_l(R_ESP) -= ctx.operands[0].size;
-    swaddr_write(reg_l(R_ESP), ctx.operands[0].size, cpu.eip);
+    swaddr_write(reg_l(R_ESP), ctx.operands[0].size, sreg_index(ss), cpu.eip);
 
     print_asm("call\t%x", temp_eip);
 
