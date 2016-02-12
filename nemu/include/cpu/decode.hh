@@ -83,8 +83,8 @@ struct Operand {
     string str_name;
 #endif
     Operand();
-    inline uint32_t getSignedValue();
-    inline uint32_t getUnsignedValue();
+    uint32_t getSignedValue();
+    uint32_t getUnsignedValue();
     swaddr_t getAddress();
     uint8_t getSreg() { return sreg; }
     void setValue(uint32_t v);

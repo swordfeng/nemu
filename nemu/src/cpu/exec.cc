@@ -1,6 +1,6 @@
 #include <vector>
 
-#include "decode.template.hh"
+#include "decode.tcc"
 #include "all-instr.h"
 
 /* +rb/+rw/+rd occupies 8 opcodes to represent registers */
