@@ -190,6 +190,7 @@ static int cmd_bt(char *args) {
 	return 0;
 }
 
+#ifdef USE_CACHE
 static int cmd_cache(char *args) {
     bool succ = false;
     hwaddr_t addr = expr(args, &succ);
@@ -200,6 +201,7 @@ static int cmd_cache(char *args) {
     cache_show(addr);
     return 0;
 }
+#endif
 
 static int cmd_help(char *args);
 
@@ -218,7 +220,9 @@ static struct {
 	{ "w", "Set new watchpoint", cmd_w },
 	{ "d", "Delete new watchpoint", cmd_d },
 	{ "bt", "Display Back Trace", cmd_bt},
-	{ "cache", "Display Back Trace", cmd_cache}
+#ifdef USE_CACHE
+	{ "cache", "Display Back Trace", cmd_cache},
+#endif
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
