@@ -88,7 +88,7 @@ opcode(0), require_modrm(false), decoded_len(0) {
     memset(prefix, 0, 4 * sizeof(prefix[0]));
 }
 
-inline Operand::Operand(): type(opt_undefined) {}
+inline Operand::Operand(): type(opt_undefined), sreg(0xff) {}
 
 inline uint32_t Operand::getSignedValue() {
    uint32_t ret = getUnsignedValue();
@@ -499,10 +499,8 @@ TEMPLATE_HELPER(decode_operands) {
     consumed_size += moffs_size;
     int imm_size = decode_imm<0, operand_names...>::call(ctx, eip + consumed_size);
     consumed_size += imm_size;
-    /*
     int ptrwv_size = decode_ptrwv<0, operand_names...>::call(ctx, eip + consumed_size);
     consumed_size += ptrwv_size;
-    */
     //printf("opcode = %x, decoded length = %d, m = %d, o = %d, i = %d\n", instr_fetch(eip, 1), consumed_size, modrm_size, moffs_size, imm_size);
     ctx.decoded_len = consumed_size;
     ctx.decoded_eip = eip;
