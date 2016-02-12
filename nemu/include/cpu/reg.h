@@ -91,6 +91,7 @@ typedef struct {
             uint8_t pg : 1;
         };
     } cr0;
+    hwaddr_t cr3;
 } CPU_state;
 
 extern CPU_state cpu;
