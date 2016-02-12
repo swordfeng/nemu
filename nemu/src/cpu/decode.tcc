@@ -411,8 +411,3 @@ TEMPLATE_HELPER(decode_operands) {
     return consumed_size;
 }
 
-inline HELPER(decode_operands) {
-    Assert(eip == ctx.decoded_eip, "unexpected call");
-    Assert(ctx.decoded_len > 0, "unexpected call");
-    return ctx.decoded_len;
-}

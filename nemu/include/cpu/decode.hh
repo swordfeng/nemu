@@ -175,7 +175,6 @@ uint8_t calc_pf(uint8_t val);
 
 /*** Operands Decoding Function ***/
 TEMPLATE_HELPER(decode_operands);
-HELPER(decode_operands); // simply check and read result from previous function template
 
 template <size_t size> struct standard_type;
 template <> struct standard_type<1> {
