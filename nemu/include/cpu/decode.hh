@@ -93,6 +93,7 @@ struct Operand {
 
 /* Instruction Context to be passed through decoding */
 struct InstructionContext {
+    swaddr_t starting_eip;
     uint8_t prefix[4];
     uint32_t opcode;
 //    uint8_t sreg_override;

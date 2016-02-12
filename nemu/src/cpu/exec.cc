@@ -154,6 +154,7 @@ helper_fun _2byte_opcode_table[256] = {
 
 extern "C" int exec(swaddr_t eip) {
 	InstructionContext ctx;
+    ctx.starting_eip = eip;
 	ctx.opcode = instr_fetch(eip, 1);
 	return opcode_table[ctx.opcode](ctx, eip);
 }
