@@ -31,4 +31,6 @@ void swaddr_write(swaddr_t, size_t, uint8_t, uint32_t);
 void lnaddr_write(lnaddr_t, size_t, uint32_t);
 void hwaddr_write(hwaddr_t, size_t, uint32_t);
 
+void page_show(lnaddr_t);
+
 #endif

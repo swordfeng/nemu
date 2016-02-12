@@ -207,6 +207,17 @@ static int cmd_cache(char *args) {
 }
 #endif
 
+static int cmd_page(char *args) {
+    bool succ = false;
+    lnaddr_t lnaddr = expr(args, &succ);
+    if (!succ) {
+        printf("invalid address\n");
+        return 1;
+    }
+    page_show(lnaddr);
+    return 0;
+}
+
 static int cmd_help(char *args);
 
 static struct {
@@ -227,6 +238,7 @@ static struct {
 #ifdef USE_CACHE
 	{ "cache", "Display Back Trace", cmd_cache},
 #endif
+	{ "page", "Display Page Translation", cmd_page},
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
