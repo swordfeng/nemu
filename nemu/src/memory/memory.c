@@ -47,6 +47,8 @@ lnaddr_t seg_translate(swaddr_t offset, size_t len, uint8_t sreg) {
     //Assert(dpl >= rpl, "dpl >= rpl");
     Assert(offset < cpu.sr[sreg].limit && offset + len < cpu.sr[sreg].limit, "out of segment");
 
+    if (cpu.sr[sreg].base != 0) printf("translate to %s, base is %x\n", reg_seg_get_name(sreg), cpu.sr[sreg].base);
+
     return cpu.sr[sreg].base + offset;
 }
 
