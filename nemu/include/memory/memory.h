@@ -31,6 +31,12 @@ void swaddr_write(swaddr_t, size_t, uint8_t, uint32_t);
 void lnaddr_write(lnaddr_t, size_t, uint32_t);
 void hwaddr_write(hwaddr_t, size_t, uint32_t);
 
+lnaddr_t seg_translate(swaddr_t offset, size_t len, uint8_t sreg);
+
+hwaddr_t tlb_translate(lnaddr_t lnaddr);
+void tlb_flush();
+
+hwaddr_t page_translate(lnaddr_t);
 void page_show(lnaddr_t);
 
 #endif

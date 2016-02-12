@@ -1,4 +1,5 @@
 #include "nemu.h"
+#include "memory/memory.h"
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
@@ -153,9 +154,12 @@ uint32_t reg_cr_read_index(uint8_t reg_index) {
 void reg_cr_set(uint8_t reg_index, uint32_t value) {
 	switch (reg_index) {
         case 0:
+			cpu.cr0.value ^= value;
+			if (cpu.cr0.pg) tlb_flush();
             cpu.cr0.value = value;
 			break;
         case 3:
+			tlb_flush();
             cpu.cr3 = value;
 			break;
         default:
