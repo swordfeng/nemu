@@ -109,11 +109,17 @@ extern const char* regsl[];
 extern const char* regsw[];
 extern const char* regsb[];
 
+extern const char* regss[];
+
 const char *reg_get_name(int reg_index, size_t size);
 const char *reg_seg_get_name(int sreg_index);
 uint32_t reg_name_mask(const char *name);
 uint32_t *reg_name_ptr(const char *name);
 void init_reg();
+
+uint32_t reg_read_index(uint8_t reg_index, size_t size);
+uint32_t reg_cr_read_index(uint8_t reg_index);
+void reg_cr_set(uint8_t reg_index, uint32_t value);
 
 void sreg_load(uint8_t sreg);
 

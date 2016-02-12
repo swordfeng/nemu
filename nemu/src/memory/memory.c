@@ -24,20 +24,20 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 }
 
 hwaddr_t page_translate(lnaddr_t lnaddr) {
-    if (!cpu.ct0.pg) return lnaddr;
-    hwaddr_t pde_addr = cpu.cr3 & 0xFFFFF000 + (lnaddr >> 20) & 0xFFC;
+    if (!cpu.cr0.pg) return lnaddr;
+    hwaddr_t pde_addr = (cpu.cr3 & 0xFFFFF000) + ((lnaddr >> 20) & 0xFFC);
     uint32_t pde = hwaddr_read(pde_addr, 4);
     Assert(pde & 1, "PDE not present");
-    Assert((pde >> 7) & 1 == 0, "4MB page not supported");
-    hwaddr_t pte_addr = pde & 0xFFFFF000 + (lnaddr >> 12) & 0xFFC;
+    Assert(((pde >> 7) & 1) == 0, "4MB page not supported");
+    hwaddr_t pte_addr = (pde & 0xFFFFF000) + ((lnaddr >> 10) & 0xFFC);
     uint32_t pte = hwaddr_read(pte_addr, 4);
     Assert(pte & 1, "PTE not present");
-    hwaddr_t hwaddr = pte & 0xFFFFF000 + lnaddr & 0xFFF;
+    hwaddr_t hwaddr = (pte & 0xFFFFF000) + (lnaddr & 0xFFF);
     return hwaddr;
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
-    size_t man_len = 0x1000 - addr & 0xFFF;
+    size_t max_len = 0x1000 - (addr & 0xFFF);
     if (len > max_len) {
         // data cross the page boundary
         uint32_t low = lnaddr_read(addr, max_len);
@@ -49,7 +49,15 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 }
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
-    hwaddr_write(addr, len, data);
+    size_t max_len = 0x1000 - (addr & 0xFFF);
+    if (len > max_len) {
+        // data cross the page boundary
+        lnaddr_write(addr, max_len, data & ((1 << (max_len * 8)) - 1));
+        lnaddr_write(addr + max_len, len - max_len, data >> (max_len * 8));
+        return;
+    }
+    hwaddr_t hwaddr = page_translate(addr);
+    hwaddr_write(hwaddr, len, data);
 }
 
 lnaddr_t seg_translate(swaddr_t offset, size_t len, uint8_t sreg) {

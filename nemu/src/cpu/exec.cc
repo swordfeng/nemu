@@ -86,7 +86,7 @@ helper_fun opcode_table[256] = {
 /* 0xf6 */  op_group({&test<op_rm_b, op_imm_b>, inv, &not_<op_rm_b>, &neg<op_rm_b>, &mul<op_rm_b>, &imul<op_rm_b>, &div<op_rm_b>, &idiv<op_rm_b>}),
 /* 0xf7 */  op_group({&test<op_rm_v, op_imm_v>, inv, &not_<op_rm_v>, &neg<op_rm_v>, &mul<op_rm_v>, &imul<op_rm_v>, &div<op_rm_v>, &idiv<op_rm_v>}),
 /* 0xf8 */	inv, inv, inv, inv,
-/* 0xfc */	cld, inv,
+/* 0xfc */	cld, stdf,
 /* 0xfe */  op_group({&inc<op_rm_b>, &dec<op_rm_b>, inv, inv, inv, inv, inv, inv}),
 /* 0xff */  op_group({&inc<op_rm_v>, &dec<op_rm_v>, &call_near<op_rm_v>, inv, &jmp_near<op_rm_v>, inv, &push<op_rm_v>, inv})
 };

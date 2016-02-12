@@ -27,7 +27,7 @@ type CExprFun = Ptr CBool -> IO Word32
 -- imports from C
 foreign import ccall unsafe "reg_name_mask" reg_name_mask :: CString -> IO Word32
 foreign import ccall unsafe "reg_name_ptr" reg_name_ptr :: CString -> IO (Ptr Word32)
-foreign import ccall unsafe "swaddr_read" swaddr_read :: Word32 -> CSize -> IO Word32
+foreign import ccall unsafe "lnaddr_read" lnaddr_read :: Word32 -> CSize -> IO Word32
 foreign import ccall unsafe "elf_find_sym" elf_find_sym_c :: CString -> Ptr Word32 -> IO CBool
 -- imports from Haskell library
 foreign import ccall unsafe "wrapper" makeCExprFun :: CExprFun -> IO (FunPtr CExprFun)
@@ -59,7 +59,8 @@ class ShowExpr a where
 data BaseInt = Dec ValueType | Hex ValueType | Reg String Word32 (Ptr Word32) | Symbol String Word32
 validRegNames = ["eax", "ecx", "edx", "ebx", "esp", "ebp", "esi", "edi",
     "ax", "cx", "dx", "bx", "sp", "bp", "si", "di",
-    "al", "cl", "dl", "bl", "ah", "ch", "dh", "bh", "eflags", "eip"]
+    "al", "cl", "dl", "bl", "ah", "ch", "dh", "bh", "eflags", "eip",
+    "cr0", "cr3", "es", "cs", "ss" , "ds", "fs", "gs"]
 instance ShowExpr BaseInt where
     showExpr (Dec x) = show x
     showExpr (Hex x) = "0x" ++ showHex x ""
@@ -122,7 +123,7 @@ opDefs' = [ -- operators with precedance
             | i == 0 = 1
             | otherwise = 0
         opDeref _ addr = do
-            addr >>= flip swaddr_read 4
+            addr >>= flip lnaddr_read 4
 opDefs = sortBy (compare `on` (negate . length . getOp)) `map` opDefs'
 
 ---- Expression

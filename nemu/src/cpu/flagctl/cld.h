@@ -1,3 +1,5 @@
 INSTRUCTION_HELPER(cld) {
-    // DS <- 0
+    // DF <- 0
+    cpu.df = 0;
+    print_instr(ctx, "cld");
 }
