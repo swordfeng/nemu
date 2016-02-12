@@ -48,10 +48,11 @@
 #include "string/cmps.h"
 
 #include "flagctl/cld.h"
+#include "flagctl/std.h"
 
 #include "misc/lea.h"
 #include "misc/nop.h"
 
 #include "special/special.h"
 
-#include "sys/lgdt_lidt.h"
+#include "system/lgdt_lidt.h"

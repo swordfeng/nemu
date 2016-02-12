@@ -15,28 +15,6 @@ inline size_t op_get_size(InstructionContext &ctx, OperandName opname) {
     return 0;
 }
 
-static inline uint32_t reg_read_index(uint8_t reg_index, size_t size) {
-    switch (size) {
-    case 1:
-        return reg_b(reg_index);
-    case 2:
-        return reg_w(reg_index);
-    case 4:
-        return reg_l(reg_index);
-    default:
-        panic("wrong reg size!");
-    }
-}
-
-static inline uint32_t &reg_cr_index(uint8_t reg_index) {
-    switch (reg_index) {
-        case 0:
-            return cpu.cr0.value;
-        default:
-            panic("not implemented");
-    }
-}
-
 static inline const char *prefix_name(int opcode, int prefix_code) {
     switch (prefix_code) {
     case prefix_0_rep: /* == repe */
@@ -108,7 +86,7 @@ inline uint32_t Operand::getUnsignedValue() {
        ret = immediate;
        break;
    case opt_register_cr:
-       ret = reg_cr_index(reg_index);
+       ret = reg_cr_read_index(reg_index);
        break;
    case opt_register_seg:
        ret = cpu.sr[reg_index].sel;
@@ -139,7 +117,7 @@ inline void Operand::setValue(uint32_t v) {
         swaddr_write(address, size, sreg, v);
         break;
     case opt_register_cr:
-        reg_cr_index(reg_index) = v;
+        reg_cr_set(reg_index, v);
         break;
     case opt_register_seg:
         cpu.sr[reg_index].sel = v;
@@ -238,7 +216,7 @@ DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
             reg_get_name(ctx.operands[index].reg_index, ctx.operands[index].size);
 #endif
         return 1;
-    } else if (opname == op_reg_cr) { 
+    } else if (opname == op_reg_cr) {
         ctx.require_modrm = true;
         ModR_M modrm;
         modrm.value = instr_fetch(eip, 1);

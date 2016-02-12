@@ -40,19 +40,23 @@ uint32_t loader() {
 		/* Scan the program header table, load each segment into memory */
 		if(ph->p_type == PT_LOAD) {
 
-			/* TODO: read the content of the segment from the ELF file
+#ifdef IA32_PAGE
+            uint32_t seg_paddr = mm_malloc(ph->p_vaddr, ph->p_memsz);
+#endif
+
+			/* Read the content of the segment from the ELF file
 			 * to the memory region [VirtAddr, VirtAddr + FileSiz)
 			 */
 #ifndef HAS_DEVICE
-			ramdisk_read((void *)ph->p_vaddr, ELF_OFFSET_IN_DISK + ph->p_offset, ph->p_filesz);
+			ramdisk_read((void *)seg_paddr, ELF_OFFSET_IN_DISK + ph->p_offset, ph->p_filesz);
 #else
 			panic("not implemented");
 #endif
 
-			/* TODO: zero the memory region
+			/* Zero the memory region
 			 * [VirtAddr + FileSiz, VirtAddr + MemSiz)
 			 */
-			 memset((void *)ph->p_vaddr + ph->p_filesz, 0, ph->p_memsz - ph->p_filesz);
+			 memset((void *)seg_paddr + ph->p_filesz, 0, ph->p_memsz - ph->p_filesz);
 
 
 #ifdef IA32_PAGE

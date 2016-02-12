@@ -82,6 +82,9 @@ static int cmd_info_r() {
 			printf("%s\t%#4x\t%3d\n", regsb[i], reg_b(i), reg_b(i));
 		} else printf("\n");
 	}
+    for (i = 0; i < 6; i++) {
+        printf("%s\t%#6x: base = %#10x, limit = %#10x\n", regss[i], cpu.sr[i].sel, cpu.sr[i].base, cpu.sr[i].limit);
+    }
 	printf("eflags\t%#10x [%s%s%s%s%s%s%s ]\n", cpu.eflags,
 			cpu.cf ? "CF" : "",
 			cpu.pf ? "PF" : "",
@@ -92,6 +95,7 @@ static int cmd_info_r() {
 			cpu.of ? "OF" : ""
 	);
 	printf("eip\t%#10x\n", cpu.eip);
+    printf("cr0\t%#10x\tcr3\t%#10x\n", cpu.cr0.value, cpu.cr3);
 	return 0;
 }
 
@@ -135,7 +139,7 @@ static int cmd_p(char *args) {
 	strncpy(expstr, args, len + 1);
 	bool success = false;
 	uint32_t result = expr(expstr, &success);
-	if (success) printf("%u\n", result);
+	if (success) printf("%#x\t(%u)\n", result, result);
 	return 0;
 }
 
