@@ -58,15 +58,17 @@ class Cache {
             CacheLine *validline = getCacheLine(addr);
             if (!validline) {
                 validline = &cache[index][rand() & (ways - 1)];
-                hwaddr_t start_addr = addr & ~0x3F;
+                hwaddr_t new_start_addr = addr & ~0x3F;
+                hwaddr_t old_start_addr = (validline->tag * indexes + index) << 6;
                 if (validline->valid && validline->dirty) {
-                    for (uint32_t i = 0; i < 64; i += 4) write_fallback(start_addr + i, 4, unalign_rw(validline->data + i, 4));
+                    // contains valid dirty line, write back
+                    for (uint32_t i = 0; i < 64; i += 4) write_fallback(old_start_addr + i, 4, unalign_rw(validline->data + i, 4));
                 }
                 // read to line
                 validline->valid = true;
                 validline->dirty = false;
                 validline->tag = tag;
-                for (uint32_t i = 0; i < 64; i += 4) unalign_rw(validline->data + i, 4) = read_fallback(start_addr + i, 4);
+                for (uint32_t i = 0; i < 64; i += 4) unalign_rw(validline->data + i, 4) = read_fallback(new_start_addr + i, 4);
             }
             return validline;
         }
