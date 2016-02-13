@@ -95,6 +95,7 @@ uint32_t *reg_name_ptr(const char *name) {
 void init_reg() {
 	/* Set the initial eflags. */
 	cpu.eflags = 0x2; // According to Intel Manual
+    cpu.ief = 1; // why should set manually?
 
     cpu.gdtr.base = 0;
     cpu.gdtr.limit = 0xFFFF;

@@ -7,6 +7,7 @@ int main() {
 					"movl $1, %ebx;"	// file descriptor, 1 = stdout
 					"movl $str, %ecx;"	// buffer address
 					"movl $14, %edx;"	// length
+                    "int3;"
 					"int $0x80");
 
 	HIT_GOOD_TRAP;

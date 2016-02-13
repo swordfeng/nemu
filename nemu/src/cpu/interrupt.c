@@ -9,9 +9,6 @@ extern jmp_buf jbuf;
 //static int8_t interrupt_types[] = {1, 0, 2, 2, 2, 1, 1, 1, 3, 3, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1}; // up to 20
 
 void raise_intr(uint8_t NO) {
-    /* TODO: Trigger an interrupt/exception with ``NO''.
-     * That is, use ``NO'' to index the IDT.
-     */
     Assert(NO < cpu.idtr.limit, "Interrupt number exceeded");
     lnaddr_t pidt = cpu.idtr.base + NO * 8;
     uint64_t idt_des = ((uint64_t) lnaddr_read(pidt + 4, 4) << 32) | lnaddr_read(pidt, 4); 
