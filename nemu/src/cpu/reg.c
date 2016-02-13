@@ -98,6 +98,8 @@ void init_reg() {
 
     cpu.gdtr.base = 0;
     cpu.gdtr.limit = 0xFFFF;
+    cpu.idtr.base = 0;
+    cpu.idtr.limit = 0xFFFF;
     cpu.cr0.value = 0;
     cpu.cs.base = 0;
     cpu.cs.limit = 0xffffffff;

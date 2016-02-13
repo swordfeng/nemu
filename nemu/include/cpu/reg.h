@@ -67,11 +67,11 @@ typedef struct {
     };
     // EIP
     swaddr_t eip;
-    // GDTR, IDTR
+    // GDTR, LDTR, IDTR
     struct {
         lnaddr_t base;
         uint16_t limit;
-    } gdtr;
+    } gdtr, idtr;
     union {
         uint32_t value;
         struct {
@@ -124,5 +124,6 @@ void reg_cr_set(uint8_t reg_index, uint32_t value);
 void sreg_load(uint8_t sreg);
 
 #define sreg_index(name) (&cpu.name - cpu.sr)
+#define sreg_load_name(name) sreg_load(sreg_index(name))
 
 #endif

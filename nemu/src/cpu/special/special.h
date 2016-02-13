@@ -39,9 +39,3 @@ INSTRUCTION_HELPER(nemu_trap) {
 	}
 }
 
-extern "C" void do_int3();
-
-INSTRUCTION_HELPER(int3) {
-	print_asm("int3");
-	do_int3();
-}

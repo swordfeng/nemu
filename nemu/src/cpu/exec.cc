@@ -42,7 +42,7 @@ helper_fun opcode_table[256] = {
 /* 0x48 */	op_r_rep(&dec<op_r_v>),
 /* 0x50 */	op_r_rep(&push<op_r_v>),
 /* 0x58 */	op_r_rep(&pop<op_r_v>),
-/* 0x60 */	inv, inv, inv, inv,
+/* 0x60 */	pusha, popa, inv, inv,
 /* 0x64 */	inv, inv, &op_prefix<2>, &op_prefix<3>,
 /* 0x68 */	&push<op_imm_v>, &imul<op_reg_v, op_rm_v, op_imm_v>, &push<op_imm_b>, &imul<op_reg_v, op_rm_v, op_imm_b>,
 /* 0x6c */	inv, inv, inv, inv,
@@ -69,7 +69,7 @@ helper_fun opcode_table[256] = {
 /* 0xc2 */  &ret_near<op_imm_w>, &ret_near<>,
 /* 0xc4 */	inv, inv, &mov<op_rm_b, op_imm_b>, &mov<op_rm_v, op_imm_v>, //mov_i2rm_b, mov_i2rm_v,
 /* 0xc8 */	inv, leave, inv, inv,
-/* 0xcc */	int3, inv, inv, inv,
+/* 0xcc */	int3, &intr<op_imm_b>, inv, iret,
 /* 0xd0 */	op_group({inv, inv, inv, inv, &shl<op_rm_b, op_1>, &shr<op_rm_b, op_1>, inv, &sar<op_rm_b, op_1>}),
 /* 0xd1 */  op_group({inv, inv, inv, inv, &shl<op_rm_v, op_1>, &shr<op_rm_v, op_1>, inv, &sar<op_rm_v, op_1>}),
 /* 0xd2 */  op_group({inv, inv, inv, inv, &shl<op_rm_b, op_c_b>, &shr<op_rm_b, op_c_b>, inv, &sar<op_rm_b, op_c_b>}),
@@ -85,7 +85,7 @@ helper_fun opcode_table[256] = {
 /* 0xf4 */	inv, inv,
 /* 0xf6 */  op_group({&test<op_rm_b, op_imm_b>, inv, &not_<op_rm_b>, &neg<op_rm_b>, &mul<op_rm_b>, &imul<op_rm_b>, &div<op_rm_b>, &idiv<op_rm_b>}),
 /* 0xf7 */  op_group({&test<op_rm_v, op_imm_v>, inv, &not_<op_rm_v>, &neg<op_rm_v>, &mul<op_rm_v>, &imul<op_rm_v>, &div<op_rm_v>, &idiv<op_rm_v>}),
-/* 0xf8 */	inv, inv, inv, inv,
+/* 0xf8 */	inv, inv, cli, sti,
 /* 0xfc */	cld, stdf,
 /* 0xfe */  op_group({&inc<op_rm_b>, &dec<op_rm_b>, inv, inv, inv, inv, inv, inv}),
 /* 0xff */  op_group({&inc<op_rm_v>, &dec<op_rm_v>, &call_near<op_rm_v>, inv, &jmp_near<op_rm_v>, inv, &push<op_rm_v>, inv})
@@ -93,7 +93,7 @@ helper_fun opcode_table[256] = {
 
 helper_fun _2byte_opcode_table[256] = {
 /* 0x00 */	op_group({inv, inv, inv, inv, inv, inv, inv, inv}),
-/* 0x01 */  op_group({inv, inv, &lgdt<op_rm_v>, inv, inv, inv, inv, inv}),
+/* 0x01 */  op_group({inv, inv, &lgdt<op_rm_v>, &lidt<op_rm_v>, inv, inv, inv, inv}),
 /* 0x02 */  inv, inv,
 /* 0x04 */	inv, inv, inv, inv,
 /* 0x08 */	inv, inv, inv, inv,

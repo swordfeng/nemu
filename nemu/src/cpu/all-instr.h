@@ -1,6 +1,9 @@
 /* public header */
 #pragma once
 #include "cpu/decode.hh"
+extern "C" {
+#include "cpu/interrupt.h"
+}
 
 #include "data-trans/push.h"
 #include "data-trans/mov.h"
@@ -12,11 +15,15 @@
 #include "data-trans/movsx.h"
 #include "data-trans/movzx.h"
 #include "data-trans/cmovcc.h"
+#include "data-trans/pusha.h"
+#include "data-trans/popa.h"
 
 #include "ctrl-trans/call.h"
 #include "ctrl-trans/jcc.h"
 #include "ctrl-trans/jmp.h"
 #include "ctrl-trans/ret.h"
+#include "ctrl-trans/int.h"
+#include "ctrl-trans/iret.h"
 
 #include "arith/sub.h"
 #include "arith/cmp.h"
@@ -49,6 +56,8 @@
 
 #include "flagctl/cld.h"
 #include "flagctl/std.h"
+#include "flagctl/cli.h"
+#include "flagctl/sti.h"
 
 #include "misc/lea.h"
 #include "misc/nop.h"
