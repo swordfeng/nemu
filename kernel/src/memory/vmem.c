@@ -1,5 +1,6 @@
 #include "common.h"
 #include "memory.h"
+#include "avatar.h"
 #include <string.h>
 
 #define VMEM_ADDR 0xa0000
@@ -30,22 +31,49 @@ void create_video_mapping() {
     }
 }
 
+static void outp(uint16_t port, uint8_t value) {
+    asm volatile("outb %%al, %%dx" :: "a"(value), "d"(port));
+}
+
+static uint8_t inp(uint16_t port) {
+    uint8_t value;
+    asm volatile("inb %%dx, %%al; mov %%al, %0" : "=r"(value) : "d"(port));
+    return value;
+}
+
+static uint8_t palette[256][3];
+
 void video_mapping_write_test() {
-	int i;
 	uint32_t *buf = (void *)VMEM_ADDR;
-	for(i = 0; i < SCR_SIZE / 4; i ++) {
-		buf[i] = i;
-	}
+    for (uint32_t i = 0; i < 256; i++) {
+        outp(0x3c7, i);
+        palette[i][0] = inp(0x3c9);
+        palette[i][1] = inp(0x3c9);
+        palette[i][2] = inp(0x3c9);
+    }
+    outp(0x3c8, 0);
+    for (uint32_t i = 0; i < 256; i++) {
+        outp(0x3c9, header_data_cmap[i][0] >> 2);
+        outp(0x3c9, header_data_cmap[i][1] >> 2);
+        outp(0x3c9, header_data_cmap[i][2] >> 2);
+    }
+    memcpy(buf, header_data, width * height);
 }
 
 void video_mapping_read_test() {
 	int i;
 	uint32_t *buf = (void *)VMEM_ADDR;
 	for(i = 0; i < SCR_SIZE / 4; i ++) {
-		assert(buf[i] == i);
+		assert(buf[i] == ((uint32_t *)header_data)[i]);
 	}
 }
 
 void video_mapping_clear() {
 	memset((void *)VMEM_ADDR, 0, SCR_SIZE);
+    outp(0x3c8, 0);
+    for (uint32_t i = 0; i < 256; i++) {
+        outp(0x3c9, palette[i][0]);
+        outp(0x3c9, palette[i][1]);
+        outp(0x3c9, palette[i][2]);
+    }
 }
