@@ -12,7 +12,7 @@ void raise_intr(uint8_t NO) {
     Assert(NO <= cpu.idtr.limit, "Interrupt number exceeded");
     lnaddr_t pidt = cpu.idtr.base + NO * 8;
     uint64_t idt_des = ((uint64_t) lnaddr_read(pidt + 4, 4) << 32) | lnaddr_read(pidt, 4); 
-    Assert((idt_des >> 47) & 1, "IDT descripter does not present");
+    Assert((idt_des >> 47) & 1, "IDT descripter does not present, Interrupt # = %#x", NO);
     uint8_t gate_type = (idt_des >> 40) & 0x7;
     //uint8_t gate_size = (idt_des >> 43) & 1;
     Assert(gate_type != 5, "task gate not implemented");

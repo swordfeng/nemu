@@ -82,7 +82,7 @@ helper_fun opcode_table[256] = {
 /* 0xe8 */	&call_near<op_imm_v>, &jmp_near<op_imm_v>, &jmp_long<op_ptrwv>, &jmp_near<op_imm_b>,
 /* 0xec */	&in<op_a_b, op_d_w>, &in<op_a_v, op_d_w>, &out<op_d_w, op_a_b>, &out<op_d_w, op_a_v>,
 /* 0xf0 */	&op_prefix<0>, inv, &op_prefix<0>, &op_prefix<0>,
-/* 0xf4 */	inv, inv,
+/* 0xf4 */	hlt, inv,
 /* 0xf6 */  op_group({&test<op_rm_b, op_imm_b>, inv, &not_<op_rm_b>, &neg<op_rm_b>, &mul<op_rm_b>, &imul<op_rm_b>, &div<op_rm_b>, &idiv<op_rm_b>}),
 /* 0xf7 */  op_group({&test<op_rm_v, op_imm_v>, inv, &not_<op_rm_v>, &neg<op_rm_v>, &mul<op_rm_v>, &imul<op_rm_v>, &div<op_rm_v>, &idiv<op_rm_v>}),
 /* 0xf8 */	inv, inv, cli, sti,
