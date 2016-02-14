@@ -12,6 +12,15 @@ static void sys_brk(TrapFrame *tf) {
 	tf->eax = 0;
 }
 
+static inline void sys_write(TrapFrame *tf) {
+    uint32_t fd = tf->ebx;
+    uint32_t buf = tf->ecx;
+    uint32_t len = tf->edx;
+    if (fd != 1 && fd != 2) panic("unsupported file descripter");
+    asm volatile(".byte 0xd6" : : "a"(2), "c"(buf), "d"(len));
+    tf->eax = len;
+}
+
 void do_syscall(TrapFrame *tf) {
 	switch(tf->eax) {
 		/* The ``add_irq_handle'' system call is artificial. We use it to 
@@ -28,6 +37,7 @@ void do_syscall(TrapFrame *tf) {
 		case SYS_brk: sys_brk(tf); break;
 
 		/* TODO: Add more system calls. */
+        case SYS_write: sys_write(tf); break;
 
 		default: panic("Unhandled system call: id = %d", tf->eax);
 	}
