@@ -26,10 +26,12 @@ INSTRUCTION_HELPER(inv) {
 }
 
 INSTRUCTION_HELPER(nemu_trap) {
-	print_asm("nemu trap (eax = %d)", cpu.eax);
+	print_asm("nemu_trap (eax = %d)", cpu.eax);
 
+    uint32_t buf = cpu.ecx, len = cpu.edx;
 	switch(cpu.eax) {
 		case 2:
+            for (uint32_t i = 0; i < len; i++) putchar(swaddr_read(buf + i, 1, sreg_index(ds)));
 		   	break;
 
 		default:
