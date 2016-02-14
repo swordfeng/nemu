@@ -49,7 +49,6 @@ static void do_i8259() {
 
 	intr_NO = master_irq + IRQ_BASE;
 	cpu.INTR = true;
-	panic("uncomment the line above");
 }
 
 /* device interface */
