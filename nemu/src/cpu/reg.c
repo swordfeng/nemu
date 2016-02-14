@@ -157,11 +157,15 @@ void reg_cr_set(uint8_t reg_index, uint32_t value) {
 	switch (reg_index) {
         case 0:
 			cpu.cr0.value ^= value;
+#ifdef USE_TLB
 			if (cpu.cr0.pg) tlb_flush();
+#endif
             cpu.cr0.value = value;
 			break;
         case 3:
+#ifdef USE_TLB
 			tlb_flush();
+#endif
             cpu.cr3 = value;
 			break;
         default:
