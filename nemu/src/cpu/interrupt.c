@@ -30,7 +30,7 @@ void raise_intr(uint8_t NO) {
     // long jump
     cpu.cs.sel = (idt_des >> 16) & 0xFFFF;
     sreg_load_name(cs);
-    cpu.eip = (idt_des & 0xFFFF) | ((idt_des >> 32) && 0xFFFF0000);
+    cpu.eip = (idt_des & 0xFFFF) | ((idt_des >> 32LL) & 0xFFFF0000);
     /* Jump back to cpu_exec() */
     longjmp(jbuf, 1);
 }
