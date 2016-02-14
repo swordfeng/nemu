@@ -65,3 +65,6 @@ extern "C" {
 #include "special/special.h"
 
 #include "system/lgdt_lidt.h"
+
+#include "io/in.h"
+#include "io/out.h"
