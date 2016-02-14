@@ -1,5 +1,5 @@
-GAME := typing
-#GAME := nemu-pal
+#GAME := typing
+GAME := nemu-pal
 
 game_CFLAGS_EXTRA := -m32 -O2 -fno-builtin -fno-omit-frame-pointer -fno-stack-protector \
 						-I$(LIB_COMMON_DIR) -I$(NEWLIBC_DIR)/include \
