@@ -16,7 +16,7 @@ void raise_intr(uint8_t NO) {
     uint8_t gate_type = (idt_des >> 40) & 0x7;
     //uint8_t gate_size = (idt_des >> 43) & 1;
     Assert(gate_type != 5, "task gate not implemented");
-    if (NO != 2 && !cpu.ief) return; // not NMI, IF is not present
+    //if (NO != 2 && !cpu.ief) return; // not NMI, IF is not present
     // push registers
     cpu.esp -= 4;
     swaddr_write(cpu.esp, 4, sreg_index(ss), cpu.eflags);
