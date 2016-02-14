@@ -36,7 +36,7 @@ uint32_t loader() {
 
 	/* Load each program segment */
 	for(int ind = 0; ind < elf->e_phnum; ind++) {
-		ph = (void *)elf->e_phoff + ind * elf->e_phentsize;
+		ph = (void *)buf + elf->e_phoff + ind * elf->e_phentsize;
 		/* Scan the program header table, load each segment into memory */
 		if(ph->p_type == PT_LOAD) {
 
@@ -51,7 +51,7 @@ uint32_t loader() {
 #ifndef HAS_DEVICE
 			ramdisk_read((void *)seg_paddr, ELF_OFFSET_IN_DISK + ph->p_offset, ph->p_filesz);
 #else
-			panic("not implemented");
+			ide_read((void *)seg_paddr, ELF_OFFSET_IN_DISK + ph->p_offset, ph->p_filesz);
 #endif
 
 			/* Zero the memory region

@@ -3,10 +3,10 @@
 #include <string.h>
 
 #define VMEM_ADDR 0xa0000
+#define VMEM_SIZE 0x20000
 #define SCR_SIZE (320 * 200)
-#define NR_VPTE
 
-static PTE vptable[NR_PTE] align_to_page;
+static PTE vptable[(VMEM_ADDR + VMEM_SIZE) / PAGE_SIZE] align_to_page;
 /* Use the function to get the start address of user page directory. */
 PDE* get_updir();
 
@@ -24,7 +24,7 @@ void create_video_mapping() {
 
     uint32_t vmem_addr = VMEM_ADDR;
     uint32_t idx = VMEM_ADDR / PAGE_SIZE;
-    for (vmem_addr = VMEM_ADDR; vmem_addr < VMEM_ADDR + SCR_SIZE; vmem_addr += PAGE_SIZE) {
+    for (vmem_addr = VMEM_ADDR; vmem_addr < VMEM_ADDR + VMEM_SIZE; vmem_addr += PAGE_SIZE) {
         vptable[idx].val = make_pte(vmem_addr);
         idx++;
     }

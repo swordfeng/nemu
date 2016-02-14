@@ -368,6 +368,13 @@ DECODE_TEMPLATE_HELPER(decode_const) {
 #ifdef OPERAND_SET_NAME
         ctx.operands[index].str_name = string("%") + reg_get_name(R_ECX, op_get_size(ctx, opname));
 #endif
+    } else if (op_name_is(opname, d)) {
+        ctx.operands[index].type = opt_register;
+        ctx.operands[index].reg_index = R_EDX;
+        ctx.operands[index].size = op_get_size(ctx, opname);
+#ifdef OPERAND_SET_NAME
+        ctx.operands[index].str_name = string("%") + reg_get_name(R_EDX, op_get_size(ctx, opname));
+#endif
     } else if (op_name_is(opname, 1)) {
         ctx.operands[index].type = opt_immediate;
         ctx.operands[index].immediate = 1;

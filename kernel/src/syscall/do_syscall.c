@@ -4,6 +4,7 @@
 
 void add_irq_handle(int, void (*)(void));
 void mm_brk(uint32_t);
+void serial_printc(char);
 
 static void sys_brk(TrapFrame *tf) {
 #ifdef IA32_PAGE
@@ -14,10 +15,10 @@ static void sys_brk(TrapFrame *tf) {
 
 static inline void sys_write(TrapFrame *tf) {
     uint32_t fd = tf->ebx;
-    uint32_t buf = tf->ecx;
+    char *buf = (char *)tf->ecx;
     uint32_t len = tf->edx;
     if (fd != 1 && fd != 2) panic("unsupported file descripter");
-    asm volatile(".byte 0xd6" : : "a"(2), "c"(buf), "d"(len));
+    while (len--) serial_printc(*(buf++));
     tf->eax = len;
 }
 

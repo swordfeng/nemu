@@ -62,8 +62,9 @@ clean: clean-cpp clean-log
 	-rm -rf obj 2> /dev/null
 
 ##### some convinient rules #####
-TEST=hello-inline-asm
-USERPROG := obj/testcase/$(TEST)
+#TEST=hello-inline-asm
+#USERPROG := obj/testcase/$(TEST)
+USERPROG := $(game_BIN)
 ENTRY := $(kernel_BIN)
 #ENTRY := $(USERPROG)
 

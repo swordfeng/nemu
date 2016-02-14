@@ -5,7 +5,7 @@ nemu_RUSTSTD := obj/nemu/libruststd.a
 
 $(eval $(call make_common_rules,nemu))
 
-nemu_LDFLAGS := -no-hs-main -lpthread -lreadline -package parsec -lstdc++ -optl-flto -lubsan
+nemu_LDFLAGS := -no-hs-main -lpthread -lreadline -package parsec -lstdc++ -lSDL -optl-flto -lubsan
 
 $(nemu_BIN): $(nemu_OBJS) $(nemu_RUSTSTD)
 	$(call make_command, $(HC), $(nemu_LDFLAGS), ld $@, $^)

@@ -12,6 +12,9 @@ void init_regex();
 void init_wp_list();
 void init_ddr3();
 
+void init_device();
+void init_sdl();
+
 FILE *log_fp = NULL;
 
 static void init_log() {
@@ -38,6 +41,9 @@ void init_monitor(int argc, char *argv[]) {
 
 	/* Display welcome message. */
 	welcome();
+
+    init_device();
+    init_sdl();
 }
 
 #ifdef USE_RAMDISK

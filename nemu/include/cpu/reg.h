@@ -92,6 +92,7 @@ typedef struct {
         };
     } cr0;
     hwaddr_t cr3;
+    bool INTR;
 } CPU_state;
 
 extern CPU_state cpu;
