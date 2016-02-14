@@ -49,6 +49,7 @@ extern "C" {
 #include "logic/shr.h"
 #include "logic/shrd.h"
 #include "logic/setcc.h"
+#include "logic/bt.h"
 
 #include "string/movs.h"
 #include "string/stos.h"
