@@ -3,7 +3,7 @@
 #include <string.h>
 
 #define VMEM_ADDR 0xa0000
-#define VMEM_size 0x20000
+#define VMEM_SIZE 0x20000
 #define SCR_SIZE (320 * 200)
 
 static PTE vptable[VMEM_SIZE / PAGE_SIZE] align_to_page;
