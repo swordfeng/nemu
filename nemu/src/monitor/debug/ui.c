@@ -96,6 +96,7 @@ static int cmd_info_r() {
 	);
 	printf("eip\t%#10x\n", cpu.eip);
     printf("cr0\t%#10x\tcr3\t%#10x\n", cpu.cr0.value, cpu.cr3);
+    printf("gdtr:\tbase = %#10x, limit = %#10x\nidtr:\tbase = %#10x, limit = %#10x\n", cpu.gdtr.base, cpu.gdtr.limit, cpu.idtr.base, cpu.idtr.limit);
 	return 0;
 }
 

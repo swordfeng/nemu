@@ -5,6 +5,7 @@ extern "C" {
 INSTRUCTION_HELPER(inv) {
 	/* invalid opcode */
 
+    eip = ctx.starting_eip;
 	uint32_t temp[8];
 	temp[0] = instr_fetch(eip, 4);
 	temp[1] = instr_fetch(eip + 4, 4);
@@ -25,10 +26,12 @@ INSTRUCTION_HELPER(inv) {
 }
 
 INSTRUCTION_HELPER(nemu_trap) {
-	print_asm("nemu trap (eax = %d)", cpu.eax);
+	print_asm("nemu_trap (eax = %d)", cpu.eax);
 
+    uint32_t buf = cpu.ecx, len = cpu.edx;
 	switch(cpu.eax) {
 		case 2:
+            for (uint32_t i = 0; i < len; i++) putchar(swaddr_read(buf + i, 1, sreg_index(ds)));
 		   	break;
 
 		default:
@@ -38,9 +41,3 @@ INSTRUCTION_HELPER(nemu_trap) {
 	}
 }
 
-extern "C" void do_int3();
-
-INSTRUCTION_HELPER(int3) {
-	print_asm("int3");
-	do_int3();
-}
