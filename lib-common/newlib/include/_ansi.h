@@ -9,8 +9,8 @@
    "comment out" the non-ANSI parts of the ANSI header files (non-ANSI header
    files aren't affected).  */
 
-#ifndef	_ANSIDECL_H_
-#define	_ANSIDECL_H_
+#ifndef    _ANSIDECL_H_
+#define    _ANSIDECL_H_
 
 #include <newlib.h>
 #include <sys/config.h>
@@ -47,27 +47,27 @@
 #endif
 
 #ifdef _HAVE_STDC
-#define	_PTR		void *
-#define	_AND		,
-#define	_NOARGS		void
-#define	_CONST		const
-#define	_VOLATILE	volatile
-#define	_SIGNED		signed
-#define	_DOTS		, ...
+#define    _PTR        void *
+#define    _AND        ,
+#define    _NOARGS        void
+#define    _CONST        const
+#define    _VOLATILE    volatile
+#define    _SIGNED        signed
+#define    _DOTS        , ...
 #define _VOID void
 #ifdef __CYGWIN__
-#define	_EXFUN_NOTHROW(name, proto)	__cdecl name proto _NOTHROW
-#define	_EXFUN(name, proto)		__cdecl name proto
-#define	_EXPARM(name, proto)		(* __cdecl name) proto
-#define	_EXFNPTR(name, proto)		(__cdecl * name) proto
+#define    _EXFUN_NOTHROW(name, proto)    __cdecl name proto _NOTHROW
+#define    _EXFUN(name, proto)        __cdecl name proto
+#define    _EXPARM(name, proto)        (* __cdecl name) proto
+#define    _EXFNPTR(name, proto)        (__cdecl * name) proto
 #else
-#define	_EXFUN_NOTHROW(name, proto)	name proto _NOTHROW
-#define	_EXFUN(name, proto)		name proto
-#define _EXPARM(name, proto)		(* name) proto
-#define _EXFNPTR(name, proto)		(* name) proto
+#define    _EXFUN_NOTHROW(name, proto)    name proto _NOTHROW
+#define    _EXFUN(name, proto)        name proto
+#define _EXPARM(name, proto)        (* name) proto
+#define _EXFNPTR(name, proto)        (* name) proto
 #endif
-#define	_DEFUN(name, arglist, args)	name(args)
-#define	_DEFUN_VOID(name)		name(_NOARGS)
+#define    _DEFUN(name, arglist, args)    name(args)
+#define    _DEFUN_VOID(name)        name(_NOARGS)
 #define _CAST_VOID (void)
 #ifndef _LONG_DOUBLE
 #define _LONG_DOUBLE long double
@@ -76,26 +76,26 @@
 #define _LONG_LONG_TYPE long long
 #endif
 #ifndef _PARAMS
-#define _PARAMS(paramlist)		paramlist
+#define _PARAMS(paramlist)        paramlist
 #endif
-#else	
-#define	_PTR		char *
-#define	_AND		;
-#define	_NOARGS
-#define	_CONST
-#define	_VOLATILE
-#define	_SIGNED
-#define	_DOTS
+#else    
+#define    _PTR        char *
+#define    _AND        ;
+#define    _NOARGS
+#define    _CONST
+#define    _VOLATILE
+#define    _SIGNED
+#define    _DOTS
 #define _VOID void
-#define	_EXFUN(name, proto)		name()
-#define	_EXFUN_NOTHROW(name, proto)	name()
-#define	_DEFUN(name, arglist, args)	name arglist args;
-#define	_DEFUN_VOID(name)		name()
+#define    _EXFUN(name, proto)        name()
+#define    _EXFUN_NOTHROW(name, proto)    name()
+#define    _DEFUN(name, arglist, args)    name arglist args;
+#define    _DEFUN_VOID(name)        name()
 #define _CAST_VOID
 #define _LONG_DOUBLE double
 #define _LONG_LONG_TYPE long
 #ifndef _PARAMS
-#define _PARAMS(paramlist)		()
+#define _PARAMS(paramlist)        ()
 #endif
 #endif
 
@@ -132,8 +132,8 @@
 #endif
 
 #if __GNUC_PREREQ (3, 1)
-#define _NOINLINE		__attribute__ ((__noinline__))
-#define _NOINLINE_STATIC	_NOINLINE static
+#define _NOINLINE        __attribute__ ((__noinline__))
+#define _NOINLINE_STATIC    _NOINLINE static
 #else
 /* On non-GNU compilers and GCC prior to version 3.1 the compiler can't be
    trusted not to inline if it is static. */

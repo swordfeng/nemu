@@ -13,8 +13,8 @@ extern uint8_t *hw_mem;
 #define va_to_hwa(p) ((hwaddr_t)((void *)p - (void *)hw_mem))
 
 #define hw_rw(addr, type) *(type *)({\
-	Assert(addr < HW_MEM_SIZE, "physical address(0x%08x) is out of bound", addr); \
-	hwa_to_va(addr); \
+    Assert(addr < HW_MEM_SIZE, "physical address(0x%08x) is out of bound", addr); \
+    hwa_to_va(addr); \
 })
 
 #ifdef USE_CACHE

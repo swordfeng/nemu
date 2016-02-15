@@ -6,19 +6,19 @@
 typedef int FLOAT;
 
 static inline int F2int(FLOAT a) {
-	return a / (1 << 16);
+    return a / (1 << 16);
 }
 
 static inline FLOAT int2F(int a) {
-	return a * (1 << 16);
+    return a * (1 << 16);
 }
 
 static inline FLOAT F_mul_int(FLOAT a, int b) {
-	return a * b;
+    return a * b;
 }
 
 static inline FLOAT F_div_int(FLOAT a, int b) {
-	return a / b;
+    return a / b;
 }
 
 FLOAT f2F(float);

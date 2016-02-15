@@ -1,8 +1,8 @@
 #include "trap.h"
 
 long long sub(long long a, long long b) {
-	long long c = a - b;
-	return c;
+    long long c = a - b;
+    return c;
 }
 
 long long test_data[] = {0, 1, 2, 0x7fffffffffffffffLL, 0x8000000000000000LL, 0x8000000000000001LL, 0xfffffffffffffffeLL, 0xffffffffffffffffLL};
@@ -11,14 +11,14 @@ long long ans[] = {0LL, 0xffffffffffffffffLL, 0xfffffffffffffffeLL, 0x8000000000
 #define NR_DATA (sizeof(test_data) / sizeof(test_data[0]))
 
 int main() {
-	int i, j, ans_idx = 0;
-	for(i = 0; i < NR_DATA; i ++) {
-		for(j = 0; j < NR_DATA; j ++) {
-			nemu_assert(sub(test_data[i], test_data[j]) == ans[ans_idx ++]);
-		}
-	}
+    int i, j, ans_idx = 0;
+    for(i = 0; i < NR_DATA; i ++) {
+        for(j = 0; j < NR_DATA; j ++) {
+            nemu_assert(sub(test_data[i], test_data[j]) == ans[ans_idx ++]);
+        }
+    }
 
-	HIT_GOOD_TRAP;
+    HIT_GOOD_TRAP;
 
-	return 0;
+    return 0;
 }

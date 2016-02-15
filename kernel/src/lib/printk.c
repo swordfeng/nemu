@@ -7,13 +7,13 @@ void serial_printc(char);
 void __attribute__((__noinline__)) 
 printk(const char *ctl, ...) {
 #ifndef HAS_DEVICE
-	return;
+    return;
 #endif
-	static char buf[256];
-	void *args = (void **)&ctl + 1;
-	int len = vsnprintf(buf, 256, ctl, args);
-	int i;
-	for(i = 0; i < len; i ++) {
-		serial_printc(buf[i]);
-	}
+    static char buf[256];
+    void *args = (void **)&ctl + 1;
+    int len = vsnprintf(buf, 256, ctl, args);
+    int i;
+    for(i = 0; i < len; i ++) {
+        serial_printc(buf[i]);
+    }
 }

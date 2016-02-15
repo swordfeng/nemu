@@ -400,7 +400,7 @@ PAL_EndingAnimation(
       //
       PAL_RLEBlitToSurface(PAL_SpriteGetFrame(buf, 0), gpScreen, PAL_XY(0, -400 + i));
 #ifdef PAL_WIN95
-	  PAL_RLEBlitToSurface(buf + 0x8444, gpScreen, PAL_XY(0, -200 + i));
+      PAL_RLEBlitToSurface(buf + 0x8444, gpScreen, PAL_XY(0, -200 + i));
 #else
       PAL_RLEBlitToSurface(PAL_SpriteGetFrame(buf, 1), gpScreen, PAL_XY(0, -200 + i));
 #endif
@@ -452,82 +452,82 @@ PAL_EndingScreen(
    VOID
 )
 {
-	RIX_Play(0x1a, TRUE, 0);
-	PAL_RNGPlay(gpGlobals->iCurPlayingRNG, 110, 150, 7);
-	PAL_RNGPlay(gpGlobals->iCurPlayingRNG, 151, 999, 9);
+    RIX_Play(0x1a, TRUE, 0);
+    PAL_RNGPlay(gpGlobals->iCurPlayingRNG, 110, 150, 7);
+    PAL_RNGPlay(gpGlobals->iCurPlayingRNG, 151, 999, 9);
 
-	PAL_FadeOut(2);
+    PAL_FadeOut(2);
 
-	RIX_Play(0x19, TRUE, 0);
+    RIX_Play(0x19, TRUE, 0);
 
-	PAL_ShowFBP(75, 0);
-	PAL_FadeIn(5, FALSE, 1);
-	PAL_ScrollFBP(74, 0xf, TRUE);
+    PAL_ShowFBP(75, 0);
+    PAL_FadeIn(5, FALSE, 1);
+    PAL_ScrollFBP(74, 0xf, TRUE);
 
-	PAL_FadeOut(1);
+    PAL_FadeOut(1);
 
-	SDL_FillRect(gpScreen, NULL, 0);
-	gpGlobals->wNumPalette = 4;
-	gpGlobals->fNeedToFadeIn = TRUE;
-	PAL_EndingAnimation();
+    SDL_FillRect(gpScreen, NULL, 0);
+    gpGlobals->wNumPalette = 4;
+    gpGlobals->fNeedToFadeIn = TRUE;
+    PAL_EndingAnimation();
 
-	RIX_Play(0, FALSE, 2);
-	PAL_ColorFade(7, 15, FALSE);
+    RIX_Play(0, FALSE, 2);
+    PAL_ColorFade(7, 15, FALSE);
 
-	if (!SOUND_PlayCDA(2))
-	{
-		RIX_Play(0x11, TRUE, 0);
-	}
+    if (!SOUND_PlayCDA(2))
+    {
+        RIX_Play(0x11, TRUE, 0);
+    }
 
-	SDL_FillRect(gpScreen, NULL, 0);
-	PAL_SetPalette(0, FALSE);
-	PAL_RNGPlay(0xb, 0, 999, 7);
+    SDL_FillRect(gpScreen, NULL, 0);
+    PAL_SetPalette(0, FALSE);
+    PAL_RNGPlay(0xb, 0, 999, 7);
 
-	PAL_FadeOut(2);
+    PAL_FadeOut(2);
 
-	SDL_FillRect(gpScreen, NULL, 0);
-	gpGlobals->wNumPalette = 8;
-	gpGlobals->fNeedToFadeIn = TRUE;
-	PAL_RNGPlay(10, 0, 999, 6);
+    SDL_FillRect(gpScreen, NULL, 0);
+    gpGlobals->wNumPalette = 8;
+    gpGlobals->fNeedToFadeIn = TRUE;
+    PAL_RNGPlay(10, 0, 999, 6);
 
-	PAL_EndingSetEffectSprite(0);
-	PAL_ShowFBP(77, 10);
+    PAL_EndingSetEffectSprite(0);
+    PAL_ShowFBP(77, 10);
 
-	VIDEO_BackupScreen();
+    VIDEO_BackupScreen();
 
-	PAL_EndingSetEffectSprite(0x27b);
-	PAL_ShowFBP(76, 7);
+    PAL_EndingSetEffectSprite(0x27b);
+    PAL_ShowFBP(76, 7);
 
-	PAL_SetPalette(5, FALSE);
-	PAL_ShowFBP(73, 7);
-	PAL_ScrollFBP(72, 0xf, TRUE);
+    PAL_SetPalette(5, FALSE);
+    PAL_ShowFBP(73, 7);
+    PAL_ScrollFBP(72, 0xf, TRUE);
 
-	PAL_ShowFBP(71, 7);
-	PAL_ShowFBP(68, 7);
+    PAL_ShowFBP(71, 7);
+    PAL_ShowFBP(68, 7);
 
-	PAL_EndingSetEffectSprite(0);
-	PAL_ShowFBP(68, 6);
+    PAL_EndingSetEffectSprite(0);
+    PAL_ShowFBP(68, 6);
 
-	PAL_WaitForKey(0);
-	RIX_Play(0, FALSE, 1);
-	UTIL_Delay(500);
+    PAL_WaitForKey(0);
+    RIX_Play(0, FALSE, 1);
+    UTIL_Delay(500);
 
-	if (!SOUND_PlayCDA(13))
-	{
-		RIX_Play(9, TRUE, 0);
-	}
+    if (!SOUND_PlayCDA(13))
+    {
+        RIX_Play(9, TRUE, 0);
+    }
 
-	PAL_ScrollFBP(67, 0xf, TRUE);
-	PAL_ScrollFBP(66, 0xf, TRUE);
-	PAL_ScrollFBP(65, 0xf, TRUE);
-	PAL_ScrollFBP(64, 0xf, TRUE);
-	PAL_ScrollFBP(63, 0xf, TRUE);
-	PAL_ScrollFBP(62, 0xf, TRUE);
-	PAL_ScrollFBP(61, 0xf, TRUE);
-	PAL_ScrollFBP(60, 0xf, TRUE);
-	PAL_ScrollFBP(59, 0xf, TRUE);
+    PAL_ScrollFBP(67, 0xf, TRUE);
+    PAL_ScrollFBP(66, 0xf, TRUE);
+    PAL_ScrollFBP(65, 0xf, TRUE);
+    PAL_ScrollFBP(64, 0xf, TRUE);
+    PAL_ScrollFBP(63, 0xf, TRUE);
+    PAL_ScrollFBP(62, 0xf, TRUE);
+    PAL_ScrollFBP(61, 0xf, TRUE);
+    PAL_ScrollFBP(60, 0xf, TRUE);
+    PAL_ScrollFBP(59, 0xf, TRUE);
 
-	RIX_Play(0, FALSE, 6);
-	PAL_FadeOut(3);
+    RIX_Play(0, FALSE, 6);
+    PAL_FadeOut(3);
 }
 #endif

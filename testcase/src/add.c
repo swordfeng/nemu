@@ -1,8 +1,8 @@
 #include "trap.h"
 
 int add(int a, int b) {
-	int c = a + b;
-	return c;
+    int c = a + b;
+    return c;
 }
 
 int test_data[] = {0, 1, 2, 0x7fffffff, 0x80000000, 0x80000001, 0xfffffffe, 0xffffffff};
@@ -11,17 +11,17 @@ int ans[] = {0, 0x1, 0x2, 0x7fffffff, 0x80000000, 0x80000001, 0xfffffffe, 0xffff
 #define NR_DATA (sizeof(test_data) / sizeof(test_data[0]))
 
 int main() {
-	int i, j, ans_idx = 0;
-	for(i = 0; i < NR_DATA; i ++) {
-		for(j = 0; j < NR_DATA; j ++) {
-			nemu_assert(add(test_data[i], test_data[j]) == ans[ans_idx ++]);
-		}
-	}
+    int i, j, ans_idx = 0;
+    for(i = 0; i < NR_DATA; i ++) {
+        for(j = 0; j < NR_DATA; j ++) {
+            nemu_assert(add(test_data[i], test_data[j]) == ans[ans_idx ++]);
+        }
+    }
 
-	nemu_assert(i == NR_DATA);
-	nemu_assert(j == NR_DATA);
+    nemu_assert(i == NR_DATA);
+    nemu_assert(j == NR_DATA);
 
-	HIT_GOOD_TRAP;
+    HIT_GOOD_TRAP;
 
-	return 0;
+    return 0;
 }

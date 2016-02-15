@@ -1,5 +1,5 @@
 /*
-	assert.h
+    assert.h
 */
 
 #ifdef __cplusplus
@@ -14,7 +14,7 @@ extern "C" {
 # define assert(__e) ((void)0)
 #else
 # define assert(__e) ((__e) ? (void)0 : __assert_func (__FILE__, __LINE__, \
-						       __ASSERT_FUNC, #__e))
+                               __ASSERT_FUNC, #__e))
 
 # ifndef __ASSERT_FUNC
   /* Use g++'s demangled names in C++.  */
@@ -37,9 +37,9 @@ extern "C" {
 #endif /* !NDEBUG */
 
 void _EXFUN(__assert, (const char *, int, const char *)
-	    _ATTRIBUTE ((__noreturn__)));
+        _ATTRIBUTE ((__noreturn__)));
 void _EXFUN(__assert_func, (const char *, int, const char *, const char *)
-	    _ATTRIBUTE ((__noreturn__)));
+        _ATTRIBUTE ((__noreturn__)));
 
 #if __STDC_VERSION__ >= 201112L && !defined __cplusplus
 # define static_assert _Static_assert

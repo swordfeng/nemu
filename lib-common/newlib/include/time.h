@@ -30,38 +30,38 @@ _BEGIN_STD_C
 
 struct tm
 {
-  int	tm_sec;
-  int	tm_min;
-  int	tm_hour;
-  int	tm_mday;
-  int	tm_mon;
-  int	tm_year;
-  int	tm_wday;
-  int	tm_yday;
-  int	tm_isdst;
+  int    tm_sec;
+  int    tm_min;
+  int    tm_hour;
+  int    tm_mday;
+  int    tm_mon;
+  int    tm_year;
+  int    tm_wday;
+  int    tm_yday;
+  int    tm_isdst;
 };
 
-clock_t	   _EXFUN(clock,    (void));
-double	   _EXFUN(difftime, (time_t _time2, time_t _time1));
-time_t	   _EXFUN(mktime,   (struct tm *_timeptr));
-time_t	   _EXFUN(time,     (time_t *_timer));
+clock_t       _EXFUN(clock,    (void));
+double       _EXFUN(difftime, (time_t _time2, time_t _time1));
+time_t       _EXFUN(mktime,   (struct tm *_timeptr));
+time_t       _EXFUN(time,     (time_t *_timer));
 #ifndef _REENT_ONLY
-char	  *_EXFUN(asctime,  (const struct tm *_tblock));
-char	  *_EXFUN(ctime,    (const time_t *_time));
+char      *_EXFUN(asctime,  (const struct tm *_tblock));
+char      *_EXFUN(ctime,    (const time_t *_time));
 struct tm *_EXFUN(gmtime,   (const time_t *_timer));
 struct tm *_EXFUN(localtime,(const time_t *_timer));
 #endif
-size_t	   _EXFUN(strftime, (char *__restrict _s,
-			     size_t _maxsize, const char *__restrict _fmt,
-			     const struct tm *__restrict _t));
+size_t       _EXFUN(strftime, (char *__restrict _s,
+                 size_t _maxsize, const char *__restrict _fmt,
+                 const struct tm *__restrict _t));
 
-char	  *_EXFUN(asctime_r,	(const struct tm *__restrict,
-				 char *__restrict));
-char	  *_EXFUN(ctime_r,	(const time_t *, char *));
-struct tm *_EXFUN(gmtime_r,	(const time_t *__restrict,
-				 struct tm *__restrict));
-struct tm *_EXFUN(localtime_r,	(const time_t *__restrict,
-				 struct tm *__restrict));
+char      *_EXFUN(asctime_r,    (const struct tm *__restrict,
+                 char *__restrict));
+char      *_EXFUN(ctime_r,    (const time_t *, char *));
+struct tm *_EXFUN(gmtime_r,    (const time_t *__restrict,
+                 struct tm *__restrict));
+struct tm *_EXFUN(localtime_r,    (const time_t *__restrict,
+                 struct tm *__restrict));
 
 _END_STD_C
 
@@ -71,10 +71,10 @@ extern "C" {
 
 #ifndef __STRICT_ANSI__
 char      *_EXFUN(strptime,     (const char *__restrict,
-				 const char *__restrict,
-				 struct tm *__restrict));
-_VOID      _EXFUN(tzset,	(_VOID));
-_VOID      _EXFUN(_tzset_r,	(struct _reent *));
+                 const char *__restrict,
+                 struct tm *__restrict));
+_VOID      _EXFUN(tzset,    (_VOID));
+_VOID      _EXFUN(_tzset_r,    (struct _reent *));
 
 typedef struct __tzrule_struct
 {
@@ -103,7 +103,7 @@ __tzinfo_type *_EXFUN (__gettzinfo, (_VOID));
 #define getdate_err (*__getdate_err())
 int *_EXFUN(__getdate_err,(_VOID));
 
-struct tm *	_EXFUN(getdate, (const char *));
+struct tm *    _EXFUN(getdate, (const char *));
 /* getdate_err is set to one of the following values to indicate the error.
      1  the DATEMSK environment variable is null or undefined,
      2  the template file cannot be opened for reading,
@@ -116,7 +116,7 @@ struct tm *	_EXFUN(getdate, (const char *));
 #endif /* !_REENT_ONLY */
 
 /* getdate_r returns the error code as above */
-int		_EXFUN(getdate_r, (const char *, struct tm *));
+int        _EXFUN(getdate_r, (const char *, struct tm *));
 #endif /* HAVE_GETDATE */
 
 /* defines for the opengroup specifications Derived from Issue 1 of the SVID.  */
@@ -157,9 +157,9 @@ int _EXFUN(clock_getres,  (clockid_t clock_id, struct timespec *res));
 /* Create a Per-Process Timer, P1003.1b-1993, p. 264 */
 
 int _EXFUN(timer_create,
-  	(clockid_t clock_id,
- 	struct sigevent *__restrict evp,
-	timer_t *__restrict timerid));
+      (clockid_t clock_id,
+     struct sigevent *__restrict evp,
+    timer_t *__restrict timerid));
 
 /* Delete a Per_process Timer, P1003.1b-1993, p. 266 */
 
@@ -168,9 +168,9 @@ int _EXFUN(timer_delete, (timer_t timerid));
 /* Per-Process Timers, P1003.1b-1993, p. 267 */
 
 int _EXFUN(timer_settime,
-	(timer_t timerid, int flags,
-	const struct itimerspec *__restrict value,
-	struct itimerspec *__restrict ovalue));
+    (timer_t timerid, int flags,
+    const struct itimerspec *__restrict value,
+    struct itimerspec *__restrict ovalue));
 int _EXFUN(timer_gettime, (timer_t timerid, struct itimerspec *value));
 int _EXFUN(timer_getoverrun, (timer_t timerid));
 
@@ -226,7 +226,7 @@ extern "C" {
 /* Flag indicating time is "absolute" with respect to the clock
    associated with a time.  */
 
-#define TIMER_ABSTIME	4
+#define TIMER_ABSTIME    4
 
 /* Manifest Constants, P1003.4b/D8, p. 55 */
 

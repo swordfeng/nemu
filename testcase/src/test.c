@@ -3,6 +3,6 @@
 int t = 3;
 char str[] = "abcdefg";
 int main() {
-	HIT_GOOD_TRAP;
-	return 0;
+    HIT_GOOD_TRAP;
+    return 0;
 }

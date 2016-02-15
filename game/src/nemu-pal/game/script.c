@@ -3446,12 +3446,12 @@ begin:
       }
       iDescLine++;
 #endif
-	  wScriptEntry++;
-	  break;
+      wScriptEntry++;
+      break;
 
 #ifdef PAL_WIN95
    case 0x00A7:
-	  wScriptEntry++;
+      wScriptEntry++;
       break;
 #endif
 

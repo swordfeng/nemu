@@ -1,6 +1,6 @@
 /*-
  * Copyright (c) 1992, 1993
- *	The Regents of the University of California.  All rights reserved.
+ *    The Regents of the University of California.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -27,29 +27,29 @@
  * SUCH DAMAGE.
  *
  * $FreeBSD: src/include/fnmatch.h,v 1.10 2002/03/23 17:24:53 imp Exp $
- *	@(#)fnmatch.h	8.1 (Berkeley) 6/2/93
+ *    @(#)fnmatch.h    8.1 (Berkeley) 6/2/93
  */
 
-#ifndef	_FNMATCH_H_
-#define	_FNMATCH_H_
+#ifndef    _FNMATCH_H_
+#define    _FNMATCH_H_
 
-#define	FNM_NOMATCH	1	/* Match failed. */
+#define    FNM_NOMATCH    1    /* Match failed. */
 
-#define	FNM_NOESCAPE	0x01	/* Disable backslash escaping. */
-#define	FNM_PATHNAME	0x02	/* Slash must be matched by slash. */
-#define	FNM_PERIOD	0x04	/* Period must be matched by period. */
+#define    FNM_NOESCAPE    0x01    /* Disable backslash escaping. */
+#define    FNM_PATHNAME    0x02    /* Slash must be matched by slash. */
+#define    FNM_PERIOD    0x04    /* Period must be matched by period. */
 
 #if defined(_GNU_SOURCE) || !defined(_ANSI_SOURCE) && !defined(_POSIX_SOURCE)
-#define	FNM_LEADING_DIR	0x08	/* Ignore /<tail> after Imatch. */
-#define	FNM_CASEFOLD	0x10	/* Case insensitive search. */
-#define	FNM_IGNORECASE	FNM_CASEFOLD
-#define	FNM_FILE_NAME	FNM_PATHNAME
+#define    FNM_LEADING_DIR    0x08    /* Ignore /<tail> after Imatch. */
+#define    FNM_CASEFOLD    0x10    /* Case insensitive search. */
+#define    FNM_IGNORECASE    FNM_CASEFOLD
+#define    FNM_FILE_NAME    FNM_PATHNAME
 #endif
 
 #include <sys/cdefs.h>
 
 __BEGIN_DECLS
-int	 fnmatch(const char *, const char *, int);
+int     fnmatch(const char *, const char *, int);
 __END_DECLS
 
 #endif /* !_FNMATCH_H_ */

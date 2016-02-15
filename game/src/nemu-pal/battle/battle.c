@@ -1001,29 +1001,29 @@ PAL_BattleEnemyEscape(
    //
    while (f)
    {
-   	  f = FALSE;
+         f = FALSE;
 
-   	  for (j = 0; j <= g_Battle.wMaxEnemyIndex; j++)
-   	  {
-   	  	 if (g_Battle.rgEnemy[j].wObjectID == 0)
-   	  	 {
-   	  	 	continue;
-   	  	 }
+         for (j = 0; j <= g_Battle.wMaxEnemyIndex; j++)
+         {
+              if (g_Battle.rgEnemy[j].wObjectID == 0)
+              {
+                  continue;
+              }
 
-   	  	 x = PAL_X(g_Battle.rgEnemy[j].pos) - 5;
-   	  	 y = PAL_Y(g_Battle.rgEnemy[j].pos);
+              x = PAL_X(g_Battle.rgEnemy[j].pos) - 5;
+              y = PAL_Y(g_Battle.rgEnemy[j].pos);
 
-   	  	 g_Battle.rgEnemy[j].pos = PAL_XY(x, y);
+              g_Battle.rgEnemy[j].pos = PAL_XY(x, y);
 
-   	  	 w = PAL_RLEGetWidth(PAL_SpriteGetFrame(g_Battle.rgEnemy[j].lpSprite, 0));
+              w = PAL_RLEGetWidth(PAL_SpriteGetFrame(g_Battle.rgEnemy[j].lpSprite, 0));
 
-   	  	 if (x + w > 0)
-   	  	 {
-   	  	 	f = TRUE;
-   	  	 }
-   	  }
+              if (x + w > 0)
+              {
+                  f = TRUE;
+              }
+         }
 
-   	  PAL_BattleMakeScene();
+         PAL_BattleMakeScene();
       SDL_BlitSurface(g_Battle.lpSceneBuf, NULL, gpScreen, NULL);
       VIDEO_UpdateScreen(NULL);
 

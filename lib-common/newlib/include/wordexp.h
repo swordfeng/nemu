@@ -15,20 +15,20 @@ extern "C" {
 
 struct _wordexp_t
 {
-  size_t we_wordc;	/* Count of words matched by words. */
-  char **we_wordv;	/* Pointer to list of expanded words. */
-  size_t we_offs;	/* Slots to reserve at the beginning of we_wordv. */
+  size_t we_wordc;    /* Count of words matched by words. */
+  char **we_wordv;    /* Pointer to list of expanded words. */
+  size_t we_offs;    /* Slots to reserve at the beginning of we_wordv. */
 };
 
 typedef struct _wordexp_t wordexp_t;
 
-#define	WRDE_DOOFFS	0x0001	/* Use we_offs. */
-#define	WRDE_APPEND	0x0002	/* Append to output from previous call. */
-#define	WRDE_NOCMD	0x0004	/* Don't perform command substitution. */
-#define	WRDE_REUSE	0x0008	/* pwordexp points to a wordexp_t struct returned from
+#define    WRDE_DOOFFS    0x0001    /* Use we_offs. */
+#define    WRDE_APPEND    0x0002    /* Append to output from previous call. */
+#define    WRDE_NOCMD    0x0004    /* Don't perform command substitution. */
+#define    WRDE_REUSE    0x0008    /* pwordexp points to a wordexp_t struct returned from
                                    a previous successful call to wordexp. */
-#define	WRDE_SHOWERR	0x0010	/* Print error messages to stderr. */
-#define	WRDE_UNDEF	0x0020	/* Report attempt to expand undefined shell variable. */
+#define    WRDE_SHOWERR    0x0010    /* Print error messages to stderr. */
+#define    WRDE_UNDEF    0x0020    /* Report attempt to expand undefined shell variable. */
 
 enum {
   WRDE_SUCCESS,

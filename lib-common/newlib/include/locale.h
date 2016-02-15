@@ -1,7 +1,7 @@
 /*
-	locale.h
-	Values appropriate for the formatting of monetary and other
-	numberic quantities.
+    locale.h
+    Values appropriate for the formatting of monetary and other
+    numberic quantities.
 */
 
 #ifndef _LOCALE_H_
@@ -12,7 +12,7 @@
 #define __need_NULL
 #include <stddef.h>
 
-#define LC_ALL	    0
+#define LC_ALL        0
 #define LC_COLLATE  1
 #define LC_CTYPE    2
 #define LC_MONETARY 3

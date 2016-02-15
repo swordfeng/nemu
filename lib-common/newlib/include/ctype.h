@@ -30,19 +30,19 @@ int _EXFUN(toascii, (int __c));
 #define _toupper(__c) ((unsigned char)(__c) - 'a' + 'A')
 #endif
 
-#define	_U	01
-#define	_L	02
-#define	_N	04
-#define	_S	010
-#define _P	020
-#define _C	040
-#define _X	0100
-#define	_B	0200
+#define    _U    01
+#define    _L    02
+#define    _N    04
+#define    _S    010
+#define _P    020
+#define _C    040
+#define _X    0100
+#define    _B    0200
 
 #ifndef _MB_CAPABLE
 _CONST
 #endif
-extern	__IMPORT char	*__ctype_ptr__;
+extern    __IMPORT char    *__ctype_ptr__;
 
 #ifndef __cplusplus
 /* These macros are intentionally written in a manner that will trigger
@@ -56,22 +56,22 @@ extern	__IMPORT char	*__ctype_ptr__;
    an out-of-bounds reference on a 64-bit machine.  */
 #define __ctype_lookup(__c) ((__ctype_ptr__+sizeof(""[__c]))[(int)(__c)])
 
-#define	isalpha(__c)	(__ctype_lookup(__c)&(_U|_L))
-#define	isupper(__c)	((__ctype_lookup(__c)&(_U|_L))==_U)
-#define	islower(__c)	((__ctype_lookup(__c)&(_U|_L))==_L)
-#define	isdigit(__c)	(__ctype_lookup(__c)&_N)
-#define	isxdigit(__c)	(__ctype_lookup(__c)&(_X|_N))
-#define	isspace(__c)	(__ctype_lookup(__c)&_S)
-#define ispunct(__c)	(__ctype_lookup(__c)&_P)
-#define isalnum(__c)	(__ctype_lookup(__c)&(_U|_L|_N))
-#define isprint(__c)	(__ctype_lookup(__c)&(_P|_U|_L|_N|_B))
-#define	isgraph(__c)	(__ctype_lookup(__c)&(_P|_U|_L|_N))
-#define iscntrl(__c)	(__ctype_lookup(__c)&_C)
+#define    isalpha(__c)    (__ctype_lookup(__c)&(_U|_L))
+#define    isupper(__c)    ((__ctype_lookup(__c)&(_U|_L))==_U)
+#define    islower(__c)    ((__ctype_lookup(__c)&(_U|_L))==_L)
+#define    isdigit(__c)    (__ctype_lookup(__c)&_N)
+#define    isxdigit(__c)    (__ctype_lookup(__c)&(_X|_N))
+#define    isspace(__c)    (__ctype_lookup(__c)&_S)
+#define ispunct(__c)    (__ctype_lookup(__c)&_P)
+#define isalnum(__c)    (__ctype_lookup(__c)&(_U|_L|_N))
+#define isprint(__c)    (__ctype_lookup(__c)&(_P|_U|_L|_N|_B))
+#define    isgraph(__c)    (__ctype_lookup(__c)&(_P|_U|_L|_N))
+#define iscntrl(__c)    (__ctype_lookup(__c)&_C)
 
 #if defined(__GNUC__) && \
     (!defined(__STRICT_ANSI__) || __STDC_VERSION__ >= 199901L)
 #define isblank(__c) \
-  __extension__ ({ __typeof__ (__c) __x = (__c);		\
+  __extension__ ({ __typeof__ (__c) __x = (__c);        \
         (__ctype_lookup(__x)&_B) || (int) (__x) == '\t';})
 #endif
 
@@ -82,31 +82,31 @@ extern	__IMPORT char	*__ctype_ptr__;
 # if defined(__GNUC__)
 #  if !defined (_MB_EXTENDED_CHARSETS_ISO) && !defined (_MB_EXTENDED_CHARSETS_WINDOWS)
 #   define toupper(__c) \
-  __extension__ ({ __typeof__ (__c) __x = (__c);	\
+  __extension__ ({ __typeof__ (__c) __x = (__c);    \
       islower (__x) ? (int) __x - 'a' + 'A' : (int) __x;})
 #   define tolower(__c) \
-  __extension__ ({ __typeof__ (__c) __x = (__c);	\
+  __extension__ ({ __typeof__ (__c) __x = (__c);    \
       isupper (__x) ? (int) __x - 'A' + 'a' : (int) __x;})
 #  else /* _MB_EXTENDED_CHARSETS* */
 /* Allow a gcc warning if the user passed 'char', but defer to the
    function.  */
 #   define toupper(__c) \
-  __extension__ ({ __typeof__ (__c) __x = (__c);	\
+  __extension__ ({ __typeof__ (__c) __x = (__c);    \
       (void) __ctype_ptr__[__x]; (toupper) (__x);})
 #   define tolower(__c) \
-  __extension__ ({ __typeof__ (__c) __x = (__c);	\
+  __extension__ ({ __typeof__ (__c) __x = (__c);    \
       (void) __ctype_ptr__[__x]; (tolower) (__x);})
 #  endif /* _MB_EXTENDED_CHARSETS* */
 # endif /* __GNUC__ */
 #endif /* !__cplusplus */
 
 #ifndef __STRICT_ANSI__
-#define isascii(__c)	((unsigned)(__c)<=0177)
-#define toascii(__c)	((__c)&0177)
+#define isascii(__c)    ((unsigned)(__c)<=0177)
+#define toascii(__c)    ((__c)&0177)
 #endif
 
 /* For C++ backward-compatibility only.  */
-extern	__IMPORT _CONST char	_ctype_[];
+extern    __IMPORT _CONST char    _ctype_[];
 
 _END_STD_C
 

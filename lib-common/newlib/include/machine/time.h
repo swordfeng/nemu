@@ -1,5 +1,5 @@
-#ifndef	_MACHTIME_H_
-#define	_MACHTIME_H_
+#ifndef    _MACHTIME_H_
+#define    _MACHTIME_H_
 
 #if defined(__rtems__)
 #define _CLOCKS_PER_SEC_  sysconf(_SC_CLK_TCK)
@@ -14,6 +14,6 @@
 int nanosleep (const struct timespec *, struct timespec *);
 #endif
 
-#endif	/* _MACHTIME_H_ */
+#endif    /* _MACHTIME_H_ */
 
 

@@ -90,7 +90,7 @@ SOUND_CloseAudio(
 
 --*/
 {
-	return;
+    return;
 }
 
 VOID
@@ -115,7 +115,7 @@ SOUND_PlayChannel(
 
 --*/
 {
-	return;
+    return;
 }
 
 VOID
@@ -125,7 +125,7 @@ PAL_PlayMUS(
    FLOAT     flFadeTime
 )
 {
-	return;
+    return;
 }
 
 BOOL

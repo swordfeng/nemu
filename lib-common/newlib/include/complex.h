@@ -5,8 +5,8 @@
  * Public domain.
  */
 
-#ifndef	_COMPLEX_H
-#define	_COMPLEX_H
+#ifndef    _COMPLEX_H
+#define    _COMPLEX_H
 
 #define complex _Complex
 #define _Complex_I 1.0fi
@@ -121,4 +121,4 @@ float crealf(float complex);
 
 __END_DECLS
 
-#endif	/* ! _COMPLEX_H */
+#endif    /* ! _COMPLEX_H */

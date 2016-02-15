@@ -5,6 +5,6 @@
  * But the execution flow should not reach here.
  */
 void* sbrk(int incr) {
-	panic("should not reach here");
-	return NULL;
+    panic("should not reach here");
+    return NULL;
 }

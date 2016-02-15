@@ -363,7 +363,7 @@ PAL_RNGBlitToSurface(
          break;
 
       case 0x11:
-    	 data = *(rng + ptr++);
+         data = *(rng + ptr++);
          for (i = 0; i <= data; i++)
          {
             x = dst_ptr % 320;

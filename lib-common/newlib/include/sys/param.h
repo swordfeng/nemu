@@ -14,7 +14,7 @@
 # define HZ (60)
 #endif
 #ifndef NOFILE
-# define NOFILE	(60)
+# define NOFILE    (60)
 #endif
 #ifndef PATHSIZE
 # define PATHSIZE (1024)

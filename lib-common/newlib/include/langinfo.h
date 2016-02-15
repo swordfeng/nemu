@@ -27,7 +27,7 @@
  */
 
 #ifndef _LANGINFO_H_
-#define	_LANGINFO_H_
+#define    _LANGINFO_H_
 
 #include <newlib.h>
 #include <sys/config.h>
@@ -39,19 +39,19 @@ enum __nl_item
 {
   /* POSIX and BSD defined items have to stick to the original values
      to maintain backward compatibility. */
-  _NL_CTYPE_CODESET_NAME = 0,	/* codeset name */
+  _NL_CTYPE_CODESET_NAME = 0,    /* codeset name */
 #define CODESET _NL_CTYPE_CODESET_NAME
-  D_T_FMT,			/* string for formatting date and time */
+  D_T_FMT,            /* string for formatting date and time */
 #define D_T_FMT D_T_FMT
-  D_FMT,			/* date format string */
+  D_FMT,            /* date format string */
 #define D_FMT D_FMT
-  T_FMT,			/* time format string */
+  T_FMT,            /* time format string */
 #define T_FMT T_FMT
-  T_FMT_AMPM,			/* a.m. or p.m. time formatting string */
+  T_FMT_AMPM,            /* a.m. or p.m. time formatting string */
 #define T_FMT_AMPM T_FMT_AMPM
-  AM_STR,			/* Ante Meridian affix */
+  AM_STR,            /* Ante Meridian affix */
 #define AM_STR AM_STR
-  PM_STR,			/* Post Meridian affix */
+  PM_STR,            /* Post Meridian affix */
 #define PM_STR PM_STR
 
 /* week day names */
@@ -138,38 +138,38 @@ enum __nl_item
   ABMON_12,
 #define ABMON_12 ABMON_12
 
-  ERA,				/* era description segments */
+  ERA,                /* era description segments */
 #define ERA ERA
-  ERA_D_FMT,			/* era date format string */
+  ERA_D_FMT,            /* era date format string */
 #define ERA_D_FMT ERA_D_FMT
-  ERA_D_T_FMT,			/* era date and time format string */
+  ERA_D_T_FMT,            /* era date and time format string */
 #define ERA_D_T_FMT ERA_D_T_FMT
-  ERA_T_FMT,			/* era time format string */
+  ERA_T_FMT,            /* era time format string */
 #define ERA_T_FMT ERA_T_FMT
-  ALT_DIGITS,			/* alternative symbols for digits */
+  ALT_DIGITS,            /* alternative symbols for digits */
 #define ALT_DIGITS ALT_DIGITS
 
-  RADIXCHAR,			/* radix char */
+  RADIXCHAR,            /* radix char */
 #define RADIXCHAR RADIXCHAR
-  THOUSEP,			/* separator for thousands */
+  THOUSEP,            /* separator for thousands */
 #define THOUSEP THOUSEP
 
-  YESEXPR,			/* affirmative response expression */
+  YESEXPR,            /* affirmative response expression */
 #define YESEXPR YESEXPR
-  NOEXPR,			/* negative response expression */
+  NOEXPR,            /* negative response expression */
 #define NOEXPR NOEXPR
-  YESSTR,			/* affirmative response for yes/no queries */
+  YESSTR,            /* affirmative response for yes/no queries */
 #define YESSTR YESSTR
-  NOSTR,			/* negative response for yes/no queries */
+  NOSTR,            /* negative response for yes/no queries */
 #define NOSTR NOSTR
 
-  CRNCYSTR,			/* currency symbol */
+  CRNCYSTR,            /* currency symbol */
 #define CRNCYSTR CRNCYSTR
 
-  D_MD_ORDER,			/* month/day order (BSD extension) */
+  D_MD_ORDER,            /* month/day order (BSD extension) */
 #define D_MD_ORDER D_MD_ORDER
 
-  _NL_TIME_DATE_FMT = 84,	/* date fmt used by date(1) (GNU extension) */
+  _NL_TIME_DATE_FMT = 84,    /* date fmt used by date(1) (GNU extension) */
 #define _DATE_FMT _NL_TIME_DATE_FMT
 
 #ifdef __HAVE_LOCALE_INFO__
@@ -310,7 +310,7 @@ enum __nl_item
 };
 
 __BEGIN_DECLS
-char	*nl_langinfo(nl_item);
+char    *nl_langinfo(nl_item);
 __END_DECLS
 
 #endif /* !_LANGINFO_H_ */

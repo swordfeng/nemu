@@ -140,7 +140,7 @@ VIDEO_Init(
    // Create texture for screen.
    //
    gpTexture = SDL_CreateTexture(gpRenderer, SDL_PIXELFORMAT_ARGB8888,
-							  SDL_TEXTUREACCESS_STREAMING, 320, 200);
+                              SDL_TEXTUREACCESS_STREAMING, 320, 200);
 
    //
    // Failed?
@@ -165,11 +165,11 @@ VIDEO_Init(
          gpScreenReal = NULL;
       }
 
-	  if (gpTexture != NULL)
-	  {
-		 SDL_DestroyTexture(gpTexture);
-		 gpTexture = NULL;
-	  }
+      if (gpTexture != NULL)
+      {
+         SDL_DestroyTexture(gpTexture);
+         gpTexture = NULL;
+      }
 
       SDL_DestroyRenderer(gpRenderer);
       gpRenderer = NULL;
@@ -283,17 +283,17 @@ VIDEO_Init(
       if (gpScreen != NULL)
       {
          SDL_FreeSurface(gpScreen);
-		 gpScreen = NULL;
+         gpScreen = NULL;
       }
 
       if (gpScreenBak != NULL)
       {
          SDL_FreeSurface(gpScreenBak);
-		 gpScreenBak = NULL;
+         gpScreenBak = NULL;
       }
 
       SDL_FreeSurface(gpScreenReal);
-	  gpScreenReal = NULL;
+      gpScreenReal = NULL;
 
       return -2;
    }
@@ -357,7 +357,7 @@ VIDEO_Shutdown(
 
    if (gpTexture)
    {
-	  SDL_DestroyTexture(gpTexture);
+      SDL_DestroyTexture(gpTexture);
    }
    gpTexture = NULL;
 
@@ -409,7 +409,7 @@ VIDEO_UpdateScreen(
 #if SDL_VERSION_ATLEAST(2,0,0)
    if (g_bRenderPaused)
    {
-	   return;
+       return;
    }
 #endif
 
@@ -466,111 +466,111 @@ VIDEO_UpdateScreen(
    }
    else
    {
-	   incr_nr_draw();
+       incr_nr_draw();
 
-	   if (g_wShakeTime != 0) 
-	   {
-		   //
-		   // Shake the screen
-		   //
-		   srcrect.x = 0;
-		   srcrect.y = 0;
-		   srcrect.w = 320;
-		   srcrect.h = 200 - g_wShakeLevel;
+       if (g_wShakeTime != 0) 
+       {
+           //
+           // Shake the screen
+           //
+           srcrect.x = 0;
+           srcrect.y = 0;
+           srcrect.w = 320;
+           srcrect.h = 200 - g_wShakeLevel;
 
-		   dstrect.x = 0;
-		   dstrect.y = screenRealY;
-		   dstrect.w = 320 * gpScreenReal->w / gpScreen->w;
-		   dstrect.h = (200 - g_wShakeLevel) * screenRealHeight / gpScreen->h;
+           dstrect.x = 0;
+           dstrect.y = screenRealY;
+           dstrect.w = 320 * gpScreenReal->w / gpScreen->w;
+           dstrect.h = (200 - g_wShakeLevel) * screenRealHeight / gpScreen->h;
 
-		   if (g_wShakeTime & 1)
-		   {
-			   srcrect.y = g_wShakeLevel;
-		   }
-		   else
-		   {
-			   dstrect.y = (screenRealY + g_wShakeLevel) * screenRealHeight / gpScreen->h;
-		   }
+           if (g_wShakeTime & 1)
+           {
+               srcrect.y = g_wShakeLevel;
+           }
+           else
+           {
+               dstrect.y = (screenRealY + g_wShakeLevel) * screenRealHeight / gpScreen->h;
+           }
 
-		   SDL_SoftStretch(gpScreen, &srcrect, gpScreenReal, &dstrect);
+           SDL_SoftStretch(gpScreen, &srcrect, gpScreenReal, &dstrect);
 
-		   if (g_wShakeTime & 1)
-		   {
-			   dstrect.y = (screenRealY + screenRealHeight - g_wShakeLevel) * screenRealHeight / gpScreen->h;
-		   }
-		   else
-		   {
-			   dstrect.y = screenRealY;
-		   }
+           if (g_wShakeTime & 1)
+           {
+               dstrect.y = (screenRealY + screenRealHeight - g_wShakeLevel) * screenRealHeight / gpScreen->h;
+           }
+           else
+           {
+               dstrect.y = screenRealY;
+           }
 
-		   dstrect.h = g_wShakeLevel * screenRealHeight / gpScreen->h;
+           dstrect.h = g_wShakeLevel * screenRealHeight / gpScreen->h;
 
-		   SDL_FillRect(gpScreenReal, &dstrect, 0);
+           SDL_FillRect(gpScreenReal, &dstrect, 0);
 
-		   if (SDL_MUSTLOCK(gpScreenReal))
-		   {
-			   SDL_UnlockSurface(gpScreenReal);
-		   }
-
-#if SDL_VERSION_ATLEAST(2, 0, 0)
-		   SDL_UpdateTexture(gpTexture, NULL, gpScreenReal->pixels, gpScreenReal->pitch);
-		   SDL_RenderCopy(gpRenderer, gpTexture, NULL, NULL);
-		   if (gpTouchOverlay)
-		   {
-			   SDL_RenderCopy(gpRenderer, gpTouchOverlay, NULL, NULL);
-		   }
-#ifdef __WINPHONE__
-		   if (gpBackKeyMessage)
-		   {
-			   extern unsigned int g_uiLastBackKeyTime;
-			   if (g_uiLastBackKeyTime != 0 && SDL_GetTicks() - g_uiLastBackKeyTime < 800)
-			   {
-				   SDL_RenderCopy(gpRenderer, gpBackKeyMessage, NULL, NULL);
-			   }
-		   }
-#endif
-		   SDL_RenderPresent(gpRenderer);
-#else
-		   SDL_UpdateRect(gpScreenReal, 0, 0, gpScreenReal->w, gpScreenReal->h);
-#endif
-		   g_wShakeTime--;
-	   }
-	   else
-	   {
-		   dstrect.x = 0;
-		   dstrect.y = screenRealY;
-		   dstrect.w = gpScreenReal->w;
-		   dstrect.h = screenRealHeight;
-
-		   SDL_SoftStretch(gpScreen, NULL, gpScreenReal, &dstrect);
-
-		   if (SDL_MUSTLOCK(gpScreenReal))
-		   {
-			   SDL_UnlockSurface(gpScreenReal);
-		   }
+           if (SDL_MUSTLOCK(gpScreenReal))
+           {
+               SDL_UnlockSurface(gpScreenReal);
+           }
 
 #if SDL_VERSION_ATLEAST(2, 0, 0)
-		   SDL_UpdateTexture(gpTexture, NULL, gpScreenReal->pixels, gpScreenReal->pitch);
-		   SDL_RenderCopy(gpRenderer, gpTexture, NULL, NULL);
-		   if (gpTouchOverlay)
-		   {
-			   SDL_RenderCopy(gpRenderer, gpTouchOverlay, NULL, NULL);
-		   }
+           SDL_UpdateTexture(gpTexture, NULL, gpScreenReal->pixels, gpScreenReal->pitch);
+           SDL_RenderCopy(gpRenderer, gpTexture, NULL, NULL);
+           if (gpTouchOverlay)
+           {
+               SDL_RenderCopy(gpRenderer, gpTouchOverlay, NULL, NULL);
+           }
 #ifdef __WINPHONE__
-		   if (gpBackKeyMessage)
-		   {
-			   extern unsigned int g_uiLastBackKeyTime;
-			   if (g_uiLastBackKeyTime != 0 && SDL_GetTicks() - g_uiLastBackKeyTime < 800)
-			   {
-				   SDL_RenderCopy(gpRenderer, gpBackKeyMessage, NULL, NULL);
-			   }
-		   }
+           if (gpBackKeyMessage)
+           {
+               extern unsigned int g_uiLastBackKeyTime;
+               if (g_uiLastBackKeyTime != 0 && SDL_GetTicks() - g_uiLastBackKeyTime < 800)
+               {
+                   SDL_RenderCopy(gpRenderer, gpBackKeyMessage, NULL, NULL);
+               }
+           }
 #endif
-		   SDL_RenderPresent(gpRenderer);
+           SDL_RenderPresent(gpRenderer);
 #else
-		   SDL_UpdateRect(gpScreenReal, 0, 0, gpScreenReal->w, gpScreenReal->h);
+           SDL_UpdateRect(gpScreenReal, 0, 0, gpScreenReal->w, gpScreenReal->h);
 #endif
-	   }
+           g_wShakeTime--;
+       }
+       else
+       {
+           dstrect.x = 0;
+           dstrect.y = screenRealY;
+           dstrect.w = gpScreenReal->w;
+           dstrect.h = screenRealHeight;
+
+           SDL_SoftStretch(gpScreen, NULL, gpScreenReal, &dstrect);
+
+           if (SDL_MUSTLOCK(gpScreenReal))
+           {
+               SDL_UnlockSurface(gpScreenReal);
+           }
+
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+           SDL_UpdateTexture(gpTexture, NULL, gpScreenReal->pixels, gpScreenReal->pitch);
+           SDL_RenderCopy(gpRenderer, gpTexture, NULL, NULL);
+           if (gpTouchOverlay)
+           {
+               SDL_RenderCopy(gpRenderer, gpTouchOverlay, NULL, NULL);
+           }
+#ifdef __WINPHONE__
+           if (gpBackKeyMessage)
+           {
+               extern unsigned int g_uiLastBackKeyTime;
+               if (g_uiLastBackKeyTime != 0 && SDL_GetTicks() - g_uiLastBackKeyTime < 800)
+               {
+                   SDL_RenderCopy(gpRenderer, gpBackKeyMessage, NULL, NULL);
+               }
+           }
+#endif
+           SDL_RenderPresent(gpRenderer);
+#else
+           SDL_UpdateRect(gpScreenReal, 0, 0, gpScreenReal->w, gpScreenReal->h);
+#endif
+       }
    }
 }
 
@@ -629,8 +629,8 @@ VIDEO_SetPalette(
       static UINT32 time = 0;
       if (SDL_GetTicks() - time > 50)
       {
-	      SDL_UpdateRect(gpScreenReal, 0, 0, gpScreenReal->w, gpScreenReal->h);
-	      time = SDL_GetTicks();
+          SDL_UpdateRect(gpScreenReal, 0, 0, gpScreenReal->w, gpScreenReal->h);
+          time = SDL_GetTicks();
       }
    }
 #endif
@@ -1185,9 +1185,9 @@ VIDEO_FadeScreen(
                }
             }
 #endif
-			SDL_RenderPresent(gpRenderer);
+            SDL_RenderPresent(gpRenderer);
 #else
-			SDL_UpdateRect(gpScreenReal, 0, 0, gpScreenReal->w, gpScreenReal->h);
+            SDL_UpdateRect(gpScreenReal, 0, 0, gpScreenReal->w, gpScreenReal->h);
 #endif
             g_wShakeTime--;
          }

@@ -6,15 +6,15 @@
 
    _FLT_LARGEST_EXPONENT_IS_NORMAL
 
-	Defined if the float format uses the largest exponent for finite
-	numbers rather than NaN and infinity representations.  Such a
-	format cannot represent NaNs or infinities at all, but it's FLT_MAX
-	is twice the IEEE value.
+    Defined if the float format uses the largest exponent for finite
+    numbers rather than NaN and infinity representations.  Such a
+    format cannot represent NaNs or infinities at all, but it's FLT_MAX
+    is twice the IEEE value.
 
    _FLT_NO_DENORMALS
 
-	Defined if the float format does not support IEEE denormals.  Every
-	float with a zero exponent is taken to be a zero representation.
+    Defined if the float format does not support IEEE denormals.  Every
+    float with a zero exponent is taken to be a zero representation.
  
    ??? At the moment, there are no equivalent macros above for doubles and
    the macros are not fully supported by --enable-newlib-hw-fp.
@@ -35,8 +35,8 @@
    __IEEE_BYTES_LITTLE_ENDIAN
 
         This flag is used in conjunction with __IEEE_BIG_ENDIAN to describe a situation 
-	whereby multiple words of an IEEE floating point are in big endian order, but the
-	words themselves are little endian with respect to the bytes.
+    whereby multiple words of an IEEE floating point are in big endian order, but the
+    words themselves are little endian with respect to the bytes.
 
    _DOUBLE_IS_32BITS 
 
@@ -47,7 +47,7 @@
 
         This represents what type a float arg is passed as.  It is used when the type is
         not promoted to double.
-	
+    
 */
 
 #if (defined(__arm__) || defined(__thumb__)) && !defined(__MAVERICK__)
@@ -98,9 +98,9 @@
 #define __IEEE_BIG_ENDIAN
 
 #define isfinite(__y) \
-	(__extension__ ({int __cy; \
-		(sizeof (__y) == sizeof (float))  ? (1) : \
-		(__cy = fpclassify(__y)) != FP_INFINITE && __cy != FP_NAN;}))
+    (__extension__ ({int __cy; \
+        (sizeof (__y) == sizeof (float))  ? (1) : \
+        (__cy = fpclassify(__y)) != FP_INFINITE && __cy != FP_NAN;}))
 
 #define isinf(__x) ((sizeof (__x) == sizeof (float))  ?  (0) : __isinfd(__x))
 #define isnan(__x) ((sizeof (__x) == sizeof (float))  ?  (0) : __isnand(__x))
@@ -110,9 +110,9 @@
  * (like those above) as we have name space issues when this is *not*
  * included via generic the ieeefp.h.
  */
-#define __ieeefp_isnanf(x)	0
-#define __ieeefp_isinff(x)	0
-#define __ieeefp_finitef(x)	1
+#define __ieeefp_isnanf(x)    0
+#define __ieeefp_isinff(x)    0
+#define __ieeefp_finitef(x)    1
 #endif
 
 #ifdef __sparc__
@@ -373,12 +373,12 @@
 
 #ifdef __MSP430__
 #define __IEEE_LITTLE_ENDIAN
-#define __SMALL_BITFIELDS	/* 16 Bit INT */
+#define __SMALL_BITFIELDS    /* 16 Bit INT */
 #endif
 
 #ifdef __RL78__
 #define __IEEE_LITTLE_ENDIAN
-#define __SMALL_BITFIELDS	/* 16 Bit INT */
+#define __SMALL_BITFIELDS    /* 16 Bit INT */
 #define _DOUBLE_IS_32BITS
 #endif
 
@@ -402,7 +402,7 @@
 
 #if (defined(__CR16__) || defined(__CR16C__) ||defined(__CR16CP__))
 #define __IEEE_LITTLE_ENDIAN
-#define __SMALL_BITFIELDS	/* 16 Bit INT */
+#define __SMALL_BITFIELDS    /* 16 Bit INT */
 #endif
 
 #ifdef __NIOS2__

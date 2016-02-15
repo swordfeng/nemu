@@ -219,9 +219,9 @@ typedef __uintptr_t uintptr_t;
 #define INT8_MAX __INT8_MAX__
 #define UINT8_MAX __UINT8_MAX__
 #elif defined(__int8_t_defined)
-#define INT8_MIN 	-128
-#define INT8_MAX 	 127
-#define UINT8_MAX 	 255
+#define INT8_MIN     -128
+#define INT8_MAX      127
+#define UINT8_MAX      255
 #endif
 
 #ifdef __INT_LEAST8_MAX__
@@ -229,9 +229,9 @@ typedef __uintptr_t uintptr_t;
 #define INT_LEAST8_MAX __INT_LEAST8_MAX__
 #define UINT_LEAST8_MAX __UINT_LEAST8_MAX__
 #elif defined(__int_least8_t_defined)
-#define INT_LEAST8_MIN 	-128
-#define INT_LEAST8_MAX 	 127
-#define UINT_LEAST8_MAX	 255
+#define INT_LEAST8_MIN     -128
+#define INT_LEAST8_MAX      127
+#define UINT_LEAST8_MAX     255
 #else
 #error required type int_least8_t missing
 #endif
@@ -241,9 +241,9 @@ typedef __uintptr_t uintptr_t;
 #define INT16_MAX __INT16_MAX__
 #define UINT16_MAX __UINT16_MAX__
 #elif defined(__int16_t_defined)
-#define INT16_MIN 	-32768
-#define INT16_MAX 	 32767
-#define UINT16_MAX 	 65535
+#define INT16_MIN     -32768
+#define INT16_MAX      32767
+#define UINT16_MAX      65535
 #endif
 
 #ifdef __INT_LEAST16_MAX__
@@ -251,8 +251,8 @@ typedef __uintptr_t uintptr_t;
 #define INT_LEAST16_MAX __INT_LEAST16_MAX__
 #define UINT_LEAST16_MAX __UINT_LEAST16_MAX__
 #elif defined(__int_least16_t_defined)
-#define INT_LEAST16_MIN	-32768
-#define INT_LEAST16_MAX	 32767
+#define INT_LEAST16_MIN    -32768
+#define INT_LEAST16_MAX     32767
 #define UINT_LEAST16_MAX 65535
 #else
 #error required type int_least16_t missing
@@ -264,12 +264,12 @@ typedef __uintptr_t uintptr_t;
 #define UINT32_MAX __UINT32_MAX__
 #elif defined(__int32_t_defined)
 #if __have_long32
-#define INT32_MIN 	 (-2147483647L-1)
-#define INT32_MAX 	 2147483647L
+#define INT32_MIN      (-2147483647L-1)
+#define INT32_MAX      2147483647L
 #define UINT32_MAX       4294967295UL
 #else
-#define INT32_MIN 	 (-2147483647-1)
-#define INT32_MAX 	 2147483647
+#define INT32_MIN      (-2147483647-1)
+#define INT32_MAX      2147483647
 #define UINT32_MAX       4294967295U
 #endif
 #endif
@@ -298,13 +298,13 @@ typedef __uintptr_t uintptr_t;
 #define UINT64_MAX __UINT64_MAX__
 #elif defined(__int64_t_defined)
 #if __have_long64
-#define INT64_MIN 	(-9223372036854775807L-1L)
-#define INT64_MAX 	 9223372036854775807L
-#define UINT64_MAX 	18446744073709551615U
+#define INT64_MIN     (-9223372036854775807L-1L)
+#define INT64_MAX      9223372036854775807L
+#define UINT64_MAX     18446744073709551615U
 #elif __have_longlong64
-#define INT64_MIN 	(-9223372036854775807LL-1LL)
-#define INT64_MAX 	 9223372036854775807LL
-#define UINT64_MAX 	18446744073709551615ULL
+#define INT64_MIN     (-9223372036854775807LL-1LL)
+#define INT64_MAX      9223372036854775807LL
+#define UINT64_MAX     18446744073709551615ULL
 #endif
 #endif
 
@@ -330,13 +330,13 @@ typedef __uintptr_t uintptr_t;
 #define UINT_FAST8_MAX __UINT_FAST8_MAX__
 #elif defined(__int_fast8_t_defined)
 #if __STDINT_EXP(INT_MAX) >= 0x7f
-#define INT_FAST8_MIN	(-__STDINT_EXP(INT_MAX)-1)
-#define INT_FAST8_MAX	__STDINT_EXP(INT_MAX)
-#define UINT_FAST8_MAX	(__STDINT_EXP(INT_MAX)*2U+1U)
+#define INT_FAST8_MIN    (-__STDINT_EXP(INT_MAX)-1)
+#define INT_FAST8_MAX    __STDINT_EXP(INT_MAX)
+#define UINT_FAST8_MAX    (__STDINT_EXP(INT_MAX)*2U+1U)
 #else
-#define INT_FAST8_MIN	INT_LEAST8_MIN
-#define INT_FAST8_MAX	INT_LEAST8_MAX
-#define UINT_FAST8_MAX	UINT_LEAST8_MAX
+#define INT_FAST8_MIN    INT_LEAST8_MIN
+#define INT_FAST8_MAX    INT_LEAST8_MAX
+#define UINT_FAST8_MAX    UINT_LEAST8_MAX
 #endif
 #endif
 
@@ -346,13 +346,13 @@ typedef __uintptr_t uintptr_t;
 #define UINT_FAST16_MAX __UINT_FAST16_MAX__
 #elif defined(__int_fast16_t_defined)
 #if __STDINT_EXP(INT_MAX) >= 0x7fff
-#define INT_FAST16_MIN	(-__STDINT_EXP(INT_MAX)-1)
-#define INT_FAST16_MAX	__STDINT_EXP(INT_MAX)
-#define UINT_FAST16_MAX	(__STDINT_EXP(INT_MAX)*2U+1U)
+#define INT_FAST16_MIN    (-__STDINT_EXP(INT_MAX)-1)
+#define INT_FAST16_MAX    __STDINT_EXP(INT_MAX)
+#define UINT_FAST16_MAX    (__STDINT_EXP(INT_MAX)*2U+1U)
 #else
-#define INT_FAST16_MIN	INT_LEAST16_MIN
-#define INT_FAST16_MAX	INT_LEAST16_MAX
-#define UINT_FAST16_MAX	UINT_LEAST16_MAX
+#define INT_FAST16_MIN    INT_LEAST16_MIN
+#define INT_FAST16_MAX    INT_LEAST16_MAX
+#define UINT_FAST16_MAX    UINT_LEAST16_MAX
 #endif
 #endif
 
@@ -362,13 +362,13 @@ typedef __uintptr_t uintptr_t;
 #define UINT_FAST32_MAX __UINT_FAST32_MAX__
 #elif defined(__int_fast32_t_defined)
 #if __STDINT_EXP(INT_MAX) >= 0x7fffffff
-#define INT_FAST32_MIN	(-__STDINT_EXP(INT_MAX)-1)
-#define INT_FAST32_MAX	__STDINT_EXP(INT_MAX)
-#define UINT_FAST32_MAX	(__STDINT_EXP(INT_MAX)*2U+1U)
+#define INT_FAST32_MIN    (-__STDINT_EXP(INT_MAX)-1)
+#define INT_FAST32_MAX    __STDINT_EXP(INT_MAX)
+#define UINT_FAST32_MAX    (__STDINT_EXP(INT_MAX)*2U+1U)
 #else
-#define INT_FAST32_MIN	INT_LEAST32_MIN
-#define INT_FAST32_MAX	INT_LEAST32_MAX
-#define UINT_FAST32_MAX	UINT_LEAST32_MAX
+#define INT_FAST32_MIN    INT_LEAST32_MIN
+#define INT_FAST32_MAX    INT_LEAST32_MAX
+#define UINT_FAST32_MAX    UINT_LEAST32_MAX
 #endif
 #endif
 
@@ -378,13 +378,13 @@ typedef __uintptr_t uintptr_t;
 #define UINT_FAST64_MAX __UINT_FAST64_MAX__
 #elif defined(__int_fast64_t_defined)
 #if __STDINT_EXP(INT_MAX) > 0x7fffffff
-#define INT_FAST64_MIN	(-__STDINT_EXP(INT_MAX)-1)
-#define INT_FAST64_MAX	__STDINT_EXP(INT_MAX)
-#define UINT_FAST64_MAX	(__STDINT_EXP(INT_MAX)*2U+1U)
+#define INT_FAST64_MIN    (-__STDINT_EXP(INT_MAX)-1)
+#define INT_FAST64_MAX    __STDINT_EXP(INT_MAX)
+#define UINT_FAST64_MAX    (__STDINT_EXP(INT_MAX)*2U+1U)
 #else
-#define INT_FAST64_MIN	INT_LEAST64_MIN
-#define INT_FAST64_MAX	INT_LEAST64_MAX
-#define UINT_FAST64_MAX	UINT_LEAST64_MAX
+#define INT_FAST64_MIN    INT_LEAST64_MIN
+#define INT_FAST64_MAX    INT_LEAST64_MAX
+#define UINT_FAST64_MAX    UINT_LEAST64_MAX
 #endif
 #endif
 
@@ -447,11 +447,11 @@ typedef __uintptr_t uintptr_t;
 #define INT8_C(x) __INT8_C(x)
 #define UINT8_C(x) __UINT8_C(x)
 #else
-#define INT8_C(x)	x
+#define INT8_C(x)    x
 #if __STDINT_EXP(INT_MAX) > 0x7f
-#define UINT8_C(x)	x
+#define UINT8_C(x)    x
 #else
-#define UINT8_C(x)	x##U
+#define UINT8_C(x)    x##U
 #endif
 #endif
 
@@ -459,11 +459,11 @@ typedef __uintptr_t uintptr_t;
 #define INT16_C(x) __INT16_C(x)
 #define UINT16_C(x) __UINT16_C(x)
 #else
-#define INT16_C(x)	x
+#define INT16_C(x)    x
 #if __STDINT_EXP(INT_MAX) > 0x7fff
-#define UINT16_C(x)	x
+#define UINT16_C(x)    x
 #else
-#define UINT16_C(x)	x##U
+#define UINT16_C(x)    x##U
 #endif
 #endif
 
@@ -472,11 +472,11 @@ typedef __uintptr_t uintptr_t;
 #define UINT32_C(x) __UINT32_C(x)
 #else
 #if __have_long32
-#define INT32_C(x)	x##L
-#define UINT32_C(x)	x##UL
+#define INT32_C(x)    x##L
+#define UINT32_C(x)    x##UL
 #else
-#define INT32_C(x)	x
-#define UINT32_C(x)	x##U
+#define INT32_C(x)    x
+#define UINT32_C(x)    x##U
 #endif
 #endif
 
@@ -486,11 +486,11 @@ typedef __uintptr_t uintptr_t;
 #else
 #if __int64_t_defined
 #if __have_long64
-#define INT64_C(x)	x##L
-#define UINT64_C(x)	x##UL
+#define INT64_C(x)    x##L
+#define UINT64_C(x)    x##UL
 #else
-#define INT64_C(x)	x##LL
-#define UINT64_C(x)	x##ULL
+#define INT64_C(x)    x##LL
+#define UINT64_C(x)    x##ULL
 #endif
 #endif
 #endif
@@ -501,11 +501,11 @@ typedef __uintptr_t uintptr_t;
 #define UINTMAX_C(x) __UINTMAX_C(x)
 #else
 #if __have_long64
-#define INTMAX_C(x)	x##L
-#define UINTMAX_C(x)	x##UL
+#define INTMAX_C(x)    x##L
+#define UINTMAX_C(x)    x##UL
 #else
-#define INTMAX_C(x)	x##LL
-#define UINTMAX_C(x)	x##ULL
+#define INTMAX_C(x)    x##LL
+#define UINTMAX_C(x)    x##ULL
 #endif
 #endif
 

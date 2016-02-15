@@ -409,22 +409,22 @@ UTIL_OpenRequiredFile(
 #ifndef _WIN32
    if (fp == NULL)
    {
-	  //
-	  // try converting the filename to upper-case.
-	  //
-	  char *pBuf = strdup(lpszFileName);
-	  char *p = pBuf;
-	  while (*p)
-	  {
-		 if (*p >= 'a' && *p <= 'z')
-		 {
-			*p -= 'a' - 'A';
-		 }
-		 p++;
-	  }
+      //
+      // try converting the filename to upper-case.
+      //
+      char *pBuf = strdup(lpszFileName);
+      char *p = pBuf;
+      while (*p)
+      {
+         if (*p >= 'a' && *p <= 'z')
+         {
+            *p -= 'a' - 'A';
+         }
+         p++;
+      }
 
-	  fp = fopen(va("%s%s", PAL_PREFIX, pBuf), "rb");
-	  free(pBuf);
+      fp = fopen(va("%s%s", PAL_PREFIX, pBuf), "rb");
+      free(pBuf);
    }
 #endif
 
@@ -462,22 +462,22 @@ UTIL_OpenFile(
 #ifndef _WIN32
    if (fp == NULL)
    {
-	  //
-	  // try converting the filename to upper-case.
-	  //
-	  char *pBuf = strdup(lpszFileName);
-	  char *p = pBuf;
-	  while (*p)
-	  {
-		 if (*p >= 'a' && *p <= 'z')
-		 {
-			*p -= 'a' - 'A';
-		 }
-		 p++;
-	  }
+      //
+      // try converting the filename to upper-case.
+      //
+      char *pBuf = strdup(lpszFileName);
+      char *p = pBuf;
+      while (*p)
+      {
+         if (*p >= 'a' && *p <= 'z')
+         {
+            *p -= 'a' - 'A';
+         }
+         p++;
+      }
 
-	  fp = fopen(va("%s%s", PAL_PREFIX, pBuf), "rb");
-	  free(pBuf);
+      fp = fopen(va("%s%s", PAL_PREFIX, pBuf), "rb");
+      free(pBuf);
    }
 #endif
 
@@ -518,13 +518,13 @@ UTIL_OpenLog(
    VOID
 )
 {
-	/*
+    /*
    if ((pLogFile = fopen(_PATH_LOG, "a+")) == NULL)
    {
       return NULL;
    }
    */
-	pLogFile = stdout;
+    pLogFile = stdout;
 
    return pLogFile;
 }
@@ -534,7 +534,7 @@ UTIL_CloseLog(
    VOID
 )
 {
-	/*
+    /*
    if (pLogFile != NULL)
    {
       fclose(pLogFile);

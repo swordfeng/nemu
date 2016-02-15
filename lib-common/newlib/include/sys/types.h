@@ -33,22 +33,22 @@
 
 /* deprecated */
 #if ___int8_t_defined
-typedef __uint8_t	u_int8_t;
+typedef __uint8_t    u_int8_t;
 #endif
 #if ___int16_t_defined
-typedef __uint16_t	u_int16_t;
+typedef __uint16_t    u_int16_t;
 #endif 
 #if ___int32_t_defined
-typedef __uint32_t	u_int32_t;
+typedef __uint32_t    u_int32_t;
 #endif
 
 #if ___int64_t_defined
-typedef __uint64_t	u_int64_t;
+typedef __uint64_t    u_int64_t;
 
 /* deprecated */
-typedef	__uint64_t	u_quad_t;
-typedef	__int64_t	quad_t;
-typedef	quad_t *	qaddr_t;
+typedef    __uint64_t    u_quad_t;
+typedef    __int64_t    quad_t;
+typedef    quad_t *    qaddr_t;
 #endif
 
 #endif
@@ -82,36 +82,36 @@ typedef	quad_t *	qaddr_t;
 #define _ST_INT32
 #endif
 
-# ifndef	_POSIX_SOURCE
+# ifndef    _POSIX_SOURCE
 
-#  define	physadr		physadr_t
-#  define	quad		quad_t
+#  define    physadr        physadr_t
+#  define    quad        quad_t
 
 #ifndef _BSDTYPES_DEFINED
 /* also defined in mingw/gmon.h and in w32api/winsock[2].h */
 #ifndef __u_char_defined
-typedef	unsigned char	u_char;
+typedef    unsigned char    u_char;
 #define __u_char_defined
 #endif
 #ifndef __u_short_defined
-typedef	unsigned short	u_short;
+typedef    unsigned short    u_short;
 #define __u_short_defined
 #endif
 #ifndef __u_int_defined
-typedef	unsigned int	u_int;
+typedef    unsigned int    u_int;
 #define __u_int_defined
 #endif
 #ifndef __u_long_defined
-typedef	unsigned long	u_long;
+typedef    unsigned long    u_long;
 #define __u_long_defined
 #endif
 #define _BSDTYPES_DEFINED
 #endif
 
-typedef	unsigned short	ushort;		/* System V compatibility */
-typedef	unsigned int	uint;		/* System V compatibility */
-typedef	unsigned long	ulong;		/* System V compatibility */
-# endif	/*!_POSIX_SOURCE */
+typedef    unsigned short    ushort;        /* System V compatibility */
+typedef    unsigned int    uint;        /* System V compatibility */
+typedef    unsigned long    ulong;        /* System V compatibility */
+# endif    /*!_POSIX_SOURCE */
 
 #ifndef __clock_t_defined
 typedef _CLOCK_T_ clock_t;
@@ -139,20 +139,20 @@ struct itimerspec {
 };
 
 #ifndef __daddr_t_defined
-typedef	long	daddr_t;
+typedef    long    daddr_t;
 #define __daddr_t_defined
 #endif
 #ifndef __caddr_t_defined
-typedef	char *	caddr_t;
+typedef    char *    caddr_t;
 #define __caddr_t_defined
 #endif
 
 #ifndef __CYGWIN__
 #if defined(__MS_types__) || defined(__rtems__) || \
     defined(__sparc__) || defined(__SPU__)
-typedef	unsigned long	ino_t;
+typedef    unsigned long    ino_t;
 #else
-typedef	unsigned short	ino_t;
+typedef    unsigned short    ino_t;
 #endif
 #endif /*__CYGWIN__*/
 
@@ -180,8 +180,8 @@ typedef int32_t register_t;
  * how the file was compiled (e.g. -mint16 vs -mint32, etc.).
  */
 
-#ifndef __CYGWIN__	/* which defines these types in it's own types.h. */
-typedef _off_t	off_t;
+#ifndef __CYGWIN__    /* which defines these types in it's own types.h. */
+typedef _off_t    off_t;
 typedef __dev_t dev_t;
 typedef __uid_t uid_t;
 typedef __gid_t gid_t;
@@ -198,13 +198,13 @@ typedef _mode_t mode_t;
 #endif
 
 #ifndef __CYGWIN__
-typedef	long key_t;
+typedef    long key_t;
 #endif
 typedef _ssize_t ssize_t;
 
 #if !defined(__CYGWIN__) && !defined(__rtems__)
 #ifdef __MS_types__
-typedef	char *	addr_t;
+typedef    char *    addr_t;
 typedef int mode_t;
 #else
 #if defined (__sparc__) && !defined (__sparc_v9__)
@@ -230,42 +230,42 @@ typedef unsigned short nlink_t;
 */
 # if !(defined (_POSIX_SOURCE) || defined (_WINSOCK_H) || defined (_WINSOCKAPI_) || defined (__USE_W32_SOCKETS)) 
 #  define _SYS_TYPES_FD_SET
-#  define	NBBY	8		/* number of bits in a byte */
+#  define    NBBY    8        /* number of bits in a byte */
 /*
  * Select uses bit masks of file descriptors in longs.
  * These macros manipulate such bit fields (the filesystem macros use chars).
  * FD_SETSIZE may be defined by the user, but the default here
  * should be >= NOFILE (param.h).
  */
-#  ifndef	FD_SETSIZE
-#	define	FD_SETSIZE	64
+#  ifndef    FD_SETSIZE
+#    define    FD_SETSIZE    64
 #  endif
 
-typedef	long	fd_mask;
-#  define	NFDBITS	(sizeof (fd_mask) * NBBY)	/* bits per mask */
-#  ifndef	howmany
-#	define	howmany(x,y)	(((x)+((y)-1))/(y))
+typedef    long    fd_mask;
+#  define    NFDBITS    (sizeof (fd_mask) * NBBY)    /* bits per mask */
+#  ifndef    howmany
+#    define    howmany(x,y)    (((x)+((y)-1))/(y))
 #  endif
 
 /* We use a macro for fd_set so that including Sockets.h afterwards
    can work.  */
-typedef	struct _types_fd_set {
-	fd_mask	fds_bits[howmany(FD_SETSIZE, NFDBITS)];
+typedef    struct _types_fd_set {
+    fd_mask    fds_bits[howmany(FD_SETSIZE, NFDBITS)];
 } _types_fd_set;
 
 #define fd_set _types_fd_set
 
-#  define	FD_SET(n, p)	((p)->fds_bits[(n)/NFDBITS] |= (1L << ((n) % NFDBITS)))
-#  define	FD_CLR(n, p)	((p)->fds_bits[(n)/NFDBITS] &= ~(1L << ((n) % NFDBITS)))
-#  define	FD_ISSET(n, p)	((p)->fds_bits[(n)/NFDBITS] & (1L << ((n) % NFDBITS)))
-#  define	FD_ZERO(p)	(__extension__ (void)({ \
+#  define    FD_SET(n, p)    ((p)->fds_bits[(n)/NFDBITS] |= (1L << ((n) % NFDBITS)))
+#  define    FD_CLR(n, p)    ((p)->fds_bits[(n)/NFDBITS] &= ~(1L << ((n) % NFDBITS)))
+#  define    FD_ISSET(n, p)    ((p)->fds_bits[(n)/NFDBITS] & (1L << ((n) % NFDBITS)))
+#  define    FD_ZERO(p)    (__extension__ (void)({ \
      size_t __i; \
      char *__tmp = (char *)p; \
      for (__i = 0; __i < sizeof (*(p)); ++__i) \
        *__tmp++ = 0; \
 }))
 
-# endif	/* !(defined (_POSIX_SOURCE) || defined (_WINSOCK_H) || defined (_WINSOCKAPI_) || defined (__USE_W32_SOCKETS)) */
+# endif    /* !(defined (_POSIX_SOURCE) || defined (_WINSOCK_H) || defined (_WINSOCKAPI_) || defined (__USE_W32_SOCKETS)) */
 
 #undef __MS_types__
 #undef _ST_INT32
@@ -518,4 +518,4 @@ typedef struct {
 
 #undef __need_inttypes
 
-#endif	/* _SYS_TYPES_H */
+#endif    /* _SYS_TYPES_H */

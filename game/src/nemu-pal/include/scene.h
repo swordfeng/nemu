@@ -20,9 +20,9 @@
 //
 
 #ifndef _SCENE_H
-#define	_SCENE_H
+#define    _SCENE_H
 
-#ifdef	__cplusplus
+#ifdef    __cplusplus
 extern "C"
 {
 #endif
@@ -60,7 +60,7 @@ PAL_NPCWalkOneStep(
    INT           iSpeed
 );
 
-#ifdef	__cplusplus
+#ifdef    __cplusplus
 }
 #endif
 

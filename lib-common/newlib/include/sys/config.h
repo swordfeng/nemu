@@ -2,7 +2,7 @@
 #define __SYS_CONFIG_H__
 
 #include <machine/ieeefp.h>  /* floating point macros */
-#include <sys/features.h>	/* POSIX defs */
+#include <sys/features.h>    /* POSIX defs */
 
 #ifdef __aarch64__
 #define MALLOC_ALIGNMENT 16

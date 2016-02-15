@@ -39,8 +39,8 @@ PSP_HEAP_SIZE_KB(PSP_HEAP_MEMSIZE);
 //
 int PSPExitCallback(int arg1, int arg2, void *common)
 {
-	exit(0);
-	return 0;
+    exit(0);
+    return 0;
 }
 
 //
@@ -67,7 +67,7 @@ int PSPSuspendCallback(int arg1, int pwrflags, void *common)
   }
   int cbid;
   cbid = sceKernelCreateCallback("suspend Callback", PSPSuspendCallback, NULL);
-	scePowerRegisterCallback(0, cbid);
+    scePowerRegisterCallback(0, cbid);
   return 0;
 }
 
@@ -76,13 +76,13 @@ int PSPSuspendCallback(int arg1, int pwrflags, void *common)
 //
 int PSPRegisterCallbackThread(SceSize args, void *argp)
 {
-	int cbid;
-	cbid = sceKernelCreateCallback("Exit Callback", PSPExitCallback, NULL);
-	sceKernelRegisterExitCallback(cbid);
-	cbid = sceKernelCreateCallback("suspend Callback", PSPSuspendCallback, NULL);
-	scePowerRegisterCallback(0, cbid);
-	sceKernelSleepThreadCB();
-	return 0;
+    int cbid;
+    cbid = sceKernelCreateCallback("Exit Callback", PSPExitCallback, NULL);
+    sceKernelRegisterExitCallback(cbid);
+    cbid = sceKernelCreateCallback("suspend Callback", PSPSuspendCallback, NULL);
+    scePowerRegisterCallback(0, cbid);
+    sceKernelSleepThreadCB();
+    return 0;
 }
 
 //
@@ -90,11 +90,11 @@ int PSPRegisterCallbackThread(SceSize args, void *argp)
 //
 int PSPSetupCallbacks(void)
 {
-	int thid = 0;
-	thid = sceKernelCreateThread("update_thread", PSPRegisterCallbackThread, 0x11, 0xFA0, 0, 0);
-	if(thid >= 0)
-		sceKernelStartThread(thid, 0, 0);
-	return thid;
+    int thid = 0;
+    thid = sceKernelCreateThread("update_thread", PSPRegisterCallbackThread, 0x11, 0xFA0, 0, 0);
+    if(thid >= 0)
+        sceKernelStartThread(thid, 0, 0);
+    return thid;
 }
 
 //

@@ -17,69 +17,69 @@ void create_video_mapping();
 uint32_t get_ucr3();
 
 uint32_t loader() {
-	Elf32_Ehdr *elf;
-	Elf32_Phdr *ph = NULL;
+    Elf32_Ehdr *elf;
+    Elf32_Phdr *ph = NULL;
 
-	uint8_t buf[4096];
+    uint8_t buf[4096];
 
 #ifdef HAS_DEVICE
-	ide_read(buf, ELF_OFFSET_IN_DISK, 4096);
+    ide_read(buf, ELF_OFFSET_IN_DISK, 4096);
 #else
-	ramdisk_read(buf, ELF_OFFSET_IN_DISK, 4096);
+    ramdisk_read(buf, ELF_OFFSET_IN_DISK, 4096);
 #endif
 
-	elf = (void*)buf;
+    elf = (void*)buf;
 
-	const uint32_t elf_magic = 0x464C457F;
-	uint32_t *p_magic = (void *)buf;
-	nemu_assert(*p_magic == elf_magic);
+    const uint32_t elf_magic = 0x464C457F;
+    uint32_t *p_magic = (void *)buf;
+    nemu_assert(*p_magic == elf_magic);
 
-	/* Load each program segment */
-	for(int ind = 0; ind < elf->e_phnum; ind++) {
-		ph = (void *)buf + elf->e_phoff + ind * elf->e_phentsize;
-		/* Scan the program header table, load each segment into memory */
-		if(ph->p_type == PT_LOAD) {
+    /* Load each program segment */
+    for(int ind = 0; ind < elf->e_phnum; ind++) {
+        ph = (void *)buf + elf->e_phoff + ind * elf->e_phentsize;
+        /* Scan the program header table, load each segment into memory */
+        if(ph->p_type == PT_LOAD) {
 
             uint32_t seg_paddr = ph->p_vaddr;
 #ifdef IA32_PAGE
             seg_paddr = mm_malloc(ph->p_vaddr, ph->p_memsz);
 #endif
 
-			/* Read the content of the segment from the ELF file
-			 * to the memory region [VirtAddr, VirtAddr + FileSiz)
-			 */
+            /* Read the content of the segment from the ELF file
+             * to the memory region [VirtAddr, VirtAddr + FileSiz)
+             */
 #ifndef HAS_DEVICE
-			ramdisk_read((void *)seg_paddr, ELF_OFFSET_IN_DISK + ph->p_offset, ph->p_filesz);
+            ramdisk_read((void *)seg_paddr, ELF_OFFSET_IN_DISK + ph->p_offset, ph->p_filesz);
 #else
-			ide_read((void *)seg_paddr, ELF_OFFSET_IN_DISK + ph->p_offset, ph->p_filesz);
+            ide_read((void *)seg_paddr, ELF_OFFSET_IN_DISK + ph->p_offset, ph->p_filesz);
 #endif
 
-			/* Zero the memory region
-			 * [VirtAddr + FileSiz, VirtAddr + MemSiz)
-			 */
-			 memset((void *)seg_paddr + ph->p_filesz, 0, ph->p_memsz - ph->p_filesz);
+            /* Zero the memory region
+             * [VirtAddr + FileSiz, VirtAddr + MemSiz)
+             */
+             memset((void *)seg_paddr + ph->p_filesz, 0, ph->p_memsz - ph->p_filesz);
 
 
 #ifdef IA32_PAGE
-			/* Record the program break for future use. */
-			extern uint32_t brk;
-			uint32_t new_brk = ph->p_vaddr + ph->p_memsz - 1;
-			if(brk < new_brk) { brk = new_brk; }
+            /* Record the program break for future use. */
+            extern uint32_t brk;
+            uint32_t new_brk = ph->p_vaddr + ph->p_memsz - 1;
+            if(brk < new_brk) { brk = new_brk; }
 #endif
-		}
-	}
+        }
+    }
 
-	volatile uint32_t entry = elf->e_entry;
+    volatile uint32_t entry = elf->e_entry;
 
 #ifdef IA32_PAGE
-	mm_malloc(KOFFSET - STACK_SIZE, STACK_SIZE);
+    mm_malloc(KOFFSET - STACK_SIZE, STACK_SIZE);
 
 #ifdef HAS_DEVICE
-	create_video_mapping();
+    create_video_mapping();
 #endif
 
-	write_cr3(get_ucr3());
+    write_cr3(get_ucr3());
 #endif
 
-	return entry;
+    return entry;
 }

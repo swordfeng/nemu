@@ -185,11 +185,11 @@ PAL_ItemSelectMenuUpdate(
          //
          // Draw the amount of this item
          //
-		 if ((SHORT)gpGlobals->rgInventory[i].nAmount - (SHORT)gpGlobals->rgInventory[i].nAmountInUse > 1)
-		 {
+         if ((SHORT)gpGlobals->rgInventory[i].nAmount - (SHORT)gpGlobals->rgInventory[i].nAmountInUse > 1)
+         {
             PAL_DrawNumber(gpGlobals->rgInventory[i].nAmount - gpGlobals->rgInventory[i].nAmountInUse,
                2, PAL_XY(96 + k * 100, 17 + j * 18), kNumColorCyan, kNumAlignRight);
-		 }
+         }
 
          i++;
       }

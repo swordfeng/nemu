@@ -45,157 +45,157 @@ extern "C"
 #include "FLOAT.h"
 
 #ifdef _SDL_stdinc_h
-#	define malloc       SDL_malloc
-#	define calloc       SDL_calloc
-#	define free         SDL_free
-#	define realloc      SDL_realloc
+#    define malloc       SDL_malloc
+#    define calloc       SDL_calloc
+#    define free         SDL_free
+#    define realloc      SDL_realloc
 #endif
 
 #if SDL_VERSION_ATLEAST(2,0,0)
 
-#	define SDLK_KP1     SDLK_KP_1
-#	define SDLK_KP2     SDLK_KP_2
-#	define SDLK_KP3     SDLK_KP_3
-#	define SDLK_KP4     SDLK_KP_4
-#	define SDLK_KP5     SDLK_KP_5
-#	define SDLK_KP6     SDLK_KP_6
-#	define SDLK_KP7     SDLK_KP_7
-#	define SDLK_KP8     SDLK_KP_8
-#	define SDLK_KP9     SDLK_KP_9
-#	define SDLK_KP0     SDLK_KP_0
+#    define SDLK_KP1     SDLK_KP_1
+#    define SDLK_KP2     SDLK_KP_2
+#    define SDLK_KP3     SDLK_KP_3
+#    define SDLK_KP4     SDLK_KP_4
+#    define SDLK_KP5     SDLK_KP_5
+#    define SDLK_KP6     SDLK_KP_6
+#    define SDLK_KP7     SDLK_KP_7
+#    define SDLK_KP8     SDLK_KP_8
+#    define SDLK_KP9     SDLK_KP_9
+#    define SDLK_KP0     SDLK_KP_0
 
-#	define SDL_HWSURFACE     0
+#    define SDL_HWSURFACE     0
 
 #endif
 
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
-#	define SWAP16(X)    (X)
-#	define SWAP32(X)    (X)
+#    define SWAP16(X)    (X)
+#    define SWAP32(X)    (X)
 #else
-#	define SWAP16(X)    SDL_Swap16(X)
-#	define SWAP32(X)    SDL_Swap32(X)
+#    define SWAP16(X)    SDL_Swap16(X)
+#    define SWAP32(X)    SDL_Swap32(X)
 #endif
 
 #ifndef max
-#	define max(a, b)    (((a) > (b)) ? (a) : (b))
+#    define max(a, b)    (((a) > (b)) ? (a) : (b))
 #endif
 
 #ifndef min
-#	define min(a, b)    (((a) < (b)) ? (a) : (b))
+#    define min(a, b)    (((a) < (b)) ? (a) : (b))
 #endif
 
 #if defined (__SYMBIAN32__)
 
-#	undef  _WIN32
-#	undef  SDL_INIT_JOYSTICK
-#	define SDL_INIT_JOYSTICK     0
-#	define PAL_HAS_MOUSE         1
-#	define PAL_PREFIX            "e:/data/pal/"
-#	define PAL_SAVE_PREFIX       "e:/data/pal/"
+#    undef  _WIN32
+#    undef  SDL_INIT_JOYSTICK
+#    define SDL_INIT_JOYSTICK     0
+#    define PAL_HAS_MOUSE         1
+#    define PAL_PREFIX            "e:/data/pal/"
+#    define PAL_SAVE_PREFIX       "e:/data/pal/"
 
 #elif defined (GEKKO)
 
-#	define PAL_HAS_JOYSTICKS     1
-#	define PAL_HAS_MOUSE         0
-#	define PAL_PREFIX            "SD:/apps/sdlpal/"
-#	define PAL_SAVE_PREFIX       "SD:/apps/sdlpal/"
+#    define PAL_HAS_JOYSTICKS     1
+#    define PAL_HAS_MOUSE         0
+#    define PAL_PREFIX            "SD:/apps/sdlpal/"
+#    define PAL_SAVE_PREFIX       "SD:/apps/sdlpal/"
 
 #elif defined (PSP)
 
-#	define PAL_HAS_JOYSTICKS     0
-#	define PAL_PREFIX            "ms0:/"
-#	define PAL_SAVE_PREFIX       "ms0:/PSP/SAVEDATA/SDLPAL/"
+#    define PAL_HAS_JOYSTICKS     0
+#    define PAL_PREFIX            "ms0:/"
+#    define PAL_SAVE_PREFIX       "ms0:/PSP/SAVEDATA/SDLPAL/"
 
 #elif defined (__IOS__)
 
-#	define PAL_PREFIX            "../Documents/"
-#	define PAL_SAVE_PREFIX       "../Documents/"
-#	define PAL_HAS_TOUCH         1
+#    define PAL_PREFIX            "../Documents/"
+#    define PAL_SAVE_PREFIX       "../Documents/"
+#    define PAL_HAS_TOUCH         1
 
 #elif defined (__ANDROID__)
 
-#	define PAL_PREFIX            "/mnt/sdcard/sdlpal/"
-#	define PAL_SAVE_PREFIX       "/mnt/sdcard/sdlpal/"
-#	define PAL_HAS_TOUCH         1
+#    define PAL_PREFIX            "/mnt/sdcard/sdlpal/"
+#    define PAL_SAVE_PREFIX       "/mnt/sdcard/sdlpal/"
+#    define PAL_HAS_TOUCH         1
 
 #elif defined (__WINPHONE__)
 
-#	define PAL_PREFIX            "Assets\\Data\\"
-#	define PAL_SAVE_PREFIX       "" // ???
-#	define PAL_HAS_TOUCH         1
-#	include <stdio.h>
-#	ifdef __cplusplus
-#		include <cstdio>
-#	endif
+#    define PAL_PREFIX            "Assets\\Data\\"
+#    define PAL_SAVE_PREFIX       "" // ???
+#    define PAL_HAS_TOUCH         1
+#    include <stdio.h>
+#    ifdef __cplusplus
+#        include <cstdio>
+#    endif
 
 FILE *MY_fopen(const char *path, const char *mode);
-#	define fopen MY_fopen
+#    define fopen MY_fopen
 
 #else
 
-//#	define PAL_HAS_JOYSTICKS     1
-#	ifndef _WIN32_WCE
-#		if SDL_MAJOR_VERSION == 1 && SDL_MINOR_VERSION <= 2
-#			define PAL_ALLOW_KEYREPEAT   1
-#			define PAL_HAS_CD            1
-#		endif
-#		if !defined (CYGWIN) && !defined (DINGOO) && !defined (GPH) && !defined (GEKKO) && !defined (__WINPHONE__)
-//#			define PAL_HAS_MP3           1
-#		endif
-#	endif
-#	ifndef PAL_PREFIX
-#		define PAL_PREFIX            ""
-#	endif
-#	ifndef PAL_SAVE_PREFIX
-#		define PAL_SAVE_PREFIX       ""
-#	endif
+//#    define PAL_HAS_JOYSTICKS     1
+#    ifndef _WIN32_WCE
+#        if SDL_MAJOR_VERSION == 1 && SDL_MINOR_VERSION <= 2
+#            define PAL_ALLOW_KEYREPEAT   1
+#            define PAL_HAS_CD            1
+#        endif
+#        if !defined (CYGWIN) && !defined (DINGOO) && !defined (GPH) && !defined (GEKKO) && !defined (__WINPHONE__)
+//#            define PAL_HAS_MP3           1
+#        endif
+#    endif
+#    ifndef PAL_PREFIX
+#        define PAL_PREFIX            ""
+#    endif
+#    ifndef PAL_SAVE_PREFIX
+#        define PAL_SAVE_PREFIX       ""
+#    endif
 
 #endif
 
 #ifndef SDL_INIT_CDROM
-#	define SDL_INIT_CDROM        0
+#    define SDL_INIT_CDROM        0
 #endif
 
 #ifdef _WIN32
 
-#	include <windows.h>
+#    include <windows.h>
 
-#	if !defined(__BORLANDC__) && !defined(_WIN32_WCE)
-#		include <io.h>
-#	endif
+#    if !defined(__BORLANDC__) && !defined(_WIN32_WCE)
+#        include <io.h>
+#    endif
 
-#	define vsnprintf _vsnprintf
+#    define vsnprintf _vsnprintf
 
-#	ifdef _MSC_VER
-#		pragma warning (disable:4018)
-#		pragma warning (disable:4028)
-#		pragma warning (disable:4244)
-#		pragma warning (disable:4305)
-#		pragma warning (disable:4761)
-#		pragma warning (disable:4996)
-#	endif
+#    ifdef _MSC_VER
+#        pragma warning (disable:4018)
+#        pragma warning (disable:4028)
+#        pragma warning (disable:4244)
+#        pragma warning (disable:4305)
+#        pragma warning (disable:4761)
+#        pragma warning (disable:4996)
+#    endif
 
-#	ifndef _LPCBYTE_DEFINED
-#	define _LPCBYTE_DEFINED
+#    ifndef _LPCBYTE_DEFINED
+#    define _LPCBYTE_DEFINED
 typedef const BYTE *LPCBYTE;
 #endif
 
 #ifndef __WINPHONE__
-#	define PAL_HAS_NATIVEMIDI  1
+#    define PAL_HAS_NATIVEMIDI  1
 #endif
 
 #else
 
-#	include <unistd.h>
+#    include <unistd.h>
 
-#	define CONST               const
-#	ifndef FALSE
-#		define FALSE               0
-#	endif
-#	ifndef TRUE
-#		define TRUE                1
-#	endif
-#	define VOID                void
+#    define CONST               const
+#    ifndef FALSE
+#        define FALSE               0
+#    endif
+#    ifndef TRUE
+#        define TRUE                1
+#    endif
+#    define VOID                void
 typedef char                CHAR;
 typedef short               SHORT;
 typedef long                LONG;
@@ -219,9 +219,9 @@ typedef const CHAR         *LPCSTR;
 #endif
 
 #if defined (__SYMBIAN32__)
-#	define PAL_LARGE           static
+#    define PAL_LARGE           static
 #else
-#	define PAL_LARGE           /* */
+#    define PAL_LARGE           /* */
 #endif
 
 #ifdef __cplusplus

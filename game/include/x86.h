@@ -6,33 +6,33 @@
 /* 读I/O端口 */
 static inline uint8_t
 in_byte(uint16_t port) {
-	uint8_t data;
-	asm volatile("in %1, %0" : "=a"(data) : "d"(port));
-	return data;
+    uint8_t data;
+    asm volatile("in %1, %0" : "=a"(data) : "d"(port));
+    return data;
 }
 
 /* 写I/O端口 */
 static inline void
 out_byte(uint16_t port, int8_t data) {
-	asm volatile("out %%al, %%dx" : : "a"(data), "d"(port));
+    asm volatile("out %%al, %%dx" : : "a"(data), "d"(port));
 }
 
 /* 打开外部中断 */
 static inline void
 sti(void) {
-	asm volatile("sti");
+    asm volatile("sti");
 }
 
 /* 关闭外部中断 */
 static inline void
 cli(void) {
-	asm volatile("cli");
+    asm volatile("cli");
 }
 
 /* 将CPU置入休眠状态直到下次中断到来 */
 static inline void
 wait_intr() {
-	asm volatile("hlt");
+    asm volatile("hlt");
 }
 
 #endif

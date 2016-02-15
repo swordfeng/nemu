@@ -45,7 +45,7 @@ MIDI_Play(
 
 --*/
 {
-	return;
+    return;
 }
 
 VOID
@@ -53,7 +53,7 @@ MIDI_CheckLoop(
    VOID
 )
 {
-	return;
+    return;
 }
 
 #endif

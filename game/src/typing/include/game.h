@@ -12,10 +12,10 @@ int last_key_code(void);
 
 /* 定义fly_t链表 */
 LINKLIST_DEF(fly)
-	FLOAT x;
-	int y;
-	int text;
-	FLOAT v;
+    FLOAT x;
+    int y;
+    int text;
+    FLOAT v;
 LINKLIST_DEF_FI(fly)
 
 /* 游戏逻辑相关 */

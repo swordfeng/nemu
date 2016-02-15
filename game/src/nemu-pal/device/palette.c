@@ -398,7 +398,7 @@ PAL_PaletteFade(
    UINT           time;
    SDL_Color     *newpalette = PAL_GetPalette(iPaletteNum, fNight);
    PAL_LARGE SDL_Color      palette[256];
-   PAL_LARGE SDL_Color		t[256];
+   PAL_LARGE SDL_Color        t[256];
 
    if (newpalette == NULL)
    {

@@ -23,7 +23,7 @@ _BEGIN_STD_C
  * onsstack,sigmask,sp,pc,npc,psr,g1,o0,wbcnt (sigcontext).
  * All else recovered by under/over(flow) handling.
  */
-#define	_JBLEN	13
+#define    _JBLEN    13
 #endif
 
 #ifdef __BFIN__
@@ -41,10 +41,10 @@ _BEGIN_STD_C
 #if defined(__m68k__) || defined(__mc68000__)
 /*
  * onsstack,sigmask,sp,pc,psl,d2-d7,a2-a6,
- * fp2-fp7	for 68881.
+ * fp2-fp7    for 68881.
  * All else recovered by under/over(flow) handling.
  */
-#define	_JBLEN	34
+#define    _JBLEN    34
 #endif
 
 #if defined(__mc68hc11__) || defined(__mc68hc12__) || defined(__mc68hc1x__)
@@ -72,14 +72,14 @@ _BEGIN_STD_C
  * onsstack,sigmask,sp,pc,npc,psr,g1,o0,wbcnt (sigcontext).
  * All else recovered by under/over(flow) handling.
  */
-#define	_JBLEN	9
+#define    _JBLEN    9
 #endif
 
 #ifdef __i386__
 # if defined(__CYGWIN__) && !defined (_JBLEN)
 #  define _JBLEN (13 * 4)
 # elif defined(__unix__) || defined(__rtems__)
-#  define _JBLEN	9
+#  define _JBLEN    9
 # else
 #  include "setjmp-dj.h"
 # endif
@@ -328,9 +328,9 @@ _BEGIN_STD_C
 
 #ifdef _JBLEN
 #ifdef _JBTYPE
-typedef	_JBTYPE jmp_buf[_JBLEN];
+typedef    _JBTYPE jmp_buf[_JBLEN];
 #else
-typedef	int jmp_buf[_JBLEN];
+typedef    int jmp_buf[_JBLEN];
 #endif
 #endif
 
@@ -346,13 +346,13 @@ extern "C" {
 /* POSIX sigsetjmp/siglongjmp macros */
 #ifdef _JBTYPE
 typedef _JBTYPE sigjmp_buf[_JBLEN+1+((sizeof (_JBTYPE) + sizeof (sigset_t) - 1)
-				     /sizeof (_JBTYPE))];
+                     /sizeof (_JBTYPE))];
 #else
 typedef int sigjmp_buf[_JBLEN+1+(sizeof (sigset_t)/sizeof (int))];
 #endif
 
-#define _SAVEMASK	_JBLEN
-#define _SIGMASK	(_JBLEN+1)
+#define _SAVEMASK    _JBLEN
+#define _SIGMASK    (_JBLEN+1)
 
 #ifdef __CYGWIN__
 # define _CYGWIN_WORKING_SIGSETJMP
@@ -404,8 +404,8 @@ typedef int sigjmp_buf[_JBLEN+1+(sizeof (sigset_t)/sizeof (int))];
 extern void _longjmp(jmp_buf, int);
 extern int _setjmp(jmp_buf);
 #else
-#define _setjmp(env)		sigsetjmp ((env), 0)
-#define _longjmp(env, val)	siglongjmp ((env), (val))
+#define _setjmp(env)        sigsetjmp ((env), 0)
+#define _longjmp(env, val)    siglongjmp ((env), (val))
 #endif
 
 #ifdef __cplusplus

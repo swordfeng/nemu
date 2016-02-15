@@ -12,8 +12,8 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. All advertising materials mentioning features or use of this software
  *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
+ *    This product includes software developed by the University of
+ *    California, Berkeley and its contributors.
  * 4. Neither the name of the University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
@@ -30,45 +30,45 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pwd.h	5.13 (Berkeley) 5/28/91
+ *    @(#)pwd.h    5.13 (Berkeley) 5/28/91
  */
 
 #ifndef _PWD_H_
 #ifdef __cplusplus
 extern "C" {
 #endif
-#define	_PWD_H_
+#define    _PWD_H_
 
 #include <sys/types.h>
 
 #ifndef _POSIX_SOURCE
-#define	_PATH_PASSWD		"/etc/passwd"
+#define    _PATH_PASSWD        "/etc/passwd"
 
-#define	_PASSWORD_LEN		128	/* max length, not counting NULL */
+#define    _PASSWORD_LEN        128    /* max length, not counting NULL */
 #endif
 
 struct passwd {
-	char	*pw_name;		/* user name */
-	char	*pw_passwd;		/* encrypted password */
-	uid_t	pw_uid;			/* user uid */
-	gid_t	pw_gid;			/* user gid */
-	char	*pw_comment;		/* comment */
-	char	*pw_gecos;		/* Honeywell login info */
-	char	*pw_dir;		/* home directory */
-	char	*pw_shell;		/* default shell */
+    char    *pw_name;        /* user name */
+    char    *pw_passwd;        /* encrypted password */
+    uid_t    pw_uid;            /* user uid */
+    gid_t    pw_gid;            /* user gid */
+    char    *pw_comment;        /* comment */
+    char    *pw_gecos;        /* Honeywell login info */
+    char    *pw_dir;        /* home directory */
+    char    *pw_shell;        /* default shell */
 };
 
 #ifndef __INSIDE_CYGWIN__
-struct passwd	*getpwuid (uid_t);
-struct passwd	*getpwnam (const char *);
-int 		 getpwnam_r (const char *, struct passwd *,
-			char *, size_t , struct passwd **);
-int		 getpwuid_r (uid_t, struct passwd *, char *,
-			size_t, struct passwd **);
+struct passwd    *getpwuid (uid_t);
+struct passwd    *getpwnam (const char *);
+int          getpwnam_r (const char *, struct passwd *,
+            char *, size_t , struct passwd **);
+int         getpwuid_r (uid_t, struct passwd *, char *,
+            size_t, struct passwd **);
 #ifndef _POSIX_SOURCE
-struct passwd	*getpwent (void);
-void		 setpwent (void);
-void		 endpwent (void);
+struct passwd    *getpwent (void);
+void         setpwent (void);
+void         endpwent (void);
 #endif
 #endif
 

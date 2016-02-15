@@ -15,7 +15,7 @@
 
 _BEGIN_STD_C
 
-void	 _EXFUN(__fpurge,(FILE *));
+void     _EXFUN(__fpurge,(FILE *));
 
 /* TODO:
 

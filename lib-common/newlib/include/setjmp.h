@@ -1,6 +1,6 @@
 /*
-	setjmp.h
-	stubs for future use.
+    setjmp.h
+    stubs for future use.
 */
 
 #ifndef _SETJMP_H_
@@ -11,8 +11,8 @@
 
 _BEGIN_STD_C
 
-void	_EXFUN(longjmp,(jmp_buf __jmpb, int __retval));
-int	_EXFUN(setjmp,(jmp_buf __jmpb));
+void    _EXFUN(longjmp,(jmp_buf __jmpb, int __retval));
+int    _EXFUN(setjmp,(jmp_buf __jmpb));
 
 _END_STD_C
 

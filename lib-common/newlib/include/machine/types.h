@@ -1,5 +1,5 @@
-#ifndef	_MACHTYPES_H_
-#define	_MACHTYPES_H_
+#ifndef    _MACHTYPES_H_
+#define    _MACHTYPES_H_
 
 /*
  *  The following section is RTEMS specific and is needed to more
@@ -10,10 +10,10 @@
 #include <machine/_types.h>
 #endif
 
-#define	_CLOCK_T_	unsigned long		/* clock() */
-#define	_TIME_T_	long			/* time() */
-#define _CLOCKID_T_ 	unsigned long
-#define _TIMER_T_   	unsigned long
+#define    _CLOCK_T_    unsigned long        /* clock() */
+#define    _TIME_T_    long            /* time() */
+#define _CLOCKID_T_     unsigned long
+#define _TIMER_T_       unsigned long
 
 #ifndef _HAVE_SYSTYPES
 typedef long int __off_t;
@@ -25,6 +25,6 @@ typedef long int __loff_t;
 #endif
 #endif
 
-#endif	/* _MACHTYPES_H_ */
+#endif    /* _MACHTYPES_H_ */
 
 

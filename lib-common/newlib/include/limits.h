@@ -1,10 +1,10 @@
 #ifndef _LIBC_LIMITS_H_
-# define _LIBC_LIMITS_H_	1
+# define _LIBC_LIMITS_H_    1
 
 #include <newlib.h>
 
 # ifdef _MB_LEN_MAX
-#  define MB_LEN_MAX	_MB_LEN_MAX
+#  define MB_LEN_MAX    _MB_LEN_MAX
 # else
 #  define MB_LEN_MAX    1
 # endif
@@ -19,7 +19,7 @@
 # if !defined __GNUC__ || __GNUC__ < 2
 
 #  ifndef _LIMITS_H
-#   define _LIMITS_H	1
+#   define _LIMITS_H    1
 
 #   include <sys/config.h>
 
@@ -122,9 +122,9 @@
 #   endif
 
 #  endif /* _LIMITS_H  */
-# endif	 /* GCC 2.  */
+# endif     /* GCC 2.  */
 
-#endif	 /* !_LIBC_LIMITS_H_ */
+#endif     /* !_LIBC_LIMITS_H_ */
 
 #if defined __GNUC__ && !defined _GCC_LIMITS_H_
 /* `_GCC_LIMITS_H_' is what GCC's file defines.  */
@@ -138,9 +138,9 @@
 #endif /* _POSIX2_RE_DUP_MAX  */
 
 #ifndef ARG_MAX
-#define ARG_MAX		4096
+#define ARG_MAX        4096
 #endif
 
 #ifndef PATH_MAX
-#define PATH_MAX	4096
+#define PATH_MAX    4096
 #endif

@@ -12,11 +12,11 @@ static PTE vptable[(VMEM_ADDR + VMEM_SIZE) / PAGE_SIZE] align_to_page;
 PDE* get_updir();
 
 void create_video_mapping() {
-	/* Create an identical mapping from virtual memory area
-	 * [0xa0000, 0xa0000 + SCR_SIZE) to physical memory area
-	 * [0xa0000, 0xa0000 + SCR_SIZE) for user program. You may define
-	 * some page tables to create this mapping.
-	 */
+    /* Create an identical mapping from virtual memory area
+     * [0xa0000, 0xa0000 + SCR_SIZE) to physical memory area
+     * [0xa0000, 0xa0000 + SCR_SIZE) for user program. You may define
+     * some page tables to create this mapping.
+     */
     PDE *updir = get_updir();
     PTE *ptable = (PTE *)va_to_pa(vptable);
     updir[0].val = make_pde(ptable);
@@ -44,7 +44,7 @@ static uint8_t inp(uint16_t port) {
 static uint8_t palette[256][3];
 
 void video_mapping_write_test() {
-	uint32_t *buf = (void *)VMEM_ADDR;
+    uint32_t *buf = (void *)VMEM_ADDR;
     for (uint32_t i = 0; i < 256; i++) {
         outp(0x3c7, i);
         palette[i][0] = inp(0x3c9);
@@ -61,15 +61,15 @@ void video_mapping_write_test() {
 }
 
 void video_mapping_read_test() {
-	int i;
-	uint32_t *buf = (void *)VMEM_ADDR;
-	for(i = 0; i < SCR_SIZE / 4; i ++) {
-		assert(buf[i] == ((uint32_t *)header_data)[i]);
-	}
+    int i;
+    uint32_t *buf = (void *)VMEM_ADDR;
+    for(i = 0; i < SCR_SIZE / 4; i ++) {
+        assert(buf[i] == ((uint32_t *)header_data)[i]);
+    }
 }
 
 void video_mapping_clear() {
-	memset((void *)VMEM_ADDR, 0, SCR_SIZE);
+    memset((void *)VMEM_ADDR, 0, SCR_SIZE);
     outp(0x3c8, 0);
     for (uint32_t i = 0; i < 256; i++) {
         outp(0x3c9, palette[i][0]);
