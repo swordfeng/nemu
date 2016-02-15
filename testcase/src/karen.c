@@ -17,7 +17,6 @@ int main() {
         outp(0x3c9, header_data_cmap[i][2] >> 2);
     }
     memcpy(video_mem, header_data, width * height);
-    set_bp();
     HIT_GOOD_TRAP;
 }
 
