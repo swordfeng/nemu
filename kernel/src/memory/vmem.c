@@ -1,6 +1,7 @@
 #include "common.h"
 #include "memory.h"
 #include "avatar.h"
+#include "x86.h"
 #include <string.h>
 
 #define VMEM_ADDR 0xa0000
@@ -31,31 +32,21 @@ void create_video_mapping() {
     }
 }
 
-static void outp(uint16_t port, uint8_t value) {
-    asm volatile("outb %%al, %%dx" :: "a"(value), "d"(port));
-}
-
-static uint8_t inp(uint16_t port) {
-    uint8_t value;
-    asm volatile("inb %%dx, %%al;" : "=a"(value) : "d"(port));
-    return value;
-}
-
 static uint8_t palette[256][3];
 
 void video_mapping_write_test() {
     uint32_t *buf = (void *)VMEM_ADDR;
     for (uint32_t i = 0; i < 256; i++) {
-        outp(0x3c7, i);
-        palette[i][0] = inp(0x3c9);
-        palette[i][1] = inp(0x3c9);
-        palette[i][2] = inp(0x3c9);
+        out_byte(0x3c7, i);
+        palette[i][0] = in_byte(0x3c9);
+        palette[i][1] = in_byte(0x3c9);
+        palette[i][2] = in_byte(0x3c9);
     }
-    outp(0x3c8, 0);
+    out_byte(0x3c8, 0);
     for (uint32_t i = 0; i < 256; i++) {
-        outp(0x3c9, header_data_cmap[i][0] >> 2);
-        outp(0x3c9, header_data_cmap[i][1] >> 2);
-        outp(0x3c9, header_data_cmap[i][2] >> 2);
+        out_byte(0x3c9, header_data_cmap[i][0] >> 2);
+        out_byte(0x3c9, header_data_cmap[i][1] >> 2);
+        out_byte(0x3c9, header_data_cmap[i][2] >> 2);
     }
     memcpy(buf, header_data, width * height);
 }
@@ -70,10 +61,10 @@ void video_mapping_read_test() {
 
 void video_mapping_clear() {
     memset((void *)VMEM_ADDR, 0, SCR_SIZE);
-    outp(0x3c8, 0);
+    out_byte(0x3c8, 0);
     for (uint32_t i = 0; i < 256; i++) {
-        outp(0x3c9, palette[i][0]);
-        outp(0x3c9, palette[i][1]);
-        outp(0x3c9, palette[i][2]);
+        out_byte(0x3c9, palette[i][0]);
+        out_byte(0x3c9, palette[i][1]);
+        out_byte(0x3c9, palette[i][2]);
     }
 }
