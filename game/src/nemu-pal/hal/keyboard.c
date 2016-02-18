@@ -1,6 +1,8 @@
 #include "hal.h"
+#include "x86.h"
 
 #define NR_KEYS 18
+#define I8042_DATA_PORT 0x60
 
 enum {KEY_STATE_EMPTY, KEY_STATE_WAIT_RELEASE, KEY_STATE_RELEASE, KEY_STATE_PRESS};
 
@@ -17,6 +19,8 @@ static int key_state[NR_KEYS];
 void
 keyboard_event(void) {
     /* TODO: Fetch the scancode and update the key states. */
+    uint8_t scancode = in_byte(I8042_DATA_PORT);
+    Log("scan code: %d", scancode);
     assert(0);
 }
 

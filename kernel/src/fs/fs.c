@@ -1,4 +1,5 @@
 #include "common.h"
+#include <string.h>
 
 typedef struct {
     char *name;
@@ -9,7 +10,6 @@ typedef struct {
 enum {SEEK_SET, SEEK_CUR, SEEK_END};
 
 /* This is the information about all files in disk. */
-/*
 static const file_info file_table[] = {
     {"1.rpg", 188864, 1048576}, {"2.rpg", 188864, 1237440},
     {"3.rpg", 188864, 1426304}, {"4.rpg", 188864, 1615168},
@@ -25,7 +25,6 @@ static const file_info file_table[] = {
     {"wor16.asc", 5374, 28068037}, {"wor16.fon", 82306, 28073411},
     {"word.dat", 5650, 28155717},
 };
-*/
 
 #define NR_FILES (sizeof(file_table) / sizeof(file_table[0]))
 
@@ -34,3 +33,30 @@ void ide_write(uint8_t *, uint32_t, uint32_t);
 
 /* TODO: implement a simplified file system here. */
 
+struct {
+    bool opened;
+    uint32_t offset;
+} Fstate[NR_FILES + 3];
+
+int fs_open(const char *pathname, int flags) {
+    for (int i = 0; i < NR_FILES; i++) {
+        if (strcmp(file_table[i].name, pathname) == 0) {
+            int fd = i + 3;
+            Fstate[fd].opened = true;
+            Fstate[fd].offset = 0;
+            return fd;
+        }
+    }
+    panic("file not found");
+    return -1;
+}
+
+int fs_read(int fd, void *buf, int len) {
+    if (fd < 3) return -1;
+    assert(fd < NR_FILES + 3);
+    assert(Fstate[fd].opened);
+    int max_len = file_table[fd - 3].size - Fstate[fd].offset;
+    if (max_len < len) len = max_len;
+    ide_read(buf, file_table[fd - 3].disk_offset + Fstate[fd].offset, len);
+    return len;
+}
