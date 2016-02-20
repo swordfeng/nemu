@@ -178,6 +178,12 @@ static int cmd_d(char *args) {
 }
 
 static int cmd_bt(char *args) {
+    static bool called = false;
+    if (called) {
+        // in panicking
+        return 1;
+    }
+    called = true;
     StackFrameBottom st;
     st.prev_ebp = cpu.ebp;
     st.ret_addr = cpu.eip;
@@ -192,6 +198,7 @@ static int cmd_bt(char *args) {
             , st.args[1], st.args[2], st.args[3]);
         count++;
     } while (st.prev_ebp);
+    called = false;
     return 0;
 }
 
@@ -300,4 +307,9 @@ void ui_mainloop() {
 
         if(i == NR_CMD) { printf("Unknown command '%s'\n", cmd); }
     }
+}
+
+void print_debug_info() {
+    cmd_bt(NULL);
+    cmd_info_r();
 }

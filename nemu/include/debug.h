@@ -5,6 +5,8 @@
 #include <assert.h>
 
 extern FILE* log_fp;
+void print_debug_info();
+enum { PROGRAM_PANIC = 0 };
 
 #ifdef DEBUG
 #define PRINT_INSTR
@@ -32,11 +34,12 @@ extern FILE* log_fp;
             fprintf(stderr, "\33[1;31m"); \
             fprintf(stderr, __VA_ARGS__); \
             fprintf(stderr, "\33[0m\n"); \
+            print_debug_info(); \
             assert(cond); \
         } \
     } while(0)
 
 #define panic(format, ...) \
-    Assert(0, format, ## __VA_ARGS__); \
+    Assert(PROGRAM_PANIC, format, ## __VA_ARGS__);
 
 #endif

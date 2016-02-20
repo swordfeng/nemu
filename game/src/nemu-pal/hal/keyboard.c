@@ -4,7 +4,7 @@
 #define NR_KEYS 18
 #define I8042_DATA_PORT 0x60
 
-enum {KEY_STATE_EMPTY, KEY_STATE_WAIT_RELEASE, KEY_STATE_RELEASE, KEY_STATE_PRESS};
+enum {KEY_STATE_RELEASED, KEY_STATE_PRESS, KEY_STATE_PRESSED, KEY_STATE_RELEASE};
 
 /* Only the following keys are used in NEMU-PAL. */
 static const int keycode_array[] = {
@@ -18,48 +18,42 @@ static int key_state[NR_KEYS];
 
 void
 keyboard_event(void) {
-    /* TODO: Fetch the scancode and update the key states. */
     uint8_t scancode = in_byte(I8042_DATA_PORT);
     Log("scan code: %d", scancode);
-    assert(0);
-}
-
-static inline int
-get_keycode(int index) {
-    assert(index >= 0 && index < NR_KEYS);
-    return keycode_array[index];
-}
-
-static inline int
-query_key(int index) {
-    assert(index >= 0 && index < NR_KEYS);
-    return key_state[index];
-}
-
-static inline void
-release_key(int index) {
-    assert(index >= 0 && index < NR_KEYS);
-    key_state[index] = KEY_STATE_WAIT_RELEASE;
-}
-
-static inline void
-clear_key(int index) {
-    assert(index >= 0 && index < NR_KEYS);
-    key_state[index] = KEY_STATE_EMPTY;
+    Log("scan code: %d", in_byte(0x60));
+//    if (
+    bool release = !!(scancode & 0x80);
+    scancode = scancode & ~(0x80);
+    int index = -1;
+    for (size_t i = 0; i < NR_KEYS; i++) {
+        if (scancode == keycode_array[i]) {
+            index = i;
+            break;
+        }
+    }
+    if (index != -1) {
+        if (!release && key_state[index] != KEY_STATE_PRESSED) {
+            key_state[index] = KEY_STATE_PRESS;
+        } else if (key_state[index] != KEY_STATE_RELEASED) {
+            key_state[index] = KEY_STATE_RELEASE;
+        }
+    }
 }
 
 bool 
 process_keys(void (*key_press_callback)(int), void (*key_release_callback)(int)) {
     cli();
-    /* TODO: Traverse the key states. Find a key just pressed or released.
-     * If a pressed key is found, call ``key_press_callback'' with the keycode.
-     * If a released key is found, call ``key_release_callback'' with the keycode.
-     * If any such key is found, the function return true.
-     * If no such key is found, the function return false.
-     * Remember to enable interrupts before returning from the function.
-     */
-
-    assert(0);
+    for (int index = 0; index < NR_KEYS; index++) {
+        if (key_state[index] == KEY_STATE_PRESS) {
+            key_state[index] = KEY_STATE_PRESSED;
+            key_press_callback(keycode_array[index]);
+            break;
+        } else if (key_state[index] == KEY_STATE_RELEASE) {
+            key_state[index] = KEY_STATE_RELEASED;
+            key_release_callback(keycode_array[index]);
+            break;
+        }
+    }
     sti();
     return false;
 }
