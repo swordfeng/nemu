@@ -19,9 +19,6 @@ static int key_state[NR_KEYS];
 void
 keyboard_event(void) {
     uint8_t scancode = in_byte(I8042_DATA_PORT);
-    Log("scan code: %d", scancode);
-    Log("scan code: %d", in_byte(0x60));
-//    if (
     bool release = !!(scancode & 0x80);
     scancode = scancode & ~(0x80);
     int index = -1;
