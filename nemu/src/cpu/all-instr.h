@@ -50,6 +50,10 @@ extern "C" {
 #include "logic/shrd.h"
 #include "logic/setcc.h"
 #include "logic/bt.h"
+#include "logic/rcl.h"
+#include "logic/rcr.h"
+#include "logic/rol.h"
+#include "logic/ror.h"
 
 #include "string/movs.h"
 #include "string/stos.h"
