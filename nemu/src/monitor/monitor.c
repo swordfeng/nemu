@@ -17,10 +17,12 @@ void init_sdl();
 
 FILE *log_fp = NULL;
 
+#ifdef LOG_FILE
 static void init_log() {
-    log_fp = fopen("log.txt", "w");
+    log_fp = fopen(LOG_FILE, "w");
     Assert(log_fp, "Can not open 'log.txt'");
 }
+#endif
 
 static void welcome() {
     printf("Welcome to NEMU!\n%sThe executable is %s.\nFor help, type \"help\"\n",
@@ -31,7 +33,9 @@ void init_monitor(int argc, char *argv[]) {
     /* Perform some global initialization */
 
     /* Open the log file. */
+#ifdef LOG_FILE
     init_log();
+#endif
 
     /* Load the string table and symbol table from the ELF file for future use. */
     load_elf_tables(argc, argv);
