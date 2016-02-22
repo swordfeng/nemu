@@ -11,6 +11,8 @@
 
 void cpu_exec(uint32_t);
 const char *elf_find_func(swaddr_t addr);
+void profile_print_result();
+void profile_record(const char *func_name);
 extern char assembly[80];
 extern char asm_buf[128];
 
@@ -233,6 +235,36 @@ static int cmd_last(char *args) {
     printf("%s%s\n", asm_buf, assembly);
     return 0;
 }
+
+static int cmd_profile(char *args) {
+    long long ins = -1;
+    bool forever = false;
+    if (args) {
+        if (0 == sscanf(args, "%llu", &ins)) {
+            printf("Invalid argument: %s\n", args);
+            return 0;
+        }
+    } else forever = true;
+    if (ins < 0) forever = true;
+    int count = 0;
+    while (forever || ins > 0) {
+        cpu_exec(10000);
+        const char *func_name = elf_find_func(cpu.eip);
+        if (func_name && strlen(func_name) != 0) {
+            profile_record(func_name);
+        }
+        ins -= 10000;
+        count++;
+        if (count % 1000 == 0) {
+            count = 0;
+            profile_print_result();
+            printf("\n");
+        }
+        if (nemu_state == END) break;
+    }
+    profile_print_result();
+    return 0;
+}
 #endif
 
 static int cmd_help(char *args);
@@ -258,6 +290,7 @@ static struct {
     { "page", "Display Page Translation", cmd_page},
 #ifdef DEBUG
     { "last", "Show last axm instruction", cmd_last},
+    { "profile", "profile the program", cmd_profile},
 #endif
 };
 
