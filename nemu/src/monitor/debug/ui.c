@@ -11,6 +11,8 @@
 
 void cpu_exec(uint32_t);
 const char *elf_find_func(swaddr_t addr);
+extern char assembly[80];
+extern char asm_buf[128];
 
 typedef struct {
     swaddr_t prev_ebp;
@@ -226,6 +228,13 @@ static int cmd_page(char *args) {
     return 0;
 }
 
+#ifdef DEBUG
+static int cmd_last(char *args) {
+    printf("%s%s\n", asm_buf, assembly);
+    return 0;
+}
+#endif
+
 static int cmd_help(char *args);
 
 static struct {
@@ -247,6 +256,9 @@ static struct {
     { "cache", "Display Back Trace", cmd_cache},
 #endif
     { "page", "Display Page Translation", cmd_page},
+#ifdef DEBUG
+    { "last", "Show last axm instruction", cmd_last},
+#endif
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
@@ -311,5 +323,8 @@ void ui_mainloop() {
 
 void print_debug_info() {
     cmd_bt(NULL);
+#ifdef DEBUG
+    cmd_last(NULL);
+#endif
     cmd_info_r();
 }
