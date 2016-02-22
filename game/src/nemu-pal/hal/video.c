@@ -178,7 +178,7 @@ void SDL_FreeSurface(SDL_Surface *s) {
             free(s->format);
         }
         
-        if(s->pixels != NULL) {
+        if(s->pixels != NULL && ((uint32_t)s->pixels > 0xc0000)) {
             free(s->pixels);
         }
 
