@@ -3,6 +3,7 @@
 #include "avatar.h"
 #include "x86.h"
 #include <string.h>
+#include "inline.h"
 
 #define VMEM_ADDR 0xa0000
 #define VMEM_SIZE 0x20000
@@ -48,7 +49,7 @@ void video_mapping_write_test() {
         out_byte(0x3c9, header_data_cmap[i][1] >> 2);
         out_byte(0x3c9, header_data_cmap[i][2] >> 2);
     }
-    memcpy(buf, header_data, width * height);
+    fast_memcpy(buf, header_data, width * height);
 }
 
 void video_mapping_read_test() {
