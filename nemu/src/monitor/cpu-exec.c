@@ -5,8 +5,6 @@
 #include "device/i8259.h"
 #include "cpu/interrupt.h"
 
-void do_device_update();
-
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
  * This is useful when you use the ``si'' command.
@@ -131,7 +129,6 @@ void cpu_exec(volatile uint32_t n) {
             i8259_ack_intr();
             raise_intr(intr_no);
         }
-        do_device_update();
 #endif
     }
 
