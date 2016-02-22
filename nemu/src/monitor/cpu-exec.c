@@ -5,6 +5,8 @@
 #include "device/i8259.h"
 #include "cpu/interrupt.h"
 
+void do_device_update();
+
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
  * This is useful when you use the ``si'' command.
@@ -86,15 +88,17 @@ void cpu_exec(volatile uint32_t n) {
     volatile uint32_t n_temp = n;
 #endif
 
-    setjmp(jbuf);
+    n -= setjmp(jbuf);
 
     for(; n > 0; n --) {
 #ifdef DEBUG
         swaddr_t eip_temp = cpu.eip;
+#ifdef DOT
         if((n & 0xffff) == 0) {
             /* Output some dots while executing the program. */
             fputc('.', stderr);
         }
+#endif
 #endif
 
         /* Execute one instruction, including instruction fetch,
@@ -106,7 +110,7 @@ void cpu_exec(volatile uint32_t n) {
 
 #ifdef DEBUG
         print_bin_instr(eip_temp, instr_len);
-        //Log_write("%s\n", asm_buf);
+        Log_write("%s%s\n", asm_buf, assembly);
         if(n_temp < MAX_INSTR_TO_PRINT) {
             printf("%s%s\n", asm_buf, assembly);
         }
@@ -125,6 +129,7 @@ void cpu_exec(volatile uint32_t n) {
             i8259_ack_intr();
             raise_intr(intr_no);
         }
+        do_device_update();
     }
 
     if(nemu_state == RUNNING) { nemu_state = STOP; }

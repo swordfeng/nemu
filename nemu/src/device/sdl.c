@@ -17,10 +17,16 @@ uint8_t (*pixel_buf) [SCREEN_COL];
 
 static uint64_t jiffy = 0;
 static struct itimerval it;
+static bool has_event = false;
 extern void timer_intr();
 extern void keyboard_intr();
 extern void update_screen();
 static void device_update(int signum) {
+    has_event = true;
+}
+void do_device_update() {
+    if (!has_event) return;
+    has_event = false;
     jiffy ++;
     timer_intr();
     if(jiffy % (TIMER_HZ / VGA_HZ) == 0) {
