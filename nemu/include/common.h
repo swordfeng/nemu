@@ -3,9 +3,14 @@
 
 //#define USE_RAMDISK
 
-//#define USE_CACHE
-
-//#define USE_TLB
+#ifndef PERFORMANCE
+#    define USE_CACHE
+#    define USE_TLB
+#else
+#    ifdef DEBUG
+#        undef DEBUG
+#    endif
+#endif
 
 /* You will define this macro in PA4 */
 #define HAS_DEVICE

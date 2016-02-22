@@ -35,7 +35,7 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
-    size_t max_len = 0x1000 - (addr & 0xFFF);
+    size_t max_len = ((~addr) & 0xFFF) + 1;
     if (len > max_len) {
         // data cross the page boundary
         uint32_t low = lnaddr_read(addr, max_len);
@@ -56,7 +56,7 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 }
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
-    size_t max_len = 0x1000 - (addr & 0xFFF);
+    size_t max_len = ((~addr) & 0xFFF) + 1;
     if (len > max_len) {
         // data cross the page boundary
         lnaddr_write(addr, max_len, data & ((1 << (max_len * 8)) - 1));

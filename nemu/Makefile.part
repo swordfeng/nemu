@@ -1,4 +1,4 @@
-nemu_CFLAGS_EXTRA := -Ofast -funroll-loops -flto
+nemu_CFLAGS_EXTRA := -Ofast -funroll-loops -flto -DPERFORMANCE
 nemu_CXXFLAGS_EXTRA := $(nemu_CFLAGS_EXTRA)
 nemu_HCFLAGS_EXTRA := -O -optc-flto
 nemu_RUSTSTD := obj/nemu/libruststd.a
