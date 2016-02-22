@@ -1,3 +1,4 @@
+#include "inline.h"
 #include "hal.h"
 #include "device/video.h"
 #include "device/palette.h"
@@ -38,7 +39,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
     if (dx + fw > dst->w) fw = dst->w - dx;
 
     for (int i = 0; i < fh; i++) {
-        memcpy(dpixels + (dy + i) * dst->w + dx, spixels + (sy + i) * src->w + sx, fw );
+        fast_memcpy(dpixels + (dy + i) * dst->w + dx, spixels + (sy + i) * src->w + sx, fw );
     }
 }
 

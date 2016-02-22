@@ -45,7 +45,7 @@ int is_mmio(hwaddr_t addr) {
 }
 
 uint32_t mmio_read(hwaddr_t addr, size_t len, int map_NO) {
-    assert(len == 1 || len == 2 || len == 4);
+//    assert(len == 1 || len == 2 || len == 4);
     MMIO_t *map = &maps[map_NO];
     uint32_t data = *(uint32_t *)(map->mmio_space + (addr - map->low)) 
         & (~0u >> ((4 - len) << 3));
@@ -54,7 +54,7 @@ uint32_t mmio_read(hwaddr_t addr, size_t len, int map_NO) {
 }
 
 void mmio_write(hwaddr_t addr, size_t len, uint32_t data, int map_NO) {
-    assert(len == 1 || len == 2 || len == 4);
+//    assert(len == 1 || len == 2 || len == 4);
     MMIO_t *map = &maps[map_NO];
     uint32_t mask = (~0u >> ((4 - len) << 3));
     memcpy_with_mask(map->mmio_space + (addr - map->low), &data, len, (void *)&mask);

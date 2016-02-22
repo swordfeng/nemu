@@ -1,7 +1,7 @@
 #GAME := typing
 GAME := nemu-pal
 
-game_CFLAGS_EXTRA := -m32 -O2 -mno-sse -fno-builtin -fno-omit-frame-pointer -fno-stack-protector \
+game_CFLAGS_EXTRA := -m32 -O -mno-sse -fno-builtin -fno-omit-frame-pointer -fno-stack-protector \
 						-I$(LIB_COMMON_DIR) -I$(NEWLIBC_DIR)/include \
 						-Igame/src/$(GAME)/include
 $(eval $(call make_common_rules,game,$(game_CFLAGS_EXTRA)))

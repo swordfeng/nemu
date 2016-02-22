@@ -62,7 +62,7 @@ clean: clean-cpp clean-log
 	-rm -rf obj 2> /dev/null
 
 ##### some convinient rules #####
-#TEST=hello-inline-asm
+#TEST=fast_memcpy
 #USERPROG := obj/testcase/$(TEST)
 USERPROG := $(game_BIN)
 #ENTRY := $(USERPROG)
