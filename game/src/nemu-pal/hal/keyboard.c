@@ -4,7 +4,7 @@
 #define NR_KEYS 18
 #define I8042_DATA_PORT 0x60
 
-enum {KEY_STATE_RELEASED, KEY_STATE_PRESS, KEY_STATE_PRESSED, KEY_STATE_RELEASE};
+enum {KEY_STATE_RELEASED, KEY_STATE_PRESSED, KEY_STATE_PENDING_RELEASE, KEY_STATE_PRESS};
 
 /* Only the following keys are used in NEMU-PAL. */
 static const int keycode_array[] = {
@@ -28,12 +28,12 @@ keyboard_event(void) {
             break;
         }
     }
-    if (index != -1) {
-        if (!release && key_state[index] != KEY_STATE_PRESSED) {
-            key_state[index] = KEY_STATE_PRESS;
-        } else if (key_state[index] != KEY_STATE_RELEASED) {
-            key_state[index] = KEY_STATE_RELEASE;
-        }
+    if (index == -1) return;
+    if (release) return;
+    if (key_state[index] == KEY_STATE_RELEASED) {
+        key_state[index] = KEY_STATE_PRESS;
+    } else if (key_state[index] == KEY_STATE_PENDING_RELEASE) {
+        key_state[index] = KEY_STATE_PRESSED;
     }
 }
 
@@ -42,13 +42,13 @@ process_keys(void (*key_press_callback)(int), void (*key_release_callback)(int))
     cli();
     for (int index = 0; index < NR_KEYS; index++) {
         if (key_state[index] == KEY_STATE_PRESS) {
-            key_state[index] = KEY_STATE_PRESSED;
             key_press_callback(keycode_array[index]);
-            break;
-        } else if (key_state[index] == KEY_STATE_RELEASE) {
-            key_state[index] = KEY_STATE_RELEASED;
+            key_state[index] = KEY_STATE_PENDING_RELEASE;
+        } else if (key_state[index] == KEY_STATE_PENDING_RELEASE) {
             key_release_callback(keycode_array[index]);
-            break;
+            key_state[index] = KEY_STATE_RELEASED;
+        } else if (key_state[index] == KEY_STATE_PRESSED) {
+            key_state[index] = KEY_STATE_PENDING_RELEASE;
         }
     }
     sti();
