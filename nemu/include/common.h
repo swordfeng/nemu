@@ -10,8 +10,6 @@
 /* You will define this macro in PA4 */
 #define HAS_DEVICE
 
-//#define LOG_FILE
-
 #include "debug.h"
 
 #include <stdint.h>

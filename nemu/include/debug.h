@@ -14,8 +14,10 @@ enum { PROGRAM_PANIC = 0 };
 
 #ifdef LOG_FILE
 #    define Log_write(format, ...) fprintf(log_fp, format, ## __VA_ARGS__)
+#    define FLUSH_LOG_FILE fflush(log_fp);
 #else
 #    define Log_write(format, ...)
+#    define FLUSH_LOG_FILE
 #endif
 
 #define Log(format, ...) \
@@ -35,6 +37,7 @@ enum { PROGRAM_PANIC = 0 };
             fprintf(stderr, __VA_ARGS__); \
             fprintf(stderr, "\33[0m\n"); \
             print_debug_info(); \
+            FLUSH_LOG_FILE \
             assert(cond); \
         } \
     } while(0)
