@@ -102,28 +102,25 @@ makeOp s = case lookup s $ map (\op -> (getOp op, op)) $ concat opDefs of
 opDefs' = [ -- operators with precedance
     [ Op AssocL Binary (liftM2 opOr) "||" ],
     [ Op AssocL Binary (liftM2 opAnd) "&&" ],
-    [ Op AssocL Binary (liftM2 opEq) "==", Op AssocL Binary (liftM2 opNeq) "!=" ],
+    [ Op AssocL Binary (liftM2 opEq) "==", Op AssocL Binary (liftM2 opNeq) "!=", Op AssocL Binary (liftM2 opLT) "<", Op AssocL Binary (liftM2 opGT) ">", Op AssocL Binary (liftM2 opLTE) "<=", Op AssocL Binary (liftM2 opGTE) ">=" ],
     [ Op AssocL Binary (liftM2 (+)) "+", Op AssocL Binary (liftM2 (-)) "-" ],
     [ Op AssocL Binary (liftM2 (*)) "*", Op AssocL Binary (liftM2 div) "/", Op AssocL Binary (liftM2 mod) "%" ],
     [ Op AssocR Unary (liftM2 opNot) "!"],
     [ Op AssocR Unary (liftM2 (-)) "-", Op AssocR Unary (liftM2 (+)) "+"],
     [ Op AssocR Unary opDeref "*"]
     ] where
-        opEq i1 i2
-            | i1 == i2 = 1
-            | otherwise = 0
-        opNeq i1 i2 = 1 - opEq i1 i2
-        opAnd i1 i2
-            | i1 /= 0 && i2 /= 0 = 1
-            | otherwise = 0
-        opOr i1 i2
-            | i1 /= 0 || i2 /= 0 = 1
-            | otherwise = 0
-        opNot _ i
-            | i == 0 = 1
-            | otherwise = 0
-        opDeref _ addr = do
-            addr >>= flip lnaddr_read 4
+        bool2int True = 1
+        bool2int False = 0
+        opEq i1 i2 = bool2int $ i1 == i2
+        opNeq i1 i2 = bool2int $ i1 /= i2
+        opAnd i1 i2 = bool2int $ i1 /= 0 && i2 /= 0
+        opOr i1 i2 = bool2int $ i1 /= 0 || i2 /= 0
+        opNot _ i = bool2int $ i == 0
+        opDeref _ addr = addr >>= flip lnaddr_read 4
+        opLT i1 i2 = bool2int $ i1 < i2
+        opGT i1 i2 = bool2int $ i1 > i2
+        opLTE i1 i2 = bool2int $ i1 <= i2
+        opGTE i1 i2 = bool2int $ i1 >= i2
 opDefs = sortBy (compare `on` (negate . length . getOp)) `map` opDefs'
 
 ---- Expression
