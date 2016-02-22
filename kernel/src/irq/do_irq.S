@@ -21,7 +21,7 @@
 .globl irq1;     irq1:  pushl $0;  pushl $1001; jmp asm_do_irq
 .globl irq14;   irq14:  pushl $0;  pushl $1014; jmp asm_do_irq
 .globl irq_empty;
-			irq_empty:	pushl $0;  pushl   $-1; jmp asm_do_irq
+            irq_empty:  pushl $0;  pushl   $-1; jmp asm_do_irq
 
 .globl asm_do_irq
 .extern irq_handle
@@ -30,12 +30,10 @@
 # You should make yourself understand it clearly.
 
 asm_do_irq:
-	pushal
-
-	pushl %esp		# ???
-	call irq_handle
-	
-	addl $4, %esp
-	popal
-	addl $8, %esp
-	iret
+    pushal
+    pushl %esp        # argument for irq_handle
+    call irq_handle
+    addl $4, %esp
+    popal
+    addl $8, %esp
+    iret
