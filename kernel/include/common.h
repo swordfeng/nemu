@@ -9,6 +9,8 @@
 
 #ifndef __ASSEMBLER__
 /* The following code will be included if the source file is a "*.c" file. */
+#include "inline.h"
+#define memcpy fast_memcpy
 
 #include "trap.h"
 
