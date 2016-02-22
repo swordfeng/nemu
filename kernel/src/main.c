@@ -103,7 +103,7 @@ void init_cond() {
 
     /* Here we go! */
     //((void(*)(void))eip)();
-                 "call %0;" : : "r"(eip));
+                 "call *%0;" : : "r"(eip));
 
     panic("should not reach here");
 }
