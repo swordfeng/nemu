@@ -98,11 +98,12 @@ void init_cond() {
 #endif
 
     /* Keep the `bt' command happy. */
-    asm volatile("movl $0, %ebp");
-    asm volatile("subl $16, %esp");
+    asm volatile("movl $0, %%ebp;"
+                 "subl $16, %%esp;"
 
     /* Here we go! */
-    ((void(*)(void))eip)();
+    //((void(*)(void))eip)();
+                 "call %0;" : : "r"(eip));
 
     panic("should not reach here");
 }
