@@ -1,6 +1,6 @@
 ##### global settings #####
 
-.PHONY: nemu entry all_testcase kernel run gdb test submit clean
+.PHONY: nemu entry all_testcase kernel run gdb profile test submit clean
 
 MAKEFLAGS := -j4
 
@@ -65,8 +65,8 @@ clean: clean-cpp clean-log
 #TEST=hello-inline-asm
 #USERPROG := obj/testcase/$(TEST)
 USERPROG := $(game_BIN)
-ENTRY := $(kernel_BIN)
 #ENTRY := $(USERPROG)
+ENTRY := $(kernel_BIN)
 
 entry: $(ENTRY)
 	objcopy -S -O binary $(ENTRY) entry
@@ -74,6 +74,10 @@ entry: $(ENTRY)
 run: $(nemu_BIN) $(USERPROG) entry
 	$(call git_commit, "run")
 	$(nemu_BIN) $(USERPROG)
+
+profile: $(nemu_BIN) $(USERPROG) entry
+	perf record $(nemu_BIN) $(USERPROG)
+	perf report
 
 gdb: $(nemu_BIN) $(USERPROG) entry
 	gdb -s $(nemu_BIN) --args $(nemu_BIN) $(USERPROG)
@@ -87,6 +91,3 @@ submit: clean
 count-nemu:
 	find nemu/ -regextype posix-egrep -regex ".*\.c|.*\.h|.*\.hc|.*\.hs" -exec cat '{}' \; | sed '/^\s*$$/d' | wc -l
 
-profile:
-	@gprof obj/nemu/nemu > prof.txt
-	@echo "See prof.txt"
