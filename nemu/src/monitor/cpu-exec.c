@@ -15,6 +15,7 @@
 int nemu_state = STOP;
 
 int exec(swaddr_t);
+void device_update();
 
 char assembly[80];
 char asm_buf[128];
@@ -129,6 +130,7 @@ void cpu_exec(volatile uint32_t n) {
             i8259_ack_intr();
             raise_intr(intr_no);
         }
+        device_update();
 #endif
     }
 
