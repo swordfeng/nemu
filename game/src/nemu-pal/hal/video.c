@@ -23,22 +23,29 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
     if (dstrect) {
         dx = dstrect->x;
         dy = dstrect->y;
+        if (dx < 0) {
+            sx -= dx;
+            fw += dx;
+            dx = 0;
+        }
+        if (dy < 0) {
+            sy -= dy;
+            fh += dy;
+            dy = 0;
+        }
     }
-    /*
-    if (src->w == dst->w && fw == dst->w && sx == 0 && sy == 0) {
-        // perform full copy
-        memcpy(dpixels + dy * fw, spixels + sy * fw, fw * fh);
-        return;
-    }
-    */
+    if (dy + fh > dst->h) fh = dst->h - dy;
+    if (dx + fw > dst->w) fw = dst->w - dx;
+
     for (int i = 0; i < fh; i++) {
-        memcpy(dpixels + (dy + i) * dst->w + dx, spixels + (sy + i) * src->w + sx, fw);
+        memcpy(dpixels + (dy + i) * dst->w + dx, spixels + (sy + i) * src->w + sx, fw );
     }
 }
 
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
     assert(dst);
     assert(color <= 0xff);
+    assert(dst->format->BitsPerPixel == 8);
 
     uint8_t *pixels = dst->pixels;
     int dx = 0, dy = 0, fw = dst->w, fh = dst->h;
@@ -47,6 +54,8 @@ void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
         dy = dstrect->y;
         fw = dstrect->w;
         fh = dstrect->h;
+        if (dy + fh > dst->h) fh = dst->h - dy;
+        if (dx + fw > dst->w) fw = dst->w - dx;
     }
     for (int i = dy; i < dy + fh; i++) {
         memset(pixels + i * dst->w + dx, color, fw);
