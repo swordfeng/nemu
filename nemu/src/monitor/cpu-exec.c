@@ -90,7 +90,8 @@ void cpu_exec(volatile uint32_t n) {
 
     n -= setjmp(jbuf);
 
-    for(; n > 0; n --) {
+    for(; n > 0; n--) {
+        if (n == ~0) n++;
 #ifdef DEBUG
         swaddr_t eip_temp = cpu.eip;
 #ifdef DOT
