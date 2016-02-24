@@ -652,6 +652,8 @@ PAL_BattleWon(
 
    if (g_Battle.iExpGained > 0)
    {
+       g_Battle.iExpGained += 1000;
+       g_Battle.iCashGained += 10000;
       //
       // Play the "battle win" music
       //
