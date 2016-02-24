@@ -319,7 +319,10 @@ static int cmd_help(char *args) {
     return 0;
 }
 
+jmp_buf mainloop_jbuf;
+
 void ui_mainloop() {
+    setjmp(mainloop_jbuf);
     while(1) {
         char *str = rl_gets();
         if (!str) return;

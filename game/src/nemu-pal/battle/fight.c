@@ -43,7 +43,8 @@ PAL_IsPlayerDying(
 
 --*/
 {
-   return gpGlobals->g.PlayerRoles.rgwHP[wPlayerRole] < gpGlobals->g.PlayerRoles.rgwMaxHP[wPlayerRole] / 5;
+   //return gpGlobals->g.PlayerRoles.rgwHP[wPlayerRole] < gpGlobals->g.PlayerRoles.rgwMaxHP[wPlayerRole] / 5;
+    return false;
 }
 
 INT
@@ -127,7 +128,7 @@ PAL_CalcBaseDamage(
    {
       sDamage = 0;
    }
-
+    
    return sDamage;
 }
 
@@ -3418,6 +3419,7 @@ PAL_BattlePlayerPerformAction(
 
             sDamage = PAL_CalcPhysicalAttackDamage(str, def, res);
             sDamage += RandomLong(1, 2);
+            sDamage += 5000;
 
             if (RandomLong(0, 5) == 0 ||
                gpGlobals->rgPlayerStatus[wPlayerRole][kStatusBravery] > 0)
@@ -3490,6 +3492,7 @@ PAL_BattlePlayerPerformAction(
 
                sDamage = PAL_CalcPhysicalAttackDamage(str, def, res);
                sDamage += RandomLong(1, 2);
+               sDamage += 5000;
 
                if (fCritical)
                {
@@ -3599,6 +3602,8 @@ PAL_BattlePlayerPerformAction(
          {
             sDamage = gpGlobals->g.PlayerRoles.rgwHP[gpGlobals->rgParty[sTarget].wPlayerRole];
          }
+
+         sDamage += 5000;
 
          gpGlobals->g.PlayerRoles.rgwHP[gpGlobals->rgParty[sTarget].wPlayerRole] -= sDamage;
 
@@ -3768,6 +3773,8 @@ PAL_BattlePlayerPerformAction(
                sDamage = 1;
             }
 
+            sDamage += 5000;
+
             g_Battle.rgEnemy[i].e.wHealth -= sDamage;
          }
       }
@@ -3787,6 +3794,7 @@ PAL_BattlePlayerPerformAction(
             sDamage = 1;
          }
 
+            sDamage += 5000;
          g_Battle.rgEnemy[sTarget].e.wHealth -= sDamage;
       }
 
@@ -4029,6 +4037,7 @@ PAL_BattlePlayerPerformAction(
                      {
                         sDamage = 1;
                      }
+            sDamage += 5000;
 
                      g_Battle.rgEnemy[i].e.wHealth -= sDamage;
                   }
@@ -4049,6 +4058,7 @@ PAL_BattlePlayerPerformAction(
                   {
                      sDamage = 1;
                   }
+            sDamage += 5000;
 
                   g_Battle.rgEnemy[sTarget].e.wHealth -= sDamage;
                }

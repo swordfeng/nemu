@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <assert.h>
+#include <setjmp.h>
 
 extern FILE* log_fp;
 void print_debug_info();
@@ -41,6 +42,21 @@ enum { PROGRAM_PANIC = 0 };
             assert(cond); \
         } \
     } while(0)
+
+extern jmp_buf mainloop_jbuf;
+#define vm_assert(cond, ...) \
+    do { \
+        if (!(cond)) { \
+            fflush(stdout); \
+            fprintf(stderr, "\33[1;31m"); \
+            fprintf(stderr, __VA_ARGS__); \
+            fprintf(stderr, "\33[0m\n"); \
+            print_debug_info(); \
+            FLUSH_LOG_FILE \
+            fprintf(stderr, "%s:%d: %s: VM Assertion `%s' failed.\n", __FILE__, __LINE__, __func__, #cond ); \
+            longjmp(mainloop_jbuf, 1); \
+        } \
+    } while (0)
 
 #define panic(format, ...) \
     Assert(PROGRAM_PANIC, format, ## __VA_ARGS__);
