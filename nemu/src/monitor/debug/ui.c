@@ -235,6 +235,7 @@ static int cmd_last(char *args) {
     printf("%s%s\n", asm_buf, assembly);
     return 0;
 }
+#endif
 
 static int cmd_profile(char *args) {
     long long ins = -1;
@@ -265,7 +266,6 @@ static int cmd_profile(char *args) {
     profile_print_result();
     return 0;
 }
-#endif
 
 static int cmd_help(char *args);
 
@@ -290,8 +290,8 @@ static struct {
     { "page", "Display Page Translation", cmd_page},
 #ifdef DEBUG
     { "last", "Show last axm instruction", cmd_last},
-    { "profile", "profile the program", cmd_profile},
 #endif
+    { "profile", "profile the program", cmd_profile},
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
