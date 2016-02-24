@@ -14,7 +14,7 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
 
     uint8_t *spixels = src->pixels;
     uint8_t *dpixels = dst->pixels;
-    int sx = 0, sy = 0, dx = 0, dy = 0, fw = dst->w, fh = dst->h;
+    int sx = 0, sy = 0, dx = 0, dy = 0, fw = src->w, fh = src->h;
     if (srcrect) {
         sx = srcrect->x;
         sy = srcrect->y;
@@ -35,16 +35,17 @@ void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect,
             dy = 0;
         }
     }
+    if (dx >= dst->w || dy >= dst->h) return;
     if (dy + fh > dst->h) fh = dst->h - dy;
     if (dx + fw > dst->w) fw = dst->w - dx;
 
     if (fw == dst->w && src->w == dst->w) {
-        fast_memcpy(dpixels + dy * dst->w, spixels + sy * src->w, fh * fw);
+        memcpy(dpixels + dy * dst->w, spixels + sy * src->w, fh * fw);
         return;
     }
 
     for (int i = 0; i < fh; i++) {
-        fast_memcpy(dpixels + (dy + i) * dst->w + dx, spixels + (sy + i) * src->w + sx, fw);
+        memcpy(dpixels + (dy + i) * dst->w + dx, spixels + (sy + i) * src->w + sx, fw);
     }
 }
 
