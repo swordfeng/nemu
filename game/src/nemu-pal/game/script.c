@@ -633,6 +633,7 @@ PAL_InterpretInstruction(
       iPlayerRole = gpGlobals->rgParty[0].wPlayerRole;
    }
 
+
    switch (pScript->wOperation)
    {
    case 0x000B:
@@ -2145,7 +2146,7 @@ PAL_InterpretInstruction(
       // Stop current playing music
       //
       PAL_PlayMUS(0, FALSE,
-         (pScript->rgwOperand[0] == 0) ? 2.0f : (FLOAT)(pScript->rgwOperand[0]) * 2);
+         (pScript->rgwOperand[0] == 0) ? 2 : (FLOAT)(pScript->rgwOperand[0]) * 2);
       gpGlobals->wNumMusic = 0;
       break;
 
