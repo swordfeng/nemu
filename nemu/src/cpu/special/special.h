@@ -22,7 +22,7 @@ INSTRUCTION_HELPER(inv) {
     printf("\33[1;31mIf it is the first case, see\n%s\nfor more details.\n\nIf it is the second case, remember:\n"
            "* The machine is always right!\n"
            "* Every line of untested code is always wrong!\33[0m\n\n", logo);
-    assert(0);
+    nemu_state = END;
 }
 
 INSTRUCTION_HELPER(nemu_trap) {
