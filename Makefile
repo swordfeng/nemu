@@ -62,8 +62,8 @@ clean: clean-cpp clean-log
 
 ##### some convinient rules #####
 TEST=fast_memcpy
-USERPROG := obj/testcase/$(TEST)
-#USERPROG := $(game_BIN)
+#USERPROG := obj/testcase/$(TEST)
+USERPROG := $(game_BIN)
 #ENTRY := $(USERPROG)
 ENTRY := $(kernel_BIN)
 
