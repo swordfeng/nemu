@@ -132,6 +132,10 @@ static int cmd_x(char *args) {
 }
 
 static int cmd_p(char *args) {
+    if (!args) {
+        printf("invalid argument\n");
+        return 0;
+    }
     while (*args == ' ') args++;
     char *args_end = args + strlen(args) - 1;
     while (args_end > args && *args_end == ' ') args_end--;
@@ -167,6 +171,10 @@ static int cmd_w(char *args) {
 }
 
 static int cmd_d(char *args) {
+    if (!args) {
+        printf("invalid argument\n");
+        return 0;
+    }
     int wp_no;
     if (1 != sscanf(args, "%d", &wp_no)) {
         printf("Invalid argument\n");
@@ -208,6 +216,10 @@ static int cmd_bt(char *args) {
 
 #ifdef USE_CACHE
 static int cmd_cache(char *args) {
+    if (!args) {
+        printf("invalid argument\n");
+        return 0;
+    }
     bool succ = false;
     hwaddr_t addr = expr(args, &succ);
     if (!succ) {
@@ -220,6 +232,10 @@ static int cmd_cache(char *args) {
 #endif
 
 static int cmd_page(char *args) {
+    if (!args) {
+        printf("invalid argument\n");
+        return 0;
+    }
     bool succ = false;
     lnaddr_t lnaddr = expr(args, &succ);
     if (!succ) {
@@ -235,6 +251,7 @@ static int cmd_last(char *args) {
     printf("%s%s\n", asm_buf, assembly);
     return 0;
 }
+#endif
 
 static int cmd_profile(char *args) {
     long long ins = -1;
@@ -265,7 +282,6 @@ static int cmd_profile(char *args) {
     profile_print_result();
     return 0;
 }
-#endif
 
 static int cmd_help(char *args);
 
@@ -290,8 +306,8 @@ static struct {
     { "page", "Display Page Translation", cmd_page},
 #ifdef DEBUG
     { "last", "Show last axm instruction", cmd_last},
-    { "profile", "profile the program", cmd_profile},
 #endif
+    { "profile", "profile the program", cmd_profile},
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
@@ -319,7 +335,10 @@ static int cmd_help(char *args) {
     return 0;
 }
 
+jmp_buf mainloop_jbuf;
+
 void ui_mainloop() {
+    setjmp(mainloop_jbuf);
     while(1) {
         char *str = rl_gets();
         if (!str) return;

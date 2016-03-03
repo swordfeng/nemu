@@ -19,7 +19,6 @@ LIB_COMMON_DIR := lib-common
 NEWLIBC_DIR := $(LIB_COMMON_DIR)/newlib
 NEWLIBC := $(NEWLIBC_DIR)/libc.a
 FLOAT := obj/$(LIB_COMMON_DIR)/FLOAT.a
-RSCORE := $(LIB_COMMON_DIR)/libcore.a
 
 include config/Makefile.git
 include config/Makefile.build
@@ -62,7 +61,7 @@ clean: clean-cpp clean-log
 	-rm -rf obj 2> /dev/null
 
 ##### some convinient rules #####
-#TEST=fast_memcpy
+TEST=fast_memcpy
 #USERPROG := obj/testcase/$(TEST)
 USERPROG := $(game_BIN)
 #ENTRY := $(USERPROG)
