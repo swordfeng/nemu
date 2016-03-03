@@ -15,19 +15,6 @@ inline size_t op_get_size(InstructionContext &ctx, OperandName opname) {
     return 0;
 }
 
-static inline uint32_t reg_read_index(uint8_t reg_index, size_t size) {
-    switch (size) {
-    case 1:
-        return reg_b(reg_index);
-    case 2:
-        return reg_w(reg_index);
-    case 4:
-        return reg_l(reg_index);
-    default:
-        panic("wrong reg size!");
-    }
-}
-
 static inline const char *prefix_name(int opcode, int prefix_code) {
     switch (prefix_code) {
     case prefix_0_rep: /* == repe */
@@ -41,8 +28,8 @@ static inline const char *prefix_name(int opcode, int prefix_code) {
     }
 }
 
-inline void print_instr(InstructionContext &ctx, string name) {
 #ifdef PRINT_INSTR
+inline void print_instr(InstructionContext &ctx, string name) {
     size_t operands_size = 0;
     while (operands_size < 4 && ctx.operands[operands_size].type != opt_undefined) {
         operands_size++;
@@ -69,98 +56,14 @@ inline void print_instr(InstructionContext &ctx, string name) {
     Assert(showstr.size() < 80, "assembly buffer overflow");
     std::copy(showstr.begin(), showstr.end(), assembly);
     assembly[showstr.size()] = 0;
-#endif
 }
+#else
+#define print_instr(...);
+#endif
 
 inline InstructionContext::InstructionContext():
 opcode(0), require_modrm(false), decoded_len(0) {
     memset(prefix, 0, 4 * sizeof(prefix[0]));
-}
-
-inline Operand::Operand(): type(opt_undefined) {}
-
-inline uint32_t Operand::getSignedValue() {
-   uint32_t ret = 0;
-   switch (type) {
-   case opt_undefined:
-       panic("operand undefined");
-   case opt_register:
-       ret = reg_read_index(reg_index, size);
-       break;
-   case opt_address:
-       ret = swaddr_read(address, size);
-       break;
-   case opt_immediate:
-       ret = immediate;
-       break;
-   }
-   return signed_extend(ret, size);
-}
-
-inline uint32_t Operand::getUnsignedValue() {
-   uint32_t ret = 0;
-   switch (type) {
-   case opt_undefined:
-       panic("operand undefined");
-   case opt_register:
-       ret = reg_read_index(reg_index, size);
-       break;
-   case opt_address:
-       ret = swaddr_read(address, size);
-       break;
-   case opt_immediate:
-       ret = immediate;
-       break;
-   }
-   return ret;
-}
-
-inline swaddr_t Operand::getAddress() {
-    Assert(type == opt_address, "operand is not from memory address");
-    return address;
-}
-
-inline void Operand::setValue(uint32_t v) {
-    switch (type) {
-    case opt_undefined:
-        panic("operand undefined");
-    case opt_immediate:
-        panic("set value to imediate");
-    case opt_register:
-        if (size == 1) reg_b(reg_index) = static_cast<uint8_t>(v);
-        else if (size == 2) reg_w(reg_index) = static_cast<uint16_t>(v);
-        else reg_l(reg_index) = v;
-        break;
-    case opt_address:
-        swaddr_write(address, size, v);
-        break;
-    }
-}
-
-inline string Operand::suffix() {
-    switch (size) {
-    case 1:
-        return "b";
-    case 2:
-        return "w";
-    case 4:
-        return "l";
-    }
-    panic("wrong size");
-    return "";
-}
-
-inline uint32_t signed_extend(uint32_t val, size_t size) {
-    switch (size) {
-    case 1:
-        return static_cast<uint32_t>(static_cast<int8_t>(val));
-    case 2:
-        return static_cast<uint32_t>(static_cast<int16_t>(val));
-    case 4:
-        return val;
-    default:
-        panic("invalid data size");
-    }
 }
 
 template <typename int_type>
@@ -177,6 +80,10 @@ inline int_type signed_extend(uint64_t val, size_t size) {
     default:
         panic("invalid data size");
     }
+}
+
+inline uint32_t signed_extend(uint32_t val, size_t size) {
+    return signed_extend<uint32_t>(val, size);
 }
 
 inline uint32_t int_trunc(uint32_t val, size_t size) {
@@ -197,28 +104,30 @@ inline uint8_t calc_pf(uint8_t val) {
     val ^= val >> 1;
     val ^= val >> 2;
     val ^= val >> 4;
-    return val & 1;
+    return !(val & 1);
 }
 
-#define DECODE_TEMPLATE_HELPER(name) \
+#define DECODE_TEMPLATE_HELPER_OPS(name, n) \
     template <size_t index, OperandName ...operand_names> struct name; \
     template <size_t index> struct name<index> { \
-        static HELPER(call) { return 0; } \
+        static inline HELPER(call) { return 0; } \
     }; \
     template <size_t index, OperandName opname, OperandName opname2, OperandName ...operand_names> \
     struct name<index, opname, opname2, operand_names...> { \
-        static HELPER(call) { \
+        static inline HELPER(call) { \
             int ret1 = name<index, opname>::call(ctx, eip); \
-            int ret2 = name<index + 1, opname2, operand_names...>::call(ctx, eip); \
+            int ret2 = name<index + n, opname2, operand_names...>::call(ctx, eip); \
             return ret2 > ret1 ? ret2 : ret1; \
         } \
     }; \
     template <size_t index, OperandName opname> \
     struct name<index, opname> { \
-        static HELPER(call); \
+        static inline HELPER(call); \
     }; \
     template <size_t index, OperandName opname> \
-    int name<index, opname>::call HELPER_PARAM_LIST
+    inline int name<index, opname>::call HELPER_PARAM_LIST
+
+#define DECODE_TEMPLATE_HELPER(name) DECODE_TEMPLATE_HELPER_OPS(name, 1)
 
 /* decode modrm, sib, disp */
 DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
@@ -232,6 +141,37 @@ DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
 #ifdef OPERAND_SET_NAME
         ctx.operands[index].str_name = string("%") +
             reg_get_name(ctx.operands[index].reg_index, ctx.operands[index].size);
+#endif
+        return 1;
+    } else if (opname == op_reg_cr) {
+        ctx.require_modrm = true;
+        ModR_M modrm;
+        modrm.value = instr_fetch(eip, 1);
+        ctx.operands[index].type = opt_register_cr;
+        ctx.operands[index].reg_index = modrm.regop;
+        if (modrm.regop == 1 || (modrm.regop != 8 && modrm.regop > 4)) {
+            panic("Invalid CR register");
+        }
+        ctx.operands[index].size = 4;
+#ifdef OPERAND_SET_NAME
+        static char num[] = "0";
+        num[0] += ctx.operands[index].reg_index;
+        ctx.operands[index].str_name = string("%cr") + num;
+        num[0] -= ctx.operands[index].reg_index;
+#endif
+        return 1;
+    } else if (opname == op_reg_seg) {
+        ctx.require_modrm = true;
+        ModR_M modrm;
+        modrm.value = instr_fetch(eip, 1);
+        ctx.operands[index].type = opt_register_seg;
+        ctx.operands[index].reg_index = modrm.regop;
+        if (modrm.regop > 5) {
+            panic("Invalid segment register");
+        }
+        ctx.operands[index].size = 2;
+#ifdef OPERAND_SET_NAME
+        ctx.operands[index].str_name = string("%") + reg_seg_get_name(modrm.regop);
 #endif
         return 1;
     } else if (op_name_is(opname, rm)) {
@@ -258,6 +198,7 @@ DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
                 SIB sib;
                 sib.value = instr_fetch(eip + 1, 1);
                 ctx.operands[index].type = opt_address;
+                ctx.operands[index].sreg = sreg_index(ds);
 #ifdef OPERAND_SET_NAME
                 string base_name, index_name;
 #endif
@@ -284,6 +225,10 @@ DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
                 }
                 ctx.operands[index].address = addr + base_addr;
                 ctx.operands[index].size = op_get_size(ctx, opname);
+                if (sib.index == 5) {
+                    // BP in effective address
+                    ctx.operands[index].sreg = sreg_index(ss);
+                }
 #ifdef OPERAND_SET_NAME
                 char scale_factor_str[] = "x";
                 scale_factor_str[0] = scale_factor + '0';
@@ -298,6 +243,7 @@ DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
                 uint32_t disp = instr_fetch(eip + 1, 4);
                 ctx.operands[index].type = opt_address;
                 ctx.operands[index].address = disp;
+                ctx.operands[index].sreg = sreg_index(ds);
                 ctx.operands[index].size = op_get_size(ctx, opname);
 #ifdef OPERAND_SET_NAME
                 ctx.operands[index].str_name = conv16(disp);
@@ -308,6 +254,11 @@ DECODE_TEMPLATE_HELPER(decode_modrm_disp) {
                 ctx.operands[index].type = opt_address;
                 ctx.operands[index].size = op_get_size(ctx, opname);
                 ctx.operands[index].address = reg_read_index(modrm.rm, 4);
+                ctx.operands[index].sreg = sreg_index(ds);
+                if (modrm.rm == 2 || modrm.rm == 3 || modrm.rm == 6) {
+                    // BP in effective address
+                    ctx.operands[index].sreg = sreg_index(ss);
+                }
 #ifdef OPERAND_SET_NAME
                 ctx.operands[index].str_name = string("(%") +
                     reg_get_name(modrm.rm, 4) + ")";
@@ -358,6 +309,7 @@ DECODE_TEMPLATE_HELPER(decode_moffs) {
     if (op_name_is(opname, moffs)) {
         ctx.operands[index].type = opt_address;
         ctx.operands[index].address = instr_fetch(eip, 4);
+        ctx.operands[index].sreg = sreg_index(ds);
         ctx.operands[index].size = op_get_size(ctx, opname);
 #ifdef OPERAND_SET_NAME
         ctx.operands[index].str_name = string("$") + conv16(ctx.operands[index].immediate);
@@ -366,6 +318,40 @@ DECODE_TEMPLATE_HELPER(decode_moffs) {
     } else return 0;
 }
 
+DECODE_TEMPLATE_HELPER_OPS(decode_ptrwv, 2) {
+    if (opname == op_ptrwv) {
+        size_t offsize = ctx.prefix[2] == 0 ? 4 : 2;
+        ctx.operands[index].type = opt_immediate;
+        ctx.operands[index].immediate = instr_fetch(eip, offsize);
+        ctx.operands[index].size = offsize;
+        ctx.operands[index + 1].type = opt_immediate;
+        ctx.operands[index + 1].immediate = instr_fetch(eip + offsize, 2);
+        ctx.operands[index + 1].size = 2;
+#ifdef OPERAND_SET_NAME
+        ctx.operands[index].str_name = string("$") + conv16(ctx.operands[index].immediate);
+        ctx.operands[index + 1].str_name = string("$") + conv16(ctx.operands[index + 1].immediate);
+#endif
+        return offsize + 2;
+    } else return 0;
+}
+/*
+DECODE_TEMPLATE_HELPER_OPS(decode_m16v, 2) {
+    if (opname == op_m16v) {
+        size_t offsize = ctx.prefix[2] == 0 ? 4 : 2;
+        ctx.operands[index].type = opt_address;
+        ctx.operands[index].value = instr_fetch(eip, offsize);
+        ctx.operands[index].size = offsize;
+        ctx.operands[index + 1].type = opt_immediate;
+        ctx.operands[index + 1].value = instr_fetch(eip + offsize, 2);
+        ctx.operands[index + 1].size = 2;
+#ifdef OPERAND_SET_NAME
+        ctx.operands[index].str_name = string("$") + conv16(ctx.operands[index].immediate);
+        ctx.operands[index + 1].str_name = string("$") + conv16(ctx.operands[index + 1].immediate);
+#endif
+        return offsize + 2;
+    } else return 0;
+}
+*/
 // decode type 'a', 'c', '1' ...
 DECODE_TEMPLATE_HELPER(decode_const) {
     if (op_name_is(opname, a)) {
@@ -381,6 +367,13 @@ DECODE_TEMPLATE_HELPER(decode_const) {
         ctx.operands[index].size = op_get_size(ctx, opname);
 #ifdef OPERAND_SET_NAME
         ctx.operands[index].str_name = string("%") + reg_get_name(R_ECX, op_get_size(ctx, opname));
+#endif
+    } else if (op_name_is(opname, d)) {
+        ctx.operands[index].type = opt_register;
+        ctx.operands[index].reg_index = R_EDX;
+        ctx.operands[index].size = op_get_size(ctx, opname);
+#ifdef OPERAND_SET_NAME
+        ctx.operands[index].str_name = string("%") + reg_get_name(R_EDX, op_get_size(ctx, opname));
 #endif
     } else if (op_name_is(opname, 1)) {
         ctx.operands[index].type = opt_immediate;
@@ -418,14 +411,10 @@ TEMPLATE_HELPER(decode_operands) {
     consumed_size += moffs_size;
     int imm_size = decode_imm<0, operand_names...>::call(ctx, eip + consumed_size);
     consumed_size += imm_size;
-    //printf("opcode = %x, decoded length = %d, m = %d, o = %d, i = %d\n", instr_fetch(eip, 1), consumed_size, modrm_size, moffs_size, imm_size);
+    int ptrwv_size = decode_ptrwv<0, operand_names...>::call(ctx, eip + consumed_size);
+    consumed_size += ptrwv_size;
     ctx.decoded_len = consumed_size;
     ctx.decoded_eip = eip;
     return consumed_size;
 }
 
-inline HELPER(decode_operands) {
-    Assert(eip == ctx.decoded_eip, "unexpected call");
-    Assert(ctx.decoded_len > 0, "unexpected call");
-    return ctx.decoded_len;
-}

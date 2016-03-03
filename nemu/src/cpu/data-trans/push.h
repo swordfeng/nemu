@@ -4,6 +4,6 @@ TEMPLATE_INSTRUCTION_HELPER(push) {
   size_t data_size = ctx.prefix[prefix_operand] ? 2 : 4;
   uint32_t val = ctx.operands[0].getSignedValue();
   reg_l(R_ESP) -= data_size;
-  swaddr_write(reg_l(R_ESP), data_size, val);
+  swaddr_write(reg_l(R_ESP), data_size, sreg_index(ss), val);
   print_instr(ctx, "push");
 }

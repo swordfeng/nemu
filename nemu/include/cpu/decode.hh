@@ -17,11 +17,6 @@ extern "C" {
 
 using std::string;
 
-/* Set to save operand name */
-#ifdef DEBUG
-#define PRINT_INSTR
-#endif
-
 /* if print instructions, then enable operand output */
 #ifdef PRINT_INSTR
 #define OPERAND_SET_NAME
@@ -44,8 +39,9 @@ void print_instr(InstructionContext &ctx, string name);
 #define OP_NAMES(name) op_##name##_b, op_##name##_w, op_##name##_l, op_##name##_v
 enum OperandName {
     OP_NAMES(suffix), OP_NAMES(rm), OP_NAMES(reg), OP_NAMES(r), OP_NAMES(moffs),
-    OP_NAMES(imm), OP_NAMES(a), OP_NAMES(c),
-    op_1_b = 0x80, op_1 = 0x80
+    OP_NAMES(imm), OP_NAMES(a), OP_NAMES(c), OP_NAMES(d),
+    op_1_b = 0x80, op_1 = 0x80,
+    op_reg_cr, op_reg_seg, op_ptrwv,
 };
 #undef OP_NAMES
 
@@ -54,15 +50,15 @@ enum OperandName {
     ((opname & ~0x3u) == op_##groupname##_b)
 
 /* operand types */
-enum OperandType {
-    opt_undefined, opt_register, opt_address, opt_immediate
+enum OperandType : uint8_t {
+    opt_undefined, opt_register, opt_address, opt_immediate, opt_register_cr, opt_register_seg,
 };
 
-enum InstructionPrefixIndex {
+enum InstructionPrefixIndex : uint8_t {
     prefix_lock_rep, prefix_segment, prefix_operand, prefix_address
 };
 
-enum InstructionPrefixOpcode {
+enum InstructionPrefixOpcode : uint8_t {
     prefix_0_lock = 0xf0,
     prefix_0_rep = 0xf3,
     prefix_0_repe = 0xf3,
@@ -74,27 +70,33 @@ enum InstructionPrefixOpcode {
 /* Operand */
 struct Operand {
     OperandType type;
-    size_t size;
+    uint8_t size;
     union {
         uint8_t reg_index;
-        swaddr_t address;
+        struct {
+            swaddr_t address;
+            uint8_t sreg;
+        };
         uint32_t immediate;
     };
 #ifdef OPERAND_SET_NAME
     string str_name;
 #endif
     Operand();
-    inline uint32_t getSignedValue();
-    inline uint32_t getUnsignedValue();
+    uint32_t getSignedValue();
+    uint32_t getUnsignedValue();
     swaddr_t getAddress();
+    uint8_t getSreg() { return sreg; }
     void setValue(uint32_t v);
     string suffix();
 };
 
 /* Instruction Context to be passed through decoding */
 struct InstructionContext {
+    swaddr_t starting_eip;
     uint8_t prefix[4];
     uint32_t opcode;
+//    uint8_t sreg_override;
     bool require_modrm;
     Operand operands[4];
     InstructionContext();
@@ -134,8 +136,8 @@ union SIB {
 
 /**
  * Special helper function for instructions:
- * A templated version to execute decoding operations
- * A normal version to do the real work
+ * A templated function executes decoding operations
+ * Normal '_internal' function does the real work
  **/
 #define TEMPLATE_INSTRUCTION_HELPER(name) inline void name##_internal HELPER_PARAM_LIST; \
     template<OperandName ...operand_names> HELPER(name) { \
@@ -173,7 +175,6 @@ uint8_t calc_pf(uint8_t val);
 
 /*** Operands Decoding Function ***/
 TEMPLATE_HELPER(decode_operands);
-HELPER(decode_operands); // simply check and read result from previous function template
 
 template <size_t size> struct standard_type;
 template <> struct standard_type<1> {

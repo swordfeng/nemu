@@ -1,17 +1,19 @@
 ##### global settings #####
 
-.PHONY: nemu entry all_testcase kernel run gdb test submit clean
+.PHONY: nemu entry all_testcase kernel run gdb profile test submit clean
 
 MAKEFLAGS := -j4
 
 CC := gcc
 CXX := g++
+RUSTC := rustc
 HC := ghc
 LD := ld
 ASFLAGS := -m32 -MMD -c
 CFLAGS := -MMD -Wall -Werror -c
 CXXFLAGS := -MMD -Wall -Werror -c -std=c++14 -fno-exceptions
 HCFLAGS := -c
+RSFLAGS := --emit obj
 
 LIB_COMMON_DIR := lib-common
 NEWLIBC_DIR := $(LIB_COMMON_DIR)/newlib
@@ -70,6 +72,10 @@ run: $(nemu_BIN) $(USERPROG) entry
 	$(call git_commit, "run")
 	$(nemu_BIN) $(USERPROG)
 
+profile: $(nemu_BIN) $(USERPROG) entry
+	perf record $(nemu_BIN) $(USERPROG)
+	perf report
+
 gdb: $(nemu_BIN) $(USERPROG) entry
 	gdb -s $(nemu_BIN) --args $(nemu_BIN) $(USERPROG)
 
@@ -82,6 +88,3 @@ submit: clean
 count-nemu:
 	find nemu/ -regextype posix-egrep -regex ".*\.c|.*\.h|.*\.hc|.*\.hs" -exec cat '{}' \; | sed '/^\s*$$/d' | wc -l
 
-profile:
-	@gprof obj/nemu/nemu > prof.txt
-	@echo "See prof.txt"

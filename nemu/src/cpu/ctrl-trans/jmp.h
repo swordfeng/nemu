@@ -14,3 +14,19 @@ TEMPLATE_INSTRUCTION_HELPER(jmp_near) {
     // eip <- temp_eip;
     cpu.eip = temp_eip;
 }
+
+TEMPLATE_INSTRUCTION_HELPER(jmp_long) {
+    if (ctx.operands[0].type == opt_immediate) {
+        Assert(ctx.operands[1].type == opt_immediate, "the second operand not present?!");
+        swaddr_t temp_eip = ctx.operands[0].getUnsignedValue();
+        cpu.cs.sel = ctx.operands[1].getUnsignedValue();
+        sreg_load(sreg_index(cs));
+
+        print_instr(ctx, "ljmp");
+
+        cpu.eip = temp_eip;
+    } else {
+        panic("not implemented");
+    }
+}
+

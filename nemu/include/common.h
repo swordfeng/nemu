@@ -3,10 +3,17 @@
 
 #define USE_RAMDISK
 
+#ifndef PERFORMANCE
+#    define USE_CACHE
+#    define USE_TLB
+#else
+#    ifdef DEBUG
+#        undef DEBUG
+#    endif
+#endif
+
 /* You will define this macro in PA4 */
 //#define HAS_DEVICE
-
-//#define LOG_FILE
 
 #include "debug.h"
 
@@ -16,8 +23,8 @@
 
 #ifndef __cplusplus
 typedef enum {
-	false = 0,
-	true = 1
+    false = 0,
+    true = 1
 } bool;
 #endif
 
@@ -29,12 +36,12 @@ typedef uint16_t ioaddr_t;
 
 #pragma pack (1)
 typedef union {
-	uint32_t _4;
-	uint32_t _3	: 24;
-	uint16_t _2;
-	uint8_t _1;
+    uint32_t _4;
+    uint32_t _3    : 24;
+    uint16_t _2;
+    uint8_t _1;
 } unalign;
 #pragma pack ()
-#define unalign_rw(addr, len)	(((unalign *)(addr))->_##len)
+#define unalign_rw(addr, len)    (((unalign *)(addr))->_##len)
 
 #endif
