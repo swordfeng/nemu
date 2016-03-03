@@ -1,6 +1,7 @@
 #include "common.h"
 #include "memory/memory.h"
 #include "cpu/reg.h"
+#include "device/mmio.h"
 
 uint32_t dram_read(hwaddr_t, size_t);
 void dram_write(hwaddr_t, size_t, uint32_t);
@@ -8,23 +9,33 @@ void dram_write(hwaddr_t, size_t, uint32_t);
 /* Memory accessing interfaces */
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len) {
+    int map_id = is_mmio(addr);
+    if (map_id >= 0) {
+        return mmio_read(addr, len, map_id);
+    } else {
 #ifdef USE_CACHE
-    return cached_read(addr, len);
+        return cached_read(addr, len);
 #else
-    return dram_read(addr, len);
+        return dram_read(addr, len);
 #endif
+    }
 }
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
+    int map_id = is_mmio(addr);
+    if (map_id >= 0) {
+        mmio_write(addr, len, data, map_id);
+    } else {
 #ifdef USE_CACHE
-    cached_write(addr, len, data);
+        cached_write(addr, len, data);
 #else
-    dram_write(addr, len, data);
+        dram_write(addr, len, data);
 #endif
+    }
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
-    size_t max_len = 0x1000 - (addr & 0xFFF);
+    size_t max_len = ((~addr) & 0xFFF) + 1;
     if (len > max_len) {
         // data cross the page boundary
         uint32_t low = lnaddr_read(addr, max_len);
@@ -45,7 +56,7 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 }
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
-    size_t max_len = 0x1000 - (addr & 0xFFF);
+    size_t max_len = ((~addr) & 0xFFF) + 1;
     if (len > max_len) {
         // data cross the page boundary
         lnaddr_write(addr, max_len, data & ((1 << (max_len * 8)) - 1));

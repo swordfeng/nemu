@@ -1,11 +1,11 @@
-nemu_CFLAGS_EXTRA := -ggdb3 -DDEBUG -Ofast -funroll-loops -flto
-nemu_CXXFLAGS_EXTRA := -ggdb3 -DDEBUG -Ofast -funroll-loops -flto -DDEBUG
+nemu_CFLAGS_EXTRA := -Ofast -funroll-loops -flto -DPERFORMANCE
+nemu_CXXFLAGS_EXTRA := $(nemu_CFLAGS_EXTRA)
 nemu_HCFLAGS_EXTRA := -O -optc-flto
 nemu_RUSTSTD := obj/nemu/libruststd.a
 
 $(eval $(call make_common_rules,nemu))
 
-nemu_LDFLAGS := -no-hs-main -lpthread -lreadline -package parsec -lstdc++ -optl-flto -lubsan
+nemu_LDFLAGS := -no-hs-main -lpthread -lreadline -package parsec -lstdc++ -lSDL -optl-flto
 
 $(nemu_BIN): $(nemu_OBJS) $(nemu_RUSTSTD)
 	$(call make_command, $(HC), $(nemu_LDFLAGS), ld $@, $^)

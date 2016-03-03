@@ -13,37 +13,37 @@ const char *regsb[] = {"al", "cl", "dl", "bl", "ah", "ch", "dh", "bh"};
 const char *regss[] = {"es", "cs", "ss", "ds", "fs", "gs"};
 
 void reg_test() {
-	srand(time(0));
-	uint32_t sample[8];
-	uint32_t eip_sample = rand();
-	cpu.eip = eip_sample;
+    srand(time(0));
+    uint32_t sample[8];
+    uint32_t eip_sample = rand();
+    cpu.eip = eip_sample;
 
-	int i;
-	for(i = R_EAX; i <= R_EDI; i ++) {
-		sample[i] = rand();
-		reg_l(i) = sample[i];
-		assert(reg_w(i) == (sample[i] & 0xffff));
-	}
+    int i;
+    for(i = R_EAX; i <= R_EDI; i ++) {
+        sample[i] = rand();
+        reg_l(i) = sample[i];
+        assert(reg_w(i) == (sample[i] & 0xffff));
+    }
 
-	assert(reg_b(R_AL) == (sample[R_EAX] & 0xff));
-	assert(reg_b(R_AH) == ((sample[R_EAX] >> 8) & 0xff));
-	assert(reg_b(R_BL) == (sample[R_EBX] & 0xff));
-	assert(reg_b(R_BH) == ((sample[R_EBX] >> 8) & 0xff));
-	assert(reg_b(R_CL) == (sample[R_ECX] & 0xff));
-	assert(reg_b(R_CH) == ((sample[R_ECX] >> 8) & 0xff));
-	assert(reg_b(R_DL) == (sample[R_EDX] & 0xff));
-	assert(reg_b(R_DH) == ((sample[R_EDX] >> 8) & 0xff));
+    assert(reg_b(R_AL) == (sample[R_EAX] & 0xff));
+    assert(reg_b(R_AH) == ((sample[R_EAX] >> 8) & 0xff));
+    assert(reg_b(R_BL) == (sample[R_EBX] & 0xff));
+    assert(reg_b(R_BH) == ((sample[R_EBX] >> 8) & 0xff));
+    assert(reg_b(R_CL) == (sample[R_ECX] & 0xff));
+    assert(reg_b(R_CH) == ((sample[R_ECX] >> 8) & 0xff));
+    assert(reg_b(R_DL) == (sample[R_EDX] & 0xff));
+    assert(reg_b(R_DH) == ((sample[R_EDX] >> 8) & 0xff));
 
-	assert(sample[R_EAX] == cpu.eax);
-	assert(sample[R_ECX] == cpu.ecx);
-	assert(sample[R_EDX] == cpu.edx);
-	assert(sample[R_EBX] == cpu.ebx);
-	assert(sample[R_ESP] == cpu.esp);
-	assert(sample[R_EBP] == cpu.ebp);
-	assert(sample[R_ESI] == cpu.esi);
-	assert(sample[R_EDI] == cpu.edi);
+    assert(sample[R_EAX] == cpu.eax);
+    assert(sample[R_ECX] == cpu.ecx);
+    assert(sample[R_EDX] == cpu.edx);
+    assert(sample[R_EBX] == cpu.ebx);
+    assert(sample[R_ESP] == cpu.esp);
+    assert(sample[R_EBP] == cpu.ebp);
+    assert(sample[R_ESI] == cpu.esi);
+    assert(sample[R_EDI] == cpu.edi);
 
-	assert(eip_sample == cpu.eip);
+    assert(eip_sample == cpu.eip);
 }
 
 const char *reg_get_name(int reg_index, size_t size) {
@@ -66,38 +66,40 @@ const char *reg_seg_get_name(int sreg_index) {
 uint32_t reg_name_mask(const char *name) {
     int index;
     for (index = 0; index < 8; index++) {
-	    if (strcmp(name, regsw[index]) == 0) return 0xffff;
-	    if (strcmp(name, regsb[index]) == 0) return 0xff;
-	}
-	for (index = 0; index < 6; index++) {
-		if (strcmp(name, regss[index]) == 0) return 0xffff;
-	}
-	return 0xffffffff;
+        if (strcmp(name, regsw[index]) == 0) return 0xffff;
+        if (strcmp(name, regsb[index]) == 0) return 0xff;
+    }
+    for (index = 0; index < 6; index++) {
+        if (strcmp(name, regss[index]) == 0) return 0xffff;
+    }
+    return 0xffffffff;
 }
 
 uint32_t *reg_name_ptr(const char *name) {
     int index;
     for (index = 0; index < 8; index++) {
-	    if (strcmp(name, regsl[index]) == 0) return &reg_l(index);
-	    if (strcmp(name, regsw[index]) == 0) return (uint32_t *)&reg_w(index);
-	    if (strcmp(name, regsb[index]) == 0) return (uint32_t *)&reg_b(index);
-	}
-	if (strcmp(name, "eflags") == 0) return &cpu.eflags;
-	if (strcmp(name, "eip") == 0) return &cpu.eip;
-	for (index = 0; index < 6; index++) {
-		if (strcmp(name, regss[index]) == 0) return (uint32_t *)&cpu.sr[index].sel;
-	}
-	if (strcmp(name, "cr0") == 0) return &cpu.cr0.value;
-	if (strcmp(name, "cr3") == 0) return &cpu.cr3;
-	panic("invalid register name");
+        if (strcmp(name, regsl[index]) == 0) return &reg_l(index);
+        if (strcmp(name, regsw[index]) == 0) return (uint32_t *)&reg_w(index);
+        if (strcmp(name, regsb[index]) == 0) return (uint32_t *)&reg_b(index);
+    }
+    if (strcmp(name, "eflags") == 0) return &cpu.eflags;
+    if (strcmp(name, "eip") == 0) return &cpu.eip;
+    for (index = 0; index < 6; index++) {
+        if (strcmp(name, regss[index]) == 0) return (uint32_t *)&cpu.sr[index].sel;
+    }
+    if (strcmp(name, "cr0") == 0) return &cpu.cr0.value;
+    if (strcmp(name, "cr3") == 0) return &cpu.cr3;
+    panic("invalid register name");
 }
 
 void init_reg() {
-	/* Set the initial eflags. */
-	cpu.eflags = 0x2; // According to Intel Manual
+    /* Set the initial eflags. */
+    cpu.eflags = 0x2; // According to Intel Manual
 
     cpu.gdtr.base = 0;
     cpu.gdtr.limit = 0xFFFF;
+    cpu.idtr.base = 0;
+    cpu.idtr.limit = 0xFFFF;
     cpu.cr0.value = 0;
     cpu.cs.base = 0;
     cpu.cs.limit = 0xffffffff;
@@ -152,16 +154,20 @@ uint32_t reg_cr_read_index(uint8_t reg_index) {
 }
 
 void reg_cr_set(uint8_t reg_index, uint32_t value) {
-	switch (reg_index) {
+    switch (reg_index) {
         case 0:
-			cpu.cr0.value ^= value;
-			if (cpu.cr0.pg) tlb_flush();
+            cpu.cr0.value ^= value;
+#ifdef USE_TLB
+            if (cpu.cr0.pg) tlb_flush();
+#endif
             cpu.cr0.value = value;
-			break;
+            break;
         case 3:
-			tlb_flush();
+#ifdef USE_TLB
+            tlb_flush();
+#endif
             cpu.cr3 = value;
-			break;
+            break;
         default:
             panic("cr not implemented");
     }

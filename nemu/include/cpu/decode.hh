@@ -39,7 +39,7 @@ void print_instr(InstructionContext &ctx, string name);
 #define OP_NAMES(name) op_##name##_b, op_##name##_w, op_##name##_l, op_##name##_v
 enum OperandName {
     OP_NAMES(suffix), OP_NAMES(rm), OP_NAMES(reg), OP_NAMES(r), OP_NAMES(moffs),
-    OP_NAMES(imm), OP_NAMES(a), OP_NAMES(c),
+    OP_NAMES(imm), OP_NAMES(a), OP_NAMES(c), OP_NAMES(d),
     op_1_b = 0x80, op_1 = 0x80,
     op_reg_cr, op_reg_seg, op_ptrwv,
 };
@@ -93,6 +93,7 @@ struct Operand {
 
 /* Instruction Context to be passed through decoding */
 struct InstructionContext {
+    swaddr_t starting_eip;
     uint8_t prefix[4];
     uint32_t opcode;
 //    uint8_t sreg_override;
@@ -174,7 +175,6 @@ uint8_t calc_pf(uint8_t val);
 
 /*** Operands Decoding Function ***/
 TEMPLATE_HELPER(decode_operands);
-HELPER(decode_operands); // simply check and read result from previous function template
 
 template <size_t size> struct standard_type;
 template <> struct standard_type<1> {

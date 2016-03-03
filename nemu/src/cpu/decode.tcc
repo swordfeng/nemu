@@ -368,6 +368,13 @@ DECODE_TEMPLATE_HELPER(decode_const) {
 #ifdef OPERAND_SET_NAME
         ctx.operands[index].str_name = string("%") + reg_get_name(R_ECX, op_get_size(ctx, opname));
 #endif
+    } else if (op_name_is(opname, d)) {
+        ctx.operands[index].type = opt_register;
+        ctx.operands[index].reg_index = R_EDX;
+        ctx.operands[index].size = op_get_size(ctx, opname);
+#ifdef OPERAND_SET_NAME
+        ctx.operands[index].str_name = string("%") + reg_get_name(R_EDX, op_get_size(ctx, opname));
+#endif
     } else if (op_name_is(opname, 1)) {
         ctx.operands[index].type = opt_immediate;
         ctx.operands[index].immediate = 1;
@@ -406,14 +413,8 @@ TEMPLATE_HELPER(decode_operands) {
     consumed_size += imm_size;
     int ptrwv_size = decode_ptrwv<0, operand_names...>::call(ctx, eip + consumed_size);
     consumed_size += ptrwv_size;
-    //printf("opcode = %x, decoded length = %d, m = %d, o = %d, i = %d\n", instr_fetch(eip, 1), consumed_size, modrm_size, moffs_size, imm_size);
     ctx.decoded_len = consumed_size;
     ctx.decoded_eip = eip;
     return consumed_size;
 }
 
-inline HELPER(decode_operands) {
-    Assert(eip == ctx.decoded_eip, "unexpected call");
-    Assert(ctx.decoded_len > 0, "unexpected call");
-    return ctx.decoded_len;
-}
