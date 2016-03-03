@@ -14,7 +14,7 @@ lnaddr_t seg_translate(swaddr_t offset, size_t len, uint8_t sreg) {
     Assert(ti == 0, "ldt not implemented");
     //    Assert(index != 0, "null segment selector (#GP)");
 
-    Assert(index <= cpu.gdtr.limit, "gdt index out of range");
+    Assert(index * 8 <= cpu.gdtr.limit, "gdt index out of range");
 
     //Assert(dpl >= rpl, "dpl >= rpl");
     Assert(offset < cpu.sr[sreg].limit && offset + len < cpu.sr[sreg].limit, "out of segment");
