@@ -6,7 +6,7 @@ $(eval $(call make_common_rules,nemu))
 
 nemu_LDFLAGS := -no-hs-main -lpthread -lreadline -package parsec -lstdc++ -optl-flto
 
-$(nemu_BIN): $(nemu_OBJS) $(nemu_RUSTSTD)
+$(nemu_BIN): $(nemu_OBJS)
 	$(call make_command, $(HC), $(nemu_LDFLAGS), ld $@, $^)
 	$(call git_commit, "compile NEMU")
 
