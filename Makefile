@@ -60,7 +60,7 @@ clean: clean-cpp clean-log
 	-rm -rf obj 2> /dev/null
 
 ##### some convinient rules #####
-TEST=hello-str
+TEST=mov-c
 USERPROG := obj/testcase/$(TEST)
 #ENTRY := $(USERPROG)
 ENTRY := $(kernel_BIN)
