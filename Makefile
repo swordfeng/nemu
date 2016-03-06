@@ -10,7 +10,7 @@ RUSTC := rustc
 HC := ghc
 LD := ld
 ASFLAGS := -m32 -MMD -c
-CFLAGS := -MMD -Wall -Werror -c
+CFLAGS := -MMD -Wall -Werror -c -std=c11
 CXXFLAGS := -MMD -Wall -Werror -c -std=c++14 -fno-exceptions
 HCFLAGS := -c
 RSFLAGS := --emit obj
