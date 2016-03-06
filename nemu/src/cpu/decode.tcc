@@ -299,7 +299,7 @@ DECODE_TEMPLATE_HELPER(decode_imm) {
         ctx.operands[index].immediate = instr_fetch(eip, op_get_size(ctx, opname));
         ctx.operands[index].size = op_get_size(ctx, opname);
 #ifdef OPERAND_SET_NAME
-        ctx.operands[index].str_name = string("$") + conv16(ctx.operands[index].immediate);
+        ctx.operands[index].str_name = string("$") + conv16(ctx.operands[index].getSignedValue());
 #endif
         return op_get_size(ctx, opname);
     } else return 0;
