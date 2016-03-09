@@ -5,7 +5,7 @@ extern "C" {
 INSTRUCTION_HELPER(inv) {
     /* invalid opcode */
 
-    eip = ctx.starting_eip;
+    eip = ctx.decoded_eip;
     uint32_t temp[8];
     temp[0] = instr_fetch(eip, 4);
     temp[1] = instr_fetch(eip + 4, 4);
