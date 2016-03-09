@@ -35,6 +35,7 @@ void* add_mmio_map(hwaddr_t addr, size_t len, mmio_callback_t callback) {
 
 /* bus interface */
 int is_mmio(hwaddr_t addr) {
+#ifndef PERFORMANCE
     int i;
     for(i = 0; i < nr_map; i ++) {
         if(addr >= maps[i].low && addr <= maps[i].high) {
@@ -42,6 +43,10 @@ int is_mmio(hwaddr_t addr) {
         }
     }
     return -1;
+#else
+    // specialized for vmem io; no other io kinds
+    return (addr & 0xfffe0000) == 0xa0000 ? 0 : -1;
+#endif
 }
 
 uint32_t mmio_read(hwaddr_t addr, size_t len, int map_NO) {

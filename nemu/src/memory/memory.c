@@ -45,9 +45,9 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
     hwaddr_t hwaddr;
     if (cpu.cr0.pg) {
 #ifdef USE_TLB
-    hwaddr = tlb_translate(addr);
+        hwaddr = tlb_translate(addr);
 #else
-    hwaddr = page_translate(addr);
+        hwaddr = page_translate(addr);
 #endif
     } else {
         hwaddr = addr;

@@ -2,6 +2,8 @@
 #include "monitor/expr.h"
 #include <stdlib.h>
 
+#ifndef PERFORMANCE
+
 #define NR_WP 32
 
 struct watchpoint {
@@ -137,3 +139,4 @@ void wp_print_info() {
         printf("%-16d%-16d%s\n", wp->NO, wp->result, wp->exp);
     }
 }
+#endif
