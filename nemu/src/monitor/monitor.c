@@ -102,4 +102,10 @@ void restart() {
 
     /* Initialize DRAM. */
     init_ddr3();
+
+#ifdef USE_TLB
+    void init_tlb();
+    init_tlb();
+#endif
+
 }
