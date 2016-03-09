@@ -267,7 +267,7 @@ UTIL_Delay(
    unsigned int ms
 )
 {
-   unsigned int t = SDL_GetTicks() + ms;
+   unsigned int t = SDL_GetTicks() + ms / 2;
 
    while (PAL_PollEvent(NULL));
 

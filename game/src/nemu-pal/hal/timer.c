@@ -24,7 +24,7 @@ timer_event(void) {
 }
 
 uint32_t SDL_GetTicks() {
-    return jiffy * 10;
+    return jiffy * 1000 / HZ;
 }
 
 void SDL_Delay(uint32_t ms) {

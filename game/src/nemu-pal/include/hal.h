@@ -4,7 +4,7 @@
 #include "common.h"
 #include "x86.h"
 
-#define HZ 100
+#define HZ 200
 
 /* Unused macros in NEMU are defined to 0. */
 #define SDL_VERSION_ATLEAST(x,y,z) 0

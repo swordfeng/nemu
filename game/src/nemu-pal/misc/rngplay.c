@@ -435,7 +435,7 @@ PAL_RNGPlay(
 --*/
 {
    UINT            iTime;
-   int             iDelay = 800 / (iSpeed == 0 ? 16 : iSpeed);
+   int             iDelay = 500 / (iSpeed == 0 ? 16 : iSpeed);
    FILE           *fp;
 
    fp = UTIL_OpenRequiredFile("rng.mkf");
