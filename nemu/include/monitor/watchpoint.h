@@ -5,7 +5,7 @@
 
 typedef struct watchpoint WP;
 
-WP* wp_new();
+WP* wp_new(bool cond);
 void wp_free(WP *wp);
 WP *wp_find(int no);
 void wp_set_expr(WP *wp, const char *exp);
