@@ -25,16 +25,27 @@ typedef struct {
 /* We use the ``readline'' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
     static char *line_read = NULL;
+    static char *old_line_read = NULL;
 
     if (line_read) {
         free(line_read);
-        line_read = NULL;
     }
 
     line_read = readline("(nemu) ");
-
-    if (line_read && *line_read) {
-        add_history(line_read);
+    if (line_read) {
+        if (*line_read) {
+            add_history(line_read);
+            free(old_line_read);
+            old_line_read = malloc(strlen(line_read));
+            strcpy(old_line_read, line_read);
+        } else {
+            free(line_read);
+            line_read = NULL;
+        }
+    }
+    if (!line_read && old_line_read) {
+        line_read = malloc(strlen(old_line_read));
+        strcpy(line_read, old_line_read);
     }
 
     return line_read;
