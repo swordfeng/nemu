@@ -152,7 +152,7 @@ static int cmd_p(char *args) {
     return 0;
 }
 
-static int cmd_w(char *args) {
+static int cmd_w_b(char *args, bool cond) {
     if (!args) {
         printf("invalid argument\n");
         return 0;
@@ -164,10 +164,18 @@ static int cmd_w(char *args) {
         printf("failed to set watchpoint\n");
         return 0;
     }
-    WP *wp = wp_new();
+    WP *wp = wp_new(cond);
     wp_set_expr(wp, newexp);
     printf("New watchpoint %d: %s\n", wp_get_no(wp), newexp);
     return 0;
+}
+
+static int cmd_w(char *args) {
+    return cmd_w_b(args, false);
+}
+
+static int cmd_b(char *args) {
+    return cmd_w_b(args, true);
 }
 
 static int cmd_d(char *args) {
@@ -298,6 +306,7 @@ static struct {
     { "x", "Examine memory", cmd_x },
     { "p", "Calculate and print expression", cmd_p },
     { "w", "Set new watchpoint", cmd_w },
+    { "b", "Set conditional watchpoint", cmd_b },
     { "d", "Delete new watchpoint", cmd_d },
     { "bt", "Display Back Trace", cmd_bt},
 #ifdef USE_CACHE
