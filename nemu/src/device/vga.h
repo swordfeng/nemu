@@ -6,7 +6,7 @@
 
 #define SCREEN_ROW 400
 #define SCREEN_COL 640
-#define VGA_HZ 25
+#define VGA_HZ 100
 
 extern SDL_Surface *real_screen;
 extern SDL_Surface *screen;
@@ -20,7 +20,7 @@ static inline void draw_pixel(int x, int y, uint8_t color_idx) {
 
 typedef union {
     uint32_t val;
-    struct { 
+    struct {
         uint8_t r, g, b, a;
     };
 } Color;
