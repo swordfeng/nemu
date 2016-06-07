@@ -42,7 +42,7 @@ char* rl_gets() {
             free(line_read);
             line_read = NULL;
         }
-    }
+    } else return NULL;
     if (!line_read && old_line_read) {
         line_read = malloc(strlen(old_line_read));
         strcpy(line_read, old_line_read);
