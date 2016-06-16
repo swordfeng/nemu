@@ -51,7 +51,7 @@ helper_fun opcode_table[256] = {
 /* 0x81 */  op_group({&add<op_rm_v, op_imm_v>, &or_<op_rm_v, op_imm_v>, &adc<op_rm_v, op_imm_v>, &sbb<op_rm_v, op_imm_v>, &and_<op_rm_v, op_imm_v>, &sub<op_rm_v, op_imm_v>, &xor_<op_rm_v, op_imm_v>, &cmp<op_rm_v, op_imm_v>}),
 /* 0x82 */  inv,
 /* 0x83 */  op_group({&add<op_rm_v, op_imm_b>, &or_<op_rm_v, op_imm_b>, &adc<op_rm_v, op_imm_b>, &sbb<op_rm_v, op_imm_b>, &and_<op_rm_v, op_imm_b>, &sub<op_rm_v, op_imm_b>, &xor_<op_rm_v, op_imm_b>, &cmp<op_rm_v, op_imm_b>}),
-/* 0x84 */  &test<op_rm_b, op_reg_b>, &test<op_rm_v, op_reg_v>, inv, inv,
+/* 0x84 */  &test<op_rm_b, op_reg_b>, &test<op_rm_v, op_reg_v>, &xchg<op_reg_w,op_rm_w>, &xchg<op_rm_w,op_reg_w>,
 /* 0x88 */  &mov<op_rm_b, op_reg_b>, &mov<op_rm_v, op_reg_v>, &mov<op_reg_b, op_rm_b>, &mov<op_reg_v, op_rm_v>,
 /* 0x8c */  &mov<op_rm_w, op_reg_seg>, &lea<op_reg_v, op_rm_l>, &mov<op_reg_seg, op_rm_w>,
 /* 0x8f */  op_group({&pop<op_rm_v>, inv, inv, inv, inv, inv, inv, inv}),
