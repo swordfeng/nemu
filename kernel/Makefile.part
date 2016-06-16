@@ -1,4 +1,4 @@
-kernel_CFLAGS_EXTRA := -m32 -Ofast -mno-sse -fno-builtin -fno-omit-frame-pointer -fno-stack-protector \
+kernel_CFLAGS_EXTRA := -m32 -Ofast -mno-sse -fno-builtin -fno-omit-frame-pointer -fno-stack-protector -march=i686 \
 						-I$(LIB_COMMON_DIR) -I$(NEWLIBC_DIR)/include 
 $(eval $(call make_common_rules,kernel,$(kernel_CFLAGS_EXTRA)))
 
