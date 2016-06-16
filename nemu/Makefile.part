@@ -1,4 +1,4 @@
-nemu_CFLAGS_EXTRA := -Ofast -funroll-loops -flto -fno-strict-aliasing -DPERFORMANCE
+nemu_CFLAGS_EXTRA := -Ofast -funroll-loops -flto -fno-strict-aliasing -DDEBUG
 nemu_CXXFLAGS_EXTRA := $(nemu_CFLAGS_EXTRA)
 nemu_HCFLAGS_EXTRA := -O -optc-flto
 

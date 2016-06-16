@@ -25,16 +25,27 @@ typedef struct {
 /* We use the ``readline'' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
     static char *line_read = NULL;
+    static char *old_line_read = NULL;
 
     if (line_read) {
         free(line_read);
-        line_read = NULL;
     }
 
     line_read = readline("(nemu) ");
-
-    if (line_read && *line_read) {
-        add_history(line_read);
+    if (line_read) {
+        if (*line_read) {
+            add_history(line_read);
+            free(old_line_read);
+            old_line_read = malloc(strlen(line_read));
+            strcpy(old_line_read, line_read);
+        } else {
+            free(line_read);
+            line_read = NULL;
+        }
+    } else return NULL;
+    if (!line_read && old_line_read) {
+        line_read = malloc(strlen(old_line_read));
+        strcpy(line_read, old_line_read);
     }
 
     return line_read;
@@ -155,7 +166,7 @@ static int cmd_p(char *args) {
 }
 
 #ifndef PERFORMANCE
-static int cmd_w(char *args) {
+static int cmd_w_b(char *args, bool cond) {
     if (!args) {
         printf("invalid argument\n");
         return 0;
@@ -167,10 +178,18 @@ static int cmd_w(char *args) {
         printf("failed to set watchpoint\n");
         return 0;
     }
-    WP *wp = wp_new();
+    WP *wp = wp_new(cond);
     wp_set_expr(wp, newexp);
     printf("New watchpoint %d: %s\n", wp_get_no(wp), newexp);
     return 0;
+}
+
+static int cmd_w(char *args) {
+    return cmd_w_b(args, false);
+}
+
+static int cmd_b(char *args) {
+    return cmd_w_b(args, true);
 }
 
 static int cmd_d(char *args) {
@@ -303,6 +322,7 @@ static struct {
     { "p", "Calculate and print expression", cmd_p },
 #ifndef PERFORMANCE
     { "w", "Set new watchpoint", cmd_w },
+    { "b", "Set conditional watchpoint", cmd_b },
     { "d", "Delete new watchpoint", cmd_d },
 #endif
     { "bt", "Display Back Trace", cmd_bt},

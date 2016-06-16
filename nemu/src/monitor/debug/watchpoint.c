@@ -8,6 +8,7 @@
 
 struct watchpoint {
     int NO;
+    bool cond;
     struct watchpoint *next;
     char *exp;
     ExprFun expr_fun;
@@ -32,7 +33,7 @@ void init_wp_list() {
     wp_no_count = 0;
 }
 
-WP* wp_new() {
+WP* wp_new(bool cond) {
     Assert(free_, "Watchpoint pool excceed");
     WP *wp = free_;
     free_ = wp->next;
@@ -40,6 +41,7 @@ WP* wp_new() {
     wp->exp = NULL;
     head = wp;
     wp->NO = wp_no_count++;
+    wp->cond = cond;
     return wp;
 }
 
@@ -117,7 +119,12 @@ bool wp_watch(WP **pwp, uint32_t *old_result, uint32_t *new_result) {
         uint32_t o_res = wp_get_result(exam);
         wp_eval(exam);
         uint32_t n_res = wp_get_result(exam);
-        if (o_res != n_res) {
+        if (exam->cond) {
+            if (pwp) *pwp = exam;
+            if (old_result) *old_result = o_res;
+            if (new_result) *new_result = n_res;
+            return !!n_res;
+        } else if (o_res != n_res) {
             if (pwp) *pwp = exam;
             if (old_result) *old_result = o_res;
             if (new_result) *new_result = n_res;
