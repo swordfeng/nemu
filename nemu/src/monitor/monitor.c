@@ -40,8 +40,10 @@ void init_monitor(int argc, char *argv[]) {
     /* Load the string table and symbol table from the ELF file for future use. */
     load_elf_tables(argc, argv);
 
+#ifndef PERFORMANCE
     /* Initialize the watchpoint link list. */
     init_wp_list();
+#endif
 
     /* Display welcome message. */
     welcome();
@@ -102,4 +104,10 @@ void restart() {
 
     /* Initialize DRAM. */
     init_ddr3();
+
+#ifdef USE_TLB
+    void init_tlb();
+    init_tlb();
+#endif
+
 }

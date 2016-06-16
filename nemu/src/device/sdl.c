@@ -12,7 +12,7 @@ SDL_Surface *real_screen;
 SDL_Surface *screen;
 uint8_t (*pixel_buf) [SCREEN_COL];
 
-#define TIMER_HZ 100
+#define TIMER_HZ 200
 
 static uint64_t jiffy = 0;
 static struct itimerval it;

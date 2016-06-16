@@ -5,6 +5,8 @@
 
 #ifdef USE_TLB
 
+#ifndef PERFORMANCE
+
 #define NR_TLB_LINE 64
 
 typedef struct TLBLine {
@@ -32,4 +34,27 @@ void tlb_flush() {
         l->valid = false;
     }
 }
+#else
+
+#define NR_TLB_LINE (1 << 20)
+uint32_t tlb[NR_TLB_LINE];
+
+hwaddr_t tlb_translate(lnaddr_t lnaddr) {
+    uint32_t pageid = lnaddr >> 12;
+    if (tlb[pageid] != ~0u) return tlb[pageid] | (lnaddr & 0xFFF);
+    hwaddr_t hwaddr = page_translate(lnaddr);
+    tlb[pageid] = hwaddr & ~0xFFF;
+    return hwaddr;
+}
+
+void tlb_flush() {
+    memset(tlb, 0xFF, sizeof(tlb));
+}
+
+#endif
+
+void init_tlb() {
+    tlb_flush();
+}
+
 #endif

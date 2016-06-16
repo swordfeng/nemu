@@ -10,6 +10,7 @@
 #    ifdef DEBUG
 #        undef DEBUG
 #    endif
+#    define USE_TLB
 #endif
 
 /* You will define this macro in PA4 */

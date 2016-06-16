@@ -67,6 +67,7 @@ void do_int3() {
     nemu_state = STOP;
 }
 
+#ifndef PERFORMANCE
 /* Called when hit watchpoint */
 void do_watchpoint(WP *wp, uint32_t old_result, uint32_t new_result) {
     printf("\nHit watchpoint at eip = 0x%08x\n", cpu.eip);
@@ -74,6 +75,7 @@ void do_watchpoint(WP *wp, uint32_t old_result, uint32_t new_result) {
     printf("Old value = %#x (%d)\nNew value = %#x (%d)\n", old_result, old_result, new_result, new_result);
     nemu_state = STOP;
 }
+#endif
 
 /* Simulate how the CPU works. */
 void cpu_exec(volatile uint32_t n) {
@@ -116,11 +118,13 @@ void cpu_exec(volatile uint32_t n) {
         }
 #endif
 
+#ifndef PERFORMANCE
         WP *wp = NULL;
         uint32_t old_result, new_result;
         if (wp_watch(&wp, &old_result, &new_result)) {
             do_watchpoint(wp, old_result, new_result);
         }
+#endif
 
         if(nemu_state != RUNNING) { return; }
 

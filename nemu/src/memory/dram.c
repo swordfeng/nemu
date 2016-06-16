@@ -112,7 +112,7 @@ uint32_t dram_read(hwaddr_t addr, size_t len) {
 
     return unalign_rw(temp + offset, 4)  & (~0u >> ((4 - len) << 3));
 #else
-    return unalign_rw((uint8_t *)dram + addr, 4)& (~0u >> ((4 - len) << 3));
+    return unalign_rw((uint8_t *)dram + addr, 4) & (~0u >> ((4 - len) << 3));
 #endif
 }
 

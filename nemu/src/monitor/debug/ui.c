@@ -116,7 +116,9 @@ static int cmd_info_r() {
 }
 
 static int cmd_info_w() {
+#ifndef PERFORMANCE
     wp_print_info();
+#endif
     return 0;
 }
 
@@ -163,6 +165,7 @@ static int cmd_p(char *args) {
     return 0;
 }
 
+#ifndef PERFORMANCE
 static int cmd_w_b(char *args, bool cond) {
     if (!args) {
         printf("invalid argument\n");
@@ -207,6 +210,7 @@ static int cmd_d(char *args) {
     wp_free(wp);
     return 0;
 }
+#endif
 
 static int cmd_bt(char *args) {
     static bool called = false;
@@ -316,9 +320,11 @@ static struct {
     { "info", "Print program info", cmd_info },
     { "x", "Examine memory", cmd_x },
     { "p", "Calculate and print expression", cmd_p },
+#ifndef PERFORMANCE
     { "w", "Set new watchpoint", cmd_w },
     { "b", "Set conditional watchpoint", cmd_b },
     { "d", "Delete new watchpoint", cmd_d },
+#endif
     { "bt", "Display Back Trace", cmd_bt},
 #ifdef USE_CACHE
     { "cache", "Display Back Trace", cmd_cache},
