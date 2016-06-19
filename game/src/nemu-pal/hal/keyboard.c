@@ -40,7 +40,7 @@ keyboard_event(void) {
             key_state[index] = KEY_STATE_PRESS_RELEASE;
         } else if (key_state[index] == KEY_STATE_PRESSED) {
             key_state[index] = KEY_STATE_RELEASE;
-        } else panic("unexpected key state!");
+        } else Log("warning: unexpected key state!");
     }
 }
 
