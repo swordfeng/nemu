@@ -6,6 +6,8 @@ static inline uint32_t general_add(uint32_t val1, uint32_t val2, size_t size) {
     cpu.zf = result == 0;
     cpu.sf = result >> 31;
     cpu.of = (val1 >> 31) == (val2 >> 31) && (val1 >> 31) != cpu.sf;
+#ifndef PERFORMANCE
     cpu.pf = calc_pf(result);
+#endif
     return result;
 }
