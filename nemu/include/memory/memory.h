@@ -33,10 +33,29 @@ void hwaddr_write(hwaddr_t, size_t, uint32_t);
 
 lnaddr_t seg_translate(swaddr_t offset, size_t len, uint8_t sreg);
 
-hwaddr_t tlb_translate(lnaddr_t lnaddr);
-void tlb_flush();
-
 hwaddr_t page_translate(lnaddr_t);
 void page_show(lnaddr_t);
+
+#ifdef DEEP_PERFORMANCE
+hwaddr_t page_translate_fast(lnaddr_t lnaddr);
+#endif
+
+#ifdef PERFORMANCE
+#define NR_TLB_LINE (1 << 20)
+extern uint32_t tlb[NR_TLB_LINE];
+#endif
+
+#ifndef DEEP_PERFORMANCE
+hwaddr_t tlb_translate(lnaddr_t lnaddr);
+#else
+inline static hwaddr_t tlb_translate(lnaddr_t lnaddr) {
+    uint32_t pageid = lnaddr >> 12;
+    if (tlb[pageid] == ~0u) {
+        tlb[pageid] = page_translate_fast(lnaddr);
+    }
+    return tlb[pageid] | (lnaddr & 0xFFF);
+}
+#endif
+void tlb_flush();
 
 #endif

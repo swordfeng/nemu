@@ -36,9 +36,9 @@ void tlb_flush() {
 }
 #else
 
-#define NR_TLB_LINE (1 << 20)
 uint32_t tlb[NR_TLB_LINE];
 
+#ifndef DEEP_PERFORMANCE
 hwaddr_t tlb_translate(lnaddr_t lnaddr) {
     uint32_t pageid = lnaddr >> 12;
     if (tlb[pageid] != ~0u) return tlb[pageid] | (lnaddr & 0xFFF);
@@ -46,6 +46,7 @@ hwaddr_t tlb_translate(lnaddr_t lnaddr) {
     tlb[pageid] = hwaddr & ~0xFFF;
     return hwaddr;
 }
+#endif
 
 void tlb_flush() {
     memset(tlb, 0xFF, sizeof(tlb));
@@ -56,5 +57,6 @@ void tlb_flush() {
 void init_tlb() {
     tlb_flush();
 }
+
 
 #endif
