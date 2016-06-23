@@ -35,6 +35,7 @@ void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data) {
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
+#ifndef DEEP_PERFORMANCE
     size_t max_len = ((~addr) & 0xFFF) + 1;
     if (len > max_len) {
         // data cross the page boundary
@@ -42,6 +43,7 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
         uint32_t high = lnaddr_read(addr + max_len, len - max_len);
         return (high << (max_len * 8)) | low;
     }
+#endif
     hwaddr_t hwaddr;
     if (cpu.cr0.pg) {
 #ifdef USE_TLB
@@ -56,6 +58,7 @@ uint32_t lnaddr_read(lnaddr_t addr, size_t len) {
 }
 
 void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
+#ifndef DEEP_PERFORMANCE
     size_t max_len = ((~addr) & 0xFFF) + 1;
     if (len > max_len) {
         // data cross the page boundary
@@ -63,6 +66,7 @@ void lnaddr_write(lnaddr_t addr, size_t len, uint32_t data) {
         lnaddr_write(addr + max_len, len - max_len, data >> (max_len * 8));
         return;
     }
+#endif
     hwaddr_t hwaddr;
     if (cpu.cr0.pg) {
 #ifdef USE_TLB
