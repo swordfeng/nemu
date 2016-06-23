@@ -1,6 +1,8 @@
 -- expr.hs
-{-# LANGUAGE ForeignFunctionInterface #-}
+{-# LANGUAGE ForeignFunctionInterface, CPP #-}
+#include "common.h"
 module Expr where
+#ifndef DEEP_PERFORMANCE
 -- processing libraries
 import Numeric (showHex, readHex)
 import Text.Parsec
@@ -241,3 +243,6 @@ new_expr_fun_hs cstr = do
           makeCExprFun . makeExprFun $ res
 
 free_expr_fun_hs = freeHaskellFunPtr
+#else
+nullexp = ()
+#endif

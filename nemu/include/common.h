@@ -1,7 +1,9 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-//#define USE_RAMDISK
+#ifdef DEEP_PERFORMANCE
+#define PERFORMANCE
+#endif
 
 #ifndef PERFORMANCE
 #    define USE_CACHE
@@ -13,8 +15,11 @@
 #    define USE_TLB
 #endif
 
-/* You will define this macro in PA4 */
+#ifndef __GLASGOW_HASKELL__
+//#define USE_RAMDISK
+
 #define HAS_DEVICE
+
 
 #include "debug.h"
 
@@ -44,5 +49,6 @@ typedef union {
 } unalign;
 #pragma pack ()
 #define unalign_rw(addr, len)    (((unalign *)(addr))->_##len)
+#endif
 
 #endif

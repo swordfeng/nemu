@@ -1,6 +1,6 @@
-nemu_CFLAGS_EXTRA := -Ofast -funroll-loops -flto -march=native -DPERFORMANCE
+nemu_CFLAGS_EXTRA := -Ofast -funroll-loops -flto -march=native -DDEEP_PERFORMANCE
 nemu_CXXFLAGS_EXTRA := $(nemu_CFLAGS_EXTRA)
-nemu_HCFLAGS_EXTRA := -O -optc-flto -optc-march=native
+nemu_HCFLAGS_EXTRA := -O -optc-flto -optc-march=native -DDEEP_PERFORMANCE
 
 $(eval $(call make_common_rules,nemu))
 

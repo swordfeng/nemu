@@ -72,6 +72,7 @@ static int cmd_si(char *args) {
     return 0;
 }
 
+#ifndef DEEP_PERFORMANCE
 static int cmd_info_r();
 static int cmd_info_w();
 static int cmd_info(char *args) {
@@ -164,6 +165,7 @@ static int cmd_p(char *args) {
     if (success) printf("%#x\t(%u)\n", result, result);
     return 0;
 }
+#endif
 
 #ifndef PERFORMANCE
 static int cmd_w_b(char *args, bool cond) {
@@ -254,6 +256,7 @@ static int cmd_cache(char *args) {
 }
 #endif
 
+#ifndef DEEP_PERFORMANCE
 static int cmd_page(char *args) {
     if (!args) {
         printf("invalid argument\n");
@@ -268,6 +271,7 @@ static int cmd_page(char *args) {
     page_show(lnaddr);
     return 0;
 }
+#endif
 
 #ifdef DEBUG
 static int cmd_last(char *args) {
@@ -317,19 +321,21 @@ static struct {
     { "c", "Continue the execution of the program", cmd_c },
     { "q", "Exit NEMU", cmd_q },
     { "si", "Step assembly", cmd_si },
+#ifndef DEEP_PERFORMANCE
     { "info", "Print program info", cmd_info },
     { "x", "Examine memory", cmd_x },
     { "p", "Calculate and print expression", cmd_p },
+#endif
 #ifndef PERFORMANCE
     { "w", "Set new watchpoint", cmd_w },
     { "b", "Set conditional watchpoint", cmd_b },
     { "d", "Delete new watchpoint", cmd_d },
+    { "page", "Display Page Translation", cmd_page},
 #endif
     { "bt", "Display Back Trace", cmd_bt},
 #ifdef USE_CACHE
     { "cache", "Display Back Trace", cmd_cache},
 #endif
-    { "page", "Display Page Translation", cmd_page},
 #ifdef DEBUG
     { "last", "Show last axm instruction", cmd_last},
 #endif
@@ -404,5 +410,7 @@ void print_debug_info() {
 #ifdef DEBUG
     cmd_last(NULL);
 #endif
+#ifndef DEEP_PERFORMANCE
     cmd_info_r();
+#endif
 }
