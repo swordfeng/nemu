@@ -159,7 +159,9 @@ union SIB {
     inline void name##_internal HELPER_PARAM_LIST
 
 /* Functional helper function type */
-typedef std::function<int (InstructionContext &, swaddr_t)> helper_fun;
+typedef HELPER((*helper_fun_ptr));
+//typedef std::function<int (InstructionContext &, swaddr_t)> helper_fun;
+typedef helper_fun_ptr helper_fun;
 
 /* Get operand size according to name and instruction prefix */
 size_t op_get_size(InstructionContext &ctx, OperandName opname);
